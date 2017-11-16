@@ -14,6 +14,9 @@ OptionParser.new do |opts|
     opts.on('-e', '--extension paths', "Record file paths for a certain extension") do |paths|
     options[:paths] = paths;
   end
+  opts.on('-a', '--all', "Record all file paths") do |all|
+    options[:all] = 'all';
+  end
   opts.on("-h", "--help", "Help") do
     puts opts
     exit
@@ -136,6 +139,17 @@ if options[:paths]
   end
   File.open(writetarget, 'w') do |f|
     extensionpaths.each do |write|
+      f.puts write
+    end
+  end
+end
+
+#Option for writing all paths
+if options[:all]
+  extensionpaths = Array.new
+  writetarget = Desktop + runtime + '_all_filepaths.txt'
+  File.open(writetarget, 'w') do |f|
+    CompleteFileList.each do |write|
       f.puts write
     end
   end
