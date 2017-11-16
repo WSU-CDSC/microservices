@@ -43,6 +43,7 @@ TargetList = Array.new
 Extensions = Array.new
 CompleteFileList = Array.new
 LowCount = Array.new
+runtime = Time.now.strftime("%Y%m%d_%H%M%S")
 
 def normalize(normalized)
   normalized = normalized.downcase
@@ -84,7 +85,7 @@ end
 
 uniqueextensions = Extensions.uniq.sort
 Extensionlist = Array.new
-writetarget = Desktop + 'file_extensions.csv'
+writetarget = Desktop + runtime + '_file_extensions.csv'
 CSV.open(writetarget, "wb") do |csv|
   csv << ["count", "Extension"]
   uniqueextensions.each do |unique|
@@ -99,7 +100,7 @@ end
 #Option for writing file of paths for extensions under a certain count
 if options[:threshold]
   pathlist = Array.new
-  writetarget = Desktop + 'filepaths.txt'
+  writetarget = Desktop + runtime + '_threshold_filepaths.txt'
   CompleteFileList.each do |path|
     pathextension = File.extname(path)
     LowCount.each do |extension|
@@ -122,7 +123,7 @@ end
 #Option for writing file of paths for selected extension
 if options[:paths]
   extensionpaths = Array.new
-  writetarget = Desktop + 'extensionpaths.txt'
+  writetarget = Desktop + runtime + '_extension_filepaths.txt'
   CompleteFileList.each do |path|
     if path.force_encoding('utf-8').include?(options[:paths])
       if OS.windows?
