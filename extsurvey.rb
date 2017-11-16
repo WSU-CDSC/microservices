@@ -8,7 +8,7 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: extensionsurvey.rb [option] [inputdirectory1] [inputdirectory2]..."
 
-  opts.on('-r', '--record threshold', "Record file paths for all extensions under a certain threshold") do |threshold|
+  opts.on('-t', '--threshold threshold', "Record file paths for all extensions under a certain threshold") do |threshold|
     options[:threshold] = threshold;
   end
     opts.on('-e', '--extension paths', "Record file paths for a certain extension") do |paths|
