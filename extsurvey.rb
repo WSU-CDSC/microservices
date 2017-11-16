@@ -20,6 +20,7 @@ OptionParser.new do |opts|
   end
   if ARGV.empty?
     puts opts
+    exit
   end
 end.parse!
 
