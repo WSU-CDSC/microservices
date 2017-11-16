@@ -89,13 +89,13 @@ CSV.open("file_extensions.csv", "wb") do |csv|
   end
 end
 
-
 #Option for writing file of paths for extensions under a certain count
 if options[:threshold]
   pathlist = Array.new
   CompleteFileList.each do |path|
+    pathextension = File.extname(path)
     LowCount.each do |extension|
-      if path.force_encoding('utf-8').include?(extension)
+      if pathextension.force_encoding('utf-8') == extension
         if OS.windows?
           pathlist << path.gsub("/", "\\")
         else
