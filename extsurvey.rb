@@ -32,6 +32,13 @@ def green(input)
   puts "\e[36m#{input}\e[0m"
 end
 
+# Get path to Desktop for output
+if OS.windows?
+  Desktop = ENV['HOME'] + '\\Desktop\\'
+else
+  Desktop = ENV['HOME'] + '/Desktop/'
+end
+
 TargetList = Array.new
 Extensions = Array.new
 CompleteFileList = Array.new
@@ -77,14 +84,14 @@ end
 
 uniqueextensions = Extensions.uniq.sort
 Extensionlist = Array.new
-CSV.open("file_extensions.csv", "wb") do |csv|
+writetarget = Desktop + 'file_extensions.csv'
+CSV.open(writetarget, "wb") do |csv|
   csv << ["count", "Extension"]
   uniqueextensions.each do |unique|
     count = Extensions.count(unique)
     if options[:threshold] && count < Integer(options[:threshold])
       LowCount << unique
     end
-
     csv << [count, unique]
   end
 end
@@ -92,6 +99,7 @@ end
 #Option for writing file of paths for extensions under a certain count
 if options[:threshold]
   pathlist = Array.new
+  writetarget = Desktop + 'filepaths.txt'
   CompleteFileList.each do |path|
     pathextension = File.extname(path)
     LowCount.each do |extension|
@@ -104,7 +112,7 @@ if options[:threshold]
       end
     end
   end
-  File.open('filepaths.txt', 'w') do |f|
+  File.open(writetarget, 'w') do |f|
     pathlist.each do |write|
       f.puts write
     end
@@ -114,6 +122,7 @@ end
 #Option for writing file of paths for selected extension
 if options[:paths]
   extensionpaths = Array.new
+  writetarget = Desktop + 'extensionpaths.txt'
   CompleteFileList.each do |path|
     if path.force_encoding('utf-8').include?(options[:paths])
       if OS.windows?
@@ -123,7 +132,7 @@ if options[:paths]
       end
     end
   end
-  File.open('extensionpaths.txt', 'w') do |f|
+  File.open(writetarget, 'w') do |f|
     extensionpaths.each do |write|
       f.puts write
     end
