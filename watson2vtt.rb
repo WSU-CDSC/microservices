@@ -4,10 +4,10 @@ require 'json'
 
 ARGV.each do |input|
   outputpath = File.dirname(input)
-
+  outputfile = File.basename(input, ".json")
   source = File.read(input)
   data = JSON.parse(source)
-  File.open("#{outputpath}/test.vtt", 'w') do |file|
+  File.open("#{outputpath}/#{outputfile}.vtt", 'w') do |file|
     file.puts "WEBVTT"
     file.puts ""
     data['results'].each do |result|
