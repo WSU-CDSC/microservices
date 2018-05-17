@@ -14,6 +14,7 @@ ARGV.each do |input|
       result['alternatives'].each do |alternative|
         intime = Time.at(alternative['timestamps'][0][1]).utc.strftime("%H:%M:%S.%s0")
         text = alternative['transcript']
+        text.gsub! "\%HESITATION" , '(PAUSE)'
         outtime = Time.at(alternative['timestamps'][-1][-1]).utc.strftime("%H:%M:%S.%s0")
         file.puts "#{intime} --> #{outtime}"
         file.puts text
