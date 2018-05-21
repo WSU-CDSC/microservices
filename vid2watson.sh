@@ -13,7 +13,7 @@ for i in *.flac ; do
     curl -X POST -u USERNAME:PASSWORD \
     --header "Content-Type: audio/flac" \
     --data-binary  @"${outdir}"/"${i}" \
-    "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?timestamps=true" >> "${outdir}"/"${project_name}".json 
+    "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true" >> "${outdir}"/"${project_name}".json
 done
 
 #Cleanup
