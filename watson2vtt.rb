@@ -11,8 +11,8 @@ ARGV.each do |input|
     file.puts "WEBVTT"
     file.puts ""
     data['results'].each do |results|
-      intime = results['alternatives'][0]['timestamps'][0][1]
-      outtime = results['alternatives'][0]['timestamps'][-1][-1]
+      intime = results['alternatives'][0]['timestamps'][0][1].round(1)
+      outtime = results['alternatives'][0]['timestamps'][-1][-1].round(1)
       segment_length = outtime - intime
 
       if segment_length >= 7
@@ -24,7 +24,7 @@ ARGV.each do |input|
               @segment_position = @newsegment_position
             end
             @newsegment_position = index
-            @segment_outtime = (timestamps[2] - 0.5).round(2)
+            @segment_outtime = timestamps[2].round(1)
 
             if timestamps[1] == results['alternatives'][0]['timestamps'].last[1]
               segment_text = results['alternatives'][0]['timestamps'][@segment_position..(@newsegment_position)]
@@ -36,8 +36,8 @@ ARGV.each do |input|
             segment_text.each do |text|
               concatinated_text << text[0]
             end
-            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%s0")
-            outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.%s0")
+            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
+            outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.") + @segment_outtime.to_s.split('.')[1]
             file.puts "#{intime_normalized} --> #{outtime_normalized}"
             file.puts concatinated_text.join(' ')
             file.puts ""
@@ -45,8 +45,8 @@ ARGV.each do |input|
           end
         end
       else
-        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%s0")
-        outtime_normalized = Time.at(outtime).utc.strftime("%H:%M:%S.%s0")
+        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
+        outtime_normalized = Time.at(outtime).utc.strftime("%H:%M:%S.") + outtime.to_s.split('.')[1]
         file.puts "#{intime_normalized} --> #{outtime_normalized}"
         file.puts results['alternatives'][0]['transcript']
         file.puts ""
