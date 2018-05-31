@@ -114,6 +114,6 @@ ARGV.each do|file_input|
     command = "#{bwfmetaeditpath} --reject-overwrite  --Description='#{file_name}' --Originator='#{Originator}' --OriginatorReference='#{originatorreference}' --History='#{History}' --IARL='#{Originator}' --OriginationDate='#{moddate}' --OriginationTime='#{modtime}' --MD5-Embed '#{file_input}'"
     puts command
   end
-
+  puts "Processing file: #{file_input}"
   system(command)
 end
