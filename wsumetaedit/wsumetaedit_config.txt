@@ -1,2 +1,2 @@
-'Originator': ''
-'Coding History': ''
+﻿'Originator': 'US-WSU'
+'Coding History': 'Transferred from MiniDisc'
