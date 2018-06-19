@@ -86,7 +86,7 @@ end
 
 ARGV.each do|file_input|
   # Check for valid input
-  if File.extname(file_input) != '.wav'
+  if File.extname(file_input).downcase != '.wav'
     puts "Input file is not a WAV file. Skipping."
     next
   elsif ! File.exist?(file_input)
