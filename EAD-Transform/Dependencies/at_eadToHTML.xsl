@@ -804,7 +804,7 @@
     </xsl:template>
     
     <!-- Formats controlled access terms -->
-    <xsl:template match="ead:controlaccess">
+    <xsl:template match="ead:controlaccess/ead:controlaccess">
         <xsl:choose>
             <xsl:when test="ead:head"><xsl:apply-templates select="ead:head"/></xsl:when>
             <xsl:otherwise>
