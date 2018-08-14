@@ -589,12 +589,13 @@
         <hr/>
     </xsl:template>
     <xsl:template match="ead:eadheader">
+        <!-- THIS MAKES THE HEADER-->
         <h1 id="{generate-id(ead:filedesc/ead:titlestmt/ead:titleproper)}">
-            <xsl:apply-templates select="ead:filedesc/ead:titlestmt/ead:titleproper"/>     
+            <xsl:apply-templates select="ead:filedesc/ead:titlestmt/ead:titleproper"/><br /><xsl:value-of select="/ead:ead/ead:archdesc/ead:did/ead:unitid"/>
         </h1>
         <xsl:if test="ead:filedesc/ead:titlestmt/ead:subtitle">
             <h2>
-                <xsl:apply-templates select="ead:filedesc/ead:titlestmt/ead:subtitle"/>
+                <xsl:value-of select="ead:filedesc/ead:titlestmt/ead:subtitle"/>
             </h2>                
         </xsl:if>
     </xsl:template>
