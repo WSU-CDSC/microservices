@@ -489,7 +489,7 @@
                 </xsl:if>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:controlaccess">
                     <dt>                                
-                        <a><xsl:call-template name="tocLinks"/>
+                        <a href="#contlAcc">
                             <xsl:choose>
                                 <xsl:when test="ead:head">
                                     <xsl:value-of select="ead:head"/></xsl:when>
@@ -809,7 +809,7 @@
             <xsl:otherwise>
                 <xsl:choose>
                     <xsl:when test="parent::ead:archdesc"><h3><xsl:call-template name="anchor"/>Controlled Access Headings</h3></xsl:when>
-                    <xsl:otherwise><h4>Controlled Access Headings</h4></xsl:otherwise>
+                    <xsl:otherwise><h4 id="contlAcc">Controlled Access Headings</h4></xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
