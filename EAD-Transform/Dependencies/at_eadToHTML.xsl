@@ -803,76 +803,76 @@
     </xsl:template>
     
     <!-- Formats controlled access terms -->
-    <xsl:template match="ead:controlaccess/ead:controlaccess">
+    <xsl:template match="ead:controlaccess">
         <xsl:choose>
             <xsl:when test="ead:head"><xsl:apply-templates select="ead:head"/></xsl:when>
             <xsl:otherwise>
                 <xsl:choose>
-                    <xsl:when test="parent::ead:archdesc"><h3><xsl:call-template name="anchor"/>Controlled Access Headings</h3></xsl:when>
+                    <xsl:when test="parent::ead:archdesc"><h3 id="contlAcc">Controlled Access Headings</h3></xsl:when>
                     <xsl:otherwise><h4 id="contlAcc">Controlled Access Headings</h4></xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="ead:corpname">
+        <xsl:if test="ead:controlaccess/ead:corpname">
             <h4>Corporate Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:corpname">
+                <xsl:for-each select="ead:controlaccess/ead:corpname">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>
             </ul>            
         </xsl:if>
-        <xsl:if test="ead:famname">
+        <xsl:if test="ead:controlaccess/ead:famname">
             <h4>Family Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:famname">
+                <xsl:for-each select="ead:controlaccess/ead:famname">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:function">
+        <xsl:if test="ead:controlaccess/ead:function">
             <h4>Function(s)</h4>
             <ul>
-                <xsl:for-each select="ead:function">
+                <xsl:for-each select="ead:controlaccess/ead:function">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:genreform">
+        <xsl:if test="ead:controlaccess/ead:genreform">
             <h4>Genre(s)</h4>
             <ul>
-                <xsl:for-each select="ead:genreform">
+                <xsl:for-each select="ead:controlaccess/ead:genreform">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>
            </ul>     
         </xsl:if>
-        <xsl:if test="ead:geogname">
+        <xsl:if test="ead:controlaccess/ead:geogname">
             <h4>Geographic Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:geogname">
+                <xsl:for-each select="ead:controlaccess/ead:geogname">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:occupation">
+        <xsl:if test="ead:controlaccess/ead:occupation">
             <h4>Occupation(s)</h4>
             <ul>
-                <xsl:for-each select="ead:occupation">
+                <xsl:for-each select="ead:controlaccess/ead:occupation">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:persname">
+        <xsl:if test="ead:controlaccess/ead:persname">
             <h4>Personal Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:persname">
+                <xsl:for-each select="ead:controlaccess/ead:persname">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:subject">
+        <xsl:if test="ead:controlaccess/ead:subject">
             <h4>Subject(s)</h4>
             <ul>
-                <xsl:for-each select="ead:subject">
+                <xsl:for-each select="ead:controlaccess/ead:subject">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
