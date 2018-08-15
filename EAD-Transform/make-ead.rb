@@ -38,6 +38,16 @@ Target_list.each do |target_file|
   if ! doc.internal_subset.nil?
     doc.internal_subset.remove
   end
+  # Make standard white space between title/date
+  ead_date = doc.at_xpath('/ead/eadheader/filedesc/titlestmt/titleproper/date')
+  ead_title = doc.at_xpath('/ead/eadheader/filedesc/titlestmt/titleproper')
+  ead_date_contents = ead_date.content
+  ead_title_contents = ead_title.content
+  ead_date_contents.rstrip! && ead_date_contents.strip!
+  ead_title_contents.rstrip! && ead_title_contents.strip!
+  ead_title_contents[ead_date_contents] = " #{ead_date_contents}"
+  ead_date.content = ead_date_contents
+  ead_title.content = ead_title_contents
   File.write(temp_xml_file,doc.to_xml)
   temp_xml_file.close
 
