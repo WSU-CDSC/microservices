@@ -53,6 +53,7 @@ Target_list.each do |target_file|
   if doc.at_xpath('/ead/archdesc/did/repository/address')
     doc.at_xpath('/ead/archdesc/did/repository/address').remove
   end
+  # Modify language section for more standard output
   if doc.at_xpath('/ead/archdesc/did/langmaterial/language')
     langmaterial = doc.at_xpath('/ead/archdesc/did/langmaterial')
     language = doc.at_xpath('/ead/archdesc/did/langmaterial/language')
