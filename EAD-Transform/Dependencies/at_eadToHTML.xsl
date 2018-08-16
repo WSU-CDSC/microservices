@@ -630,6 +630,7 @@
             to change the order of appearance for the children of did
             by changing the order of the following statements.-->
         <dl class="summary">
+            <xsl:apply-templates select="ead:repository"/>
             <xsl:apply-templates select="ead:origination"/>
             <xsl:apply-templates select="ead:unittitle"/>    
             <xsl:apply-templates select="ead:unitid"/>

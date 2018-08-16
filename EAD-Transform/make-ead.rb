@@ -48,6 +48,10 @@ Target_list.each do |target_file|
   ead_title_contents[ead_date_contents] = " #{ead_date_contents}"
   ead_date.content = ead_date_contents
   ead_title.content = ead_title_contents
+  # Remove EAD Address in favor of hard coded one in style sheet
+  if doc.at_xpath('/ead/archdesc/did/repository/address')
+    doc.at_xpath('/ead/archdesc/did/repository/address').remove
+  end
   File.write(temp_xml_file,doc.to_xml)
   temp_xml_file.close
 
