@@ -38,6 +38,7 @@ Target_list.each do |target_file|
   if ! doc.internal_subset.nil?
     doc.internal_subset.remove
   end
+  # Format EAD for more standardized output
   # Make standard white space between title/date
   ead_date = doc.at_xpath('/ead/eadheader/filedesc/titlestmt/titleproper/date')
   ead_title = doc.at_xpath('/ead/eadheader/filedesc/titlestmt/titleproper')
@@ -52,6 +53,18 @@ Target_list.each do |target_file|
   if doc.at_xpath('/ead/archdesc/did/repository/address')
     doc.at_xpath('/ead/archdesc/did/repository/address').remove
   end
+  if doc.at_xpath('/ead/archdesc/did/langmaterial/language')
+    langmaterial = doc.at_xpath('/ead/archdesc/did/langmaterial')
+    language = doc.at_xpath('/ead/archdesc/did/langmaterial/language')
+    english_check = language.content.to_s
+    if english_check == 'English.' || english_check == 'English'
+      language_note = 'Collection materials are in English.'
+      language.content = ''
+      langmaterial.content = language_note
+    end
+    language.delete('langcode')
+  end
+  #
   File.write(temp_xml_file,doc.to_xml)
   temp_xml_file.close
 
