@@ -678,10 +678,10 @@
                         <xsl:when test="self::ead:origination">
                             <xsl:choose>
                                 <xsl:when test="ead:persname[@role != ''] and contains(ead:persname/@role,' (')">
-                                    Creator - <xsl:value-of select="substring-before(ead:persname/@role,' (')"/>
+                                    Creator 
                                 </xsl:when>
                                 <xsl:when test="ead:persname[@role != '']">
-                                    Creator - <xsl:value-of select="ead:persname/@role"/>  
+                                    Creator   
                                 </xsl:when>
                                 <xsl:otherwise>
                                     Creator        
