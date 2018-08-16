@@ -787,13 +787,13 @@
         <p><xsl:apply-templates select="ead:publisher"/>
             <xsl:if test="ead:date">&#160;<xsl:apply-templates select="ead:date"/></xsl:if>
         </p>
-        <xsl:if test="ead:address">
-            <xsl:apply-templates select="ead:address"/>
-        </xsl:if>
-    </xsl:template>
-    <xsl:template match="ead:address">
         <p>
-            <xsl:for-each select="ead:addressline"><xsl:apply-templates select="."/><br/></xsl:for-each>
+            <p>http://www.libraries.wsu.edu/masc/</p>
+            <p>Terrell Library</p>
+            <p>P.O. Box 645610</p>
+            <p>Pullman, WA, 99164-5610 USA</p>
+            <p>509-335-6691</p>
+            <p>mascref@wsu.edu</p>
         </p>
     </xsl:template>
     <!-- Templates for revision description  -->
