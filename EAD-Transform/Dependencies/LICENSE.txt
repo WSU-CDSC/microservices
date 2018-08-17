@@ -1,4 +1,4 @@
-EAD Transform dependencies were originally packaged with Archivists' Toolkit and were modified on 09/16/2018 to adapt them for specific use cases at WSU.
+EAD Transform dependencies were originally packaged with Archivists' Toolkit and were modified to adapt them for specific use cases at WSU.
 The following is the Archivists' Toolkit license that governs the EAD Transform dependencies:
 
 Archivists' Toolkit
