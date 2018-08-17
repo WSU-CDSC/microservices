@@ -16,7 +16,7 @@
         *                  the Archivists' Toolkit  July 30 2008.         *
         *                  this file calls lookupLists.xsl, which         *
         *                  should be located in the same folder.          *
-        *                                                                 *
+        * MODIFIED         August 16, 2018 With WSU/MASC Specific Changes *                                                                *
         * UPDATED          May 31, 2012                                   *
         *                  Fixed bug with multiple instance display       *
         * UPDATED          June 3, 2009                                   *
