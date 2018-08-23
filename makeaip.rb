@@ -111,7 +111,7 @@ if File.exist?("#{$objectdir}/metadata")
   priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
   if File.exist? priorhashmanifest
     puts "Attempting to validate using existing hash information for Package:#{$packagename}".green
-    $command = "hashdeep -k #{priorhashmanifest} -xrle #{$objectdir}"
+    $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
     hashvalidation = `#{$command}`
     if hashvalidation.empty?
       puts "WOO! Existing hash manifest validated correctly".green
@@ -190,7 +190,7 @@ File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_struc
 
 #Bag Package
 puts "Creating bag from package".green
-if system('bagit','baginplace',"#{$desinationDIR}/#{$packagename}")
+if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
   puts "Bag created successfully".green
 else
   puts "Bag creation failed".red
