@@ -9,6 +9,8 @@ Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
 
 Display help: `makeaip.rb -h`
 
+`makeaip.rb` will copy the contents of the target directory (set with the `-t` flag) into the output directory (set with the `-o` flag where it will then restructure them into an AIP compliant with the Bagit specification. Optionally, it can be set to separate Access files into a sub-directory in the AIP via file extension. This must currently be enabled and/or changed via editing the access subsection of the script itself.
+
 ## Dependencies:
 This script relies on the following dependencies being installed: `bagit` (Java CLI - can be installed via [Linuxbrew](http://linuxbrew.sh/)), `hashdeep`, `exiftool` and `rsync`.
 
