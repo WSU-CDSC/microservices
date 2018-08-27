@@ -1,5 +1,6 @@
- require "pathname"
- require 'json'
+#!/usr/bin/env ruby
+require "pathname"
+require 'json'
 
 # Set up methods
 def premisreport(actiontype,outcome)
