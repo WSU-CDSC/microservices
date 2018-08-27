@@ -2,7 +2,7 @@
 
 ## About:
 
-`makeaip.rb` is a script designed to build AIP structures from archival source directories. It creates pacakges compliant with the Bagit structure. It maintains file properties while also generating and/or validating checksums and technical metadata sidecar files.
+`makeaip.rb` is a script designed to build AIP structures from archival source directories. It creates pacakges compliant with the Bagit standard. It maintains file properties while also generating and/or validating checksums and technical metadata sidecar files.
 
 ## Usage:
 Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
