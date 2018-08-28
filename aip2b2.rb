@@ -32,7 +32,7 @@ end
    b2_target = 'b2://INSERT-PATH-HERE' + packagename
    logfile = @target_path + 'data' + 'logs' + "#{packagename}.log"
    @premis_structure = JSON.parse(File.read(logfile))
-   $command = 'b2 sync ' + @target_path.to_s + ' ' + b2_target
+   $command = 'b2 sync --dryRun ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
    if system($command)
      puts "SUCCESS!".green
      premisreport('replication','pass')
