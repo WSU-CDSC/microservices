@@ -10,6 +10,13 @@ $inputTSV = ''
 $inputDIR = ''
 $desinationDIR = ''
 
+def dependency_check(dependency)
+  if ! system("#{dependency} -h > /dev/null")
+    puts "Warning! Dependency:#{dependency} not found. Exiting.".red
+    exit
+  end
+end
+
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
@@ -30,6 +37,12 @@ class String
     colorize(32)
   end
 end
+
+# Check for dependencies
+dependency_check('rsync')
+dependency_check('hashdeep')
+dependency_check('exiftool')
+
 # Set package variables
 
 $packagename = File.basename($inputDIR)
