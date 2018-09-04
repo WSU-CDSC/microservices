@@ -123,6 +123,31 @@ if File.exist?("#{$objectdir}/metadata")
   puts "Existing Metadata detected, moving to metadata directory".green
   priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
   if File.exist? priorhashmanifest
+    puts "Verifying completeness of files compared to prior manifest".green
+    manifest = File.readlines(priorhashmanifest)
+    missingfiles = Array.new
+    manifest.each do |line|
+      path = line.split(',')[2]
+      if ! path.nil?
+        filename = File.basename(path).chomp
+        if filename != 'filename'
+          command = $objectdir + '/**/' + filename
+          filesearch = (Dir.glob(command)[0])
+          if ! File.exist?(filesearch)
+             missingfiles << filesearch
+          end
+        end
+      end
+    end
+    
+    if missingfiles.count > 0
+      puts "Puts the following missing files were discovered! Exiting.".red
+      puts missingfiles
+      exit
+    else
+      puts "All expected files present".green
+    end
+
     puts "Attempting to validate using existing hash information for Package:#{$packagename}".green
     $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
     hashvalidation = `#{$command}`
