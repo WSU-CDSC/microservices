@@ -20,6 +20,7 @@ end
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
+  opts.on("-a", "--access-extension=val", String) {|val| $access_extension = val}
   opts.parse!
 end
 
@@ -109,11 +110,13 @@ end
 
 ## OPTIONAL
 ## Move certain files to access directory
-Dir.mkdir($accessdir)
-access_files = Dir.glob("#{$objectdir}/*.pdf")
-access_files.each do |file|
-  FileUtils.cp(file,$accessdir)
-  FileUtils.rm(file)
+if ! $access_extension.nil?
+  Dir.mkdir($accessdir)
+  access_files = Dir.glob("#{$objectdir}/*.#{$access_extension}")
+  access_files.each do |file|
+    FileUtils.cp(file,$accessdir)
+    FileUtils.rm(file)
+  end
 end
 
 #check for existing metadata and validate
