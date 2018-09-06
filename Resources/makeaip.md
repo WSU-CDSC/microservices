@@ -16,6 +16,18 @@ Display help: `makeaip.rb -h`
 ## Dependencies:
 This script relies on the following dependencies being installed: `bagit` (Java CLI - can be installed via [Linuxbrew](http://linuxbrew.sh/)), `hashdeep`, `exiftool` and `rsync`.
 
+## Actions in AIP creation
+
+* Files from `TARGET-DIRECTORY` are copied using `rsync` to the `OUTPUT-DIRECTORY`. The settings used in `rsync` preserve file characteristics such as creation/modification time. Rsync also contains a level of checksum verification during (but not after) transfer. Files are placed in an `Objects` directory within the AIP in progress. On completion of transfer PREMIS log is updated.
+* The new `Objects` directory is checked for existing metadata sidecar files (specifically a hashdeep manifest and an exiftool .json output). If discovered these files are moved to a `Metadata` directory within the AIP in progress.
+* If existing checksum metadata is discovered:
+  - Files in AIP are checked against list of files in hashdeep manifest to verify all expected files are present. (If files are not present script will exit).
+  - Checksums for files in AIP are checked against hashdeep manifest to verify file integrity. If checksums validate script will update PREMIS log and move on to next step. If checksums do not validate __NOTE TO SELF - TWEAK MD5 FAILURE REPORTING__
+ * If existing checksum metadata is not discovered:
+   - Checksums will be generated for source material and transferred material. These are compared to validate post-transfer file integrity. If this is successful, PREMIS log is updated and a `hashdeep` manifest is generated. If unsuccessful, the script will exit.
+ * If existing `exiftool`metadata is not detected it will be generated and the PREMIS log updated to reflect this.
+ * PREMIS log is finalized in the `Logs` directory within the AIP in progress.
+ * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard.
 
 ## AIP Structure
 
