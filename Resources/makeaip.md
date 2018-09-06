@@ -11,7 +11,7 @@ _Optional:_ `-a [file extenstion]` This allows the specification of files (by ex
 
 Display help: `makeaip.rb -h`
 
-`makeaip.rb` will copy the contents of the target directory (set with the `-t` flag) into the output directory (set with the `-o` flag where it will then restructure them into an AIP compliant with the Bagit specification. Optionally, it can be set to separate Access files into a sub-directory in the AIP via file extension. This must currently be enabled and/or changed via editing the access subsection of the script itself.
+`makeaip.rb` will copy the contents of the target directory (set with the `-t` flag) into the output directory (set with the `-o` flag where it will then restructure them into an AIP compliant with the Bagit specification. Optionally, it can be set to separate Access files into a sub-directory in the AIP via file extension. This can be set using the `-a` flag along with the desired file extension. For example `-a pdf` or `-a mp3 -a m4a`.
 
 ## Dependencies:
 This script relies on the following dependencies being installed: `bagit` (Java CLI - can be installed via [Linuxbrew](http://linuxbrew.sh/)), `hashdeep`, `exiftool` and `rsync`.
