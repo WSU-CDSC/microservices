@@ -7,6 +7,8 @@
 ## Usage:
 Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
 
+_Optional:_ `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+
 Display help: `makeaip.rb -h`
 
 `makeaip.rb` will copy the contents of the target directory (set with the `-t` flag) into the output directory (set with the `-o` flag where it will then restructure them into an AIP compliant with the Bagit specification. Optionally, it can be set to separate Access files into a sub-directory in the AIP via file extension. This must currently be enabled and/or changed via editing the access subsection of the script itself.
