@@ -113,7 +113,7 @@ end
 ## Move certain files to access directory
 if ! $access_extensions.empty?
   Dir.mkdir($accessdir)
-  $access_extenstions.each do |extension|
+  $access_extensions.each do |extension|
     access_files = Dir.glob("#{$objectdir}/*.#{extension}")
     access_files.each do |file|
       FileUtils.cp(file,$accessdir)
