@@ -9,6 +9,7 @@ require 'digest'
 $inputTSV = ''
 $inputDIR = ''
 $desinationDIR = ''
+$access_extensions = Array.new
 
 def dependency_check(dependency)
   if ! system("#{dependency} -h > /dev/null")
@@ -20,6 +21,7 @@ end
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
+  opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
   opts.parse!
 end
 
@@ -109,11 +111,16 @@ end
 
 ## OPTIONAL
 ## Move certain files to access directory
-Dir.mkdir($accessdir)
-access_files = Dir.glob("#{$objectdir}/*.pdf")
-access_files.each do |file|
-  FileUtils.cp(file,$accessdir)
-  FileUtils.rm(file)
+if ! $access_extensions.empty?
+  Dir.mkdir($accessdir)
+  $access_extensions.each do |extension|
+    puts "Moving files with extenstion: #{extension[0]} to access directory".green
+    access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
+    access_files.each do |file|
+      FileUtils.cp(file,$accessdir)
+      FileUtils.rm(file)
+    end
+  end
 end
 
 #check for existing metadata and validate
