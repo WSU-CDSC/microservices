@@ -10,7 +10,7 @@ To use, first you will need to create an account on the IBM Watson service. Then
 
 must be modified with the Username and Password keys that are associated with your Watson account.
 
-After setting up you credentials, simply run the script with an A/V file as an input like, `vid2watson.sh myinput.mp4`. The script will automatically create a directory and store the outputs of Watson.
+After setting up your credentials, simply run the script with an A/V file as an input like, `vid2watson.sh myinput.mp4`. The script will automatically create a directory and store the outputs of Watson.
 
 Once the first script has completed, take the `.json` file that was created by the process and parse it with the second script in the manner of `watson2vtt.rb myinput.rb`.
 
