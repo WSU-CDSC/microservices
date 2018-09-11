@@ -38,6 +38,9 @@ class String
   def green
     colorize(32)
   end
+  def purple
+    colorize(95)
+  end
 end
 
 # Check for dependencies
@@ -114,7 +117,7 @@ end
 if ! $access_extensions.empty?
   Dir.mkdir($accessdir)
   $access_extensions.each do |extension|
-    puts "Moving files with extenstion: #{extension[0]} to access directory".green
+    puts "Moving files with extenstion: #{extension[0]} to access directory".purple
     access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
     access_files.each do |file|
       FileUtils.cp(file,$accessdir)
@@ -127,7 +130,7 @@ end
 if File.exist?("#{$objectdir}/metadata")
   FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
   FileUtils.rm_rf("#{$objectdir}/metadata")
-  puts "Existing Metadata detected, moving to metadata directory".green
+  puts "Existing Metadata detected, moving to metadata directory".purple
   priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
   if File.exist? priorhashmanifest
     puts "Verifying completeness of files compared to prior manifest".green
@@ -155,7 +158,7 @@ if File.exist?("#{$objectdir}/metadata")
       puts "All expected files present".green
     end
 
-    puts "Attempting to validate using existing hash information for Package:#{$packagename}".green
+    puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
     $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
     hashvalidation = `#{$command}`
     if hashvalidation.empty?
@@ -172,7 +175,7 @@ if File.exist?("#{$objectdir}/metadata")
 end
 
 if  $existinghashpass != '1'
-  puts "Verifying transfer integrity for package: #{$packagename}".green
+  puts "Verifying transfer integrity for package: #{$packagename}".purple
   target_Hashes = Array.new
   $target_list = Dir.glob("#{$inputDIR}/**/*")
   $target_list.each do |target|
