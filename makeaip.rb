@@ -238,6 +238,7 @@ File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_struc
 
 
 #Bag Package
+
 if ! $nobag
   puts "Creating bag from package".green
   if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
