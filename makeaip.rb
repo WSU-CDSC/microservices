@@ -114,7 +114,8 @@ end
 if ! $access_extensions.empty?
   Dir.mkdir($accessdir)
   $access_extensions.each do |extension|
-    access_files = Dir.glob("#{$objectdir}/*.#{extension}")
+    puts "Moving files with extenstion: #{extension[0]} to access directory".green
+    access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
     access_files.each do |file|
       FileUtils.cp(file,$accessdir)
       FileUtils.rm(file)
