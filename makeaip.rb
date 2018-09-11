@@ -22,6 +22,7 @@ ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
   opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
+  opts.on("-x","--no-bag") { $nobag = true }
   opts.parse!
 end
 
@@ -237,12 +238,14 @@ File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_struc
 
 
 #Bag Package
-puts "Creating bag from package".green
-if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
-  puts "Bag created successfully".green
-else
-  puts "Bag creation failed".red
-  exit
+if ! $nobag
+  puts "Creating bag from package".green
+  if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
+    puts "Bag created successfully".green
+  else
+    puts "Bag creation failed".red
+    exit
+  end
 end
 
 # Commented out as not part of current work flow
