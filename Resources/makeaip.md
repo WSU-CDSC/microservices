@@ -7,7 +7,9 @@
 ## Usage:
 Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
 
-_Optional:_ `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+_Optional Flags:_ `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+
+`-x` Do not bag outputs - this is useful if you will perform any manual tweaks to AIPs before bagging.
 
 Display help: `makeaip.rb -h`
 
