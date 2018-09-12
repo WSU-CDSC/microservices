@@ -32,6 +32,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
  * If existing `exiftool`metadata is not detected it will be generated and the PREMIS log updated to reflect this.
  * PREMIS log is finalized in the `Logs` directory within the AIP in progress.
  * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard. (Unless the `-x` flag is selected).
+ * Human readable log is written (or appended to) in the target directory listing pass/fail of events and script.
 
 ## AIP Structure
 
