@@ -70,6 +70,17 @@ EventLogs = Array.new
 def premisreport(actiontype,outcome)
     @premis_structure['events'] << [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
 end
+
+def outcomereport(status)
+  open("#{$desinationDIR}/OUTCOME_LOG.txt", "a") do |l|
+    l.puts "Package: #{$packagename}\n"
+    if status == 'pass'
+      l.puts "No errors detected\n"
+    else
+      l.puts "Errors occured\n"
+    end
+  end
+end
   
 
 #Exit if target not directory
@@ -90,6 +101,7 @@ if ! File.exists?($packagedir)
   Dir.mkdir $packagedir
 else
   puts "Directory with package name already exists in ouput directory! Exiting.".red
+  exit
 end
 if ! File.exists?($objectdir)
   Dir.mkdir $objectdir
@@ -272,6 +284,6 @@ begin
   #   exit
   # end
 rescue
-  puts 'Errors detected!'
+  outcomereport('fail')
 end
 
