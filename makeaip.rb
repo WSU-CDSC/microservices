@@ -90,7 +90,7 @@ if ! File.exists?($packagedir)
   Dir.mkdir $packagedir
 else
   puts "Directory with package name already exists in ouput directory! Exiting.".red
-  exit
+  # exit
 end
 if ! File.exists?($objectdir)
   Dir.mkdir $objectdir
@@ -144,8 +144,10 @@ if File.exist?("#{$objectdir}/metadata")
         if filename != 'filename'
           command = $objectdir + '/**/' + filename
           filesearch = (Dir.glob(command)[0])
-          if ! File.exist?(filesearch)
-             missingfiles << filesearch
+          if ! filesearch.nil?
+            if ! File.exist?(filesearch)
+               missingfiles << filesearch
+            end
           end
         end
       end
