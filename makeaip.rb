@@ -73,10 +73,18 @@ end
 
 def outcomereport(status)
   open("#{$desinationDIR}/OUTCOME_LOG.txt", "a") do |l|
+    l.puts ''
     l.puts "Package: #{$packagename}\n"
     if status == 'pass'
       l.puts "No errors detected\n"
-    else
+    elsif status == 'premis'
+      log = JSON.parse(@premis_structure.to_json)
+      log['events'].each do |event|
+        l.puts event[0]['eventDetail']
+        l.puts event[0]['eventOutcome']
+        l.puts ''
+      end
+    elsif status == 'fail'
       l.puts "Errors occured\n"
     end
   end
@@ -283,6 +291,7 @@ begin
   #   puts "TAR creation failed. Exiting.".red
   #   exit
   # end
+  outcomereport('premis')
 rescue
   outcomereport('fail')
 end
