@@ -90,7 +90,6 @@ if ! File.exists?($packagedir)
   Dir.mkdir $packagedir
 else
   puts "Directory with package name already exists in ouput directory! Exiting.".red
-  # exit
 end
 if ! File.exists?($objectdir)
   Dir.mkdir $objectdir
@@ -102,165 +101,177 @@ if ! File.exists?($logdir)
   Dir.mkdir $logdir
 end
 
-# Copy Target directory structure
-$command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
-puts $command
-if system($command)
-  puts "Files transferred to target successfully".green
-  premisreport('replication','pass')
-else
-  puts "Transfer error: Exiting".red
-  exit
-end
+begin
+  # Copy Target directory structure
+  $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+  puts $command
+  if system($command)
+    puts "Files transferred to target successfully".green
+    premisreport('replication','pass')
+  else
+    puts "Transfer error: Exiting".red
+    premisreport('replication','fail')
+    exit
+  end
 
-## OPTIONAL
-## Move certain files to access directory
-if ! $access_extensions.empty?
-  Dir.mkdir($accessdir)
-  $access_extensions.each do |extension|
-    puts "Moving files with extenstion: #{extension[0]} to access directory".purple
-    access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
-    access_files.each do |file|
-      FileUtils.cp(file,$accessdir)
-      FileUtils.rm(file)
+  ## OPTIONAL
+  ## Move certain files to access directory
+  if ! $access_extensions.empty?
+    if ! File.exists?($accessdir)
+      Dir.mkdir($accessdir)
+    end
+    $access_extensions.each do |extension|
+      puts "Moving files with extenstion: #{extension[0]} to access directory".purple
+      access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
+      access_files.each do |file|
+        FileUtils.cp(file,$accessdir)
+        FileUtils.rm(file)
+      end
     end
   end
-end
 
-#check for existing metadata and validate
-if File.exist?("#{$objectdir}/metadata")
-  FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
-  FileUtils.rm_rf("#{$objectdir}/metadata")
-  puts "Existing Metadata detected, moving to metadata directory".purple
-  priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
-  if File.exist? priorhashmanifest
-    puts "Verifying completeness of files compared to prior manifest".green
-    manifest = File.readlines(priorhashmanifest)
-    missingfiles = Array.new
-    manifest.each do |line|
-      path = line.split(',')[2]
-      if ! path.nil?
-        filename = File.basename(path).chomp
-        if filename != 'filename'
-          command = $objectdir + '/**/' + filename
-          filesearch = (Dir.glob(command)[0])
-          if ! filesearch.nil?
-            if ! File.exist?(filesearch)
-               missingfiles << filesearch
+  #check for existing metadata and validate
+  if File.exist?("#{$objectdir}/metadata")
+    FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
+    FileUtils.rm_rf("#{$objectdir}/metadata")
+    puts "Existing Metadata detected, moving to metadata directory".purple
+    priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
+    if File.exist? priorhashmanifest
+      puts "Verifying completeness of files compared to prior manifest".green
+      manifest = File.readlines(priorhashmanifest)
+      missingfiles = Array.new
+      manifest.each do |line|
+        path = line.split(',')[2]
+        if ! path.nil?
+          filename = File.basename(path).chomp
+          if filename != 'filename'
+            command = $objectdir + '/**/' + filename
+            filesearch = (Dir.glob(command)[0])
+            if ! filesearch.nil?
+              if ! File.exist?(filesearch)
+                 missingfiles << filesearch
+              end
             end
           end
         end
       end
-    end
-    
-    if missingfiles.count > 0
-      puts "Puts the following missing files were discovered! Exiting.".red
-      puts missingfiles
-      exit
-    else
-      puts "All expected files present".green
-    end
+      
+      if missingfiles.count > 0
+        puts "Puts the following missing files were discovered! Exiting.".red
+        puts missingfiles
+        exit
+      else
+        puts "All expected files present".green
+      end
 
-    puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
-    $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
-    hashvalidation = `#{$command}`
-    if hashvalidation.empty?
-      puts "WOO! Existing hash manifest validated correctly".green
-      premisreport('fixity check','pass')
-      $existinghashpass = '1'
-    else
-      puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
-      FileUtils.rm(priorhashmanifest)
-      premisreport('fixity check','fail')
-      $existinghashpass = '2'
-    end
-  end
-end
-
-if  $existinghashpass != '1'
-  puts "Verifying transfer integrity for package: #{$packagename}".purple
-  target_Hashes = Array.new
-  $target_list = Dir.glob("#{$inputDIR}/**/*")
-  $target_list.each do |target|
-    if ! File.directory?(target) && ! File.dirname(target).include?('metadata')
-      target_hash = Digest::MD5.file(target).to_s
-      target_Hashes << target_hash
-    end
-  end
-
-  transferred_Hashes = Array.new
-  $transferred_list = Dir.glob("#{$objectdir}/**/*")
-  $transferred_list.each do |transfer|
-    if ! File.directory?(transfer)
-      transfer_hash = Digest::MD5.file(transfer).to_s
-      transferred_Hashes << transfer_hash
-    end
-  end
-  #compare generated hashes to verify transfer integrity
-  hashcomparison = transferred_Hashes - target_Hashes | target_Hashes - transferred_Hashes
-  if hashcomparison.empty?
-    $command = 'transferred_Hashes - target_Hashes | target_Hashes - transferred_Hashes'
-    premisreport('fixity check','pass')
-    puts "Files copied successfully".green
-    puts "Generating new checksums.".green
-    hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
-    $command = 'hashdeep -rl -c md5 ' + $objectdir + ' >> ' +  hashmanifest
-    if system($command)
-        premisreport('message digest calculation','pass')
-    end
-  else
-    puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
-    exit
-  end
-end
-
-# Check if exiftool metadata exists and generate if needed
-technicalmanifest = "#{$metadatadir}/#{$packagename}.json"
-$command = 'exiftool -json -r ' + $objectdir + ' >> ' +  technicalmanifest
-if Dir.glob("#{$metadatadir}/*.json")[0].nil?
-  puts "Generating technical metadata".green
-  if system($command)
-    premisreport('metadata extraction','pass')
-  end
-else
-  priorhashmanifest = Dir.glob("#{$metadatadir}/*.json")[0]
-  if File.exist?(priorhashmanifest)
-    if $existinghashpass == '2'
-      puts "As original hash manifest was inaccurate, generating new technical metadata".green
-      FileUtils.rm(technicalmanifest)
-      if system($command)
-        premisreport('metadata extraction','pass')
+      puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
+      $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
+      hashvalidation = `#{$command}`
+      if hashvalidation.empty?
+        puts "WOO! Existing hash manifest validated correctly".green
+        premisreport('fixity check','pass')
+        $existinghashpass = '1'
+      else
+        puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
+        FileUtils.rm(priorhashmanifest)
+        premisreport('fixity check','fail')
+        $existinghashpass = '2'
       end
     end
   end
-end
 
-# Generate log
-File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
+  if  $existinghashpass != '1'
+    puts "Verifying transfer integrity for package: #{$packagename}".purple
+    target_Hashes = Array.new
+    $target_list = Dir.glob("#{$inputDIR}/**/*")
+    $target_list.each do |target|
+      if ! File.directory?(target) && ! File.dirname(target).include?('metadata')
+        target_hash = Digest::MD5.file(target).to_s
+        target_Hashes << target_hash
+      end
+    end
 
-
-#Bag Package
-
-if ! $nobag
-  puts "Creating bag from package".green
-  if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
-    puts "Bag created successfully".green
-  else
-    puts "Bag creation failed".red
-    exit
+    transferred_Hashes = Array.new
+    $transferred_list = Dir.glob("#{$objectdir}/**/*")
+    $transferred_list.each do |transfer|
+      if ! File.directory?(transfer)
+        transfer_hash = Digest::MD5.file(transfer).to_s
+        transferred_Hashes << transfer_hash
+      end
+    end
+    #compare generated hashes to verify transfer integrity
+    hashcomparison = transferred_Hashes - target_Hashes | target_Hashes - transferred_Hashes
+    if hashcomparison.empty?
+      $command = 'transferred_Hashes - target_Hashes | target_Hashes - transferred_Hashes'
+      premisreport('fixity check','pass')
+      puts "Files copied successfully".green
+      puts "Generating new checksums.".green
+      hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
+      $command = 'hashdeep -rl -c md5 ' + $objectdir + ' >> ' +  hashmanifest
+      if system($command)
+          premisreport('message digest calculation','pass')
+      end
+    else
+      puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
+      premisreport('fixity check','fail')
+      exit
+    end
   end
-end
 
-# Commented out as not part of current work flow
-# #TAR Bag
-# puts "Creating TAR from Bag".green
-# Dir.chdir($desinationDIR)
-# if system('tar','--posix','-cvf',"#{$packagedir}.tar",$packagename)
-#   puts "TAR Created successfully: Cleaning up".green
-#   FileUtils.rm_rf($packagename)
-#   system('cowsay',"Package creation finished for:#{$packagename}")
-# else
-#   puts "TAR creation failed. Exiting.".red
-#   exit
-# end
+  # Check if exiftool metadata exists and generate if needed
+  technicalmanifest = "#{$metadatadir}/#{$packagename}.json"
+  $command = 'exiftool -json -r ' + $objectdir + ' >> ' +  technicalmanifest
+  if Dir.glob("#{$metadatadir}/*.json")[0].nil?
+    puts "Generating technical metadata".green
+    if system($command)
+      premisreport('metadata extraction','pass')
+    else
+      premisreport('metadata extraction','fail')
+    end
+  else
+    priorhashmanifest = Dir.glob("#{$metadatadir}/*.json")[0]
+    if File.exist?(priorhashmanifest)
+      if $existinghashpass == '2'
+        puts "As original hash manifest was inaccurate, generating new technical metadata".green
+        FileUtils.rm(technicalmanifest)
+        if system($command)
+          premisreport('metadata extraction','pass')
+        else
+          premisreport('metadata extraction','fail')
+        end
+      end
+    end
+  end
+
+  # Generate log
+  File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
+
+
+  #Bag Package
+
+  if ! $nobag
+    puts "Creating bag from package".green
+    if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
+      puts "Bag created successfully".green
+    else
+      puts "Bag creation failed".red
+      exit
+    end
+  end
+
+  # Commented out as not part of current work flow
+  # #TAR Bag
+  # puts "Creating TAR from Bag".green
+  # Dir.chdir($desinationDIR)
+  # if system('tar','--posix','-cvf',"#{$packagedir}.tar",$packagename)
+  #   puts "TAR Created successfully: Cleaning up".green
+  #   FileUtils.rm_rf($packagename)
+  #   system('cowsay',"Package creation finished for:#{$packagename}")
+  # else
+  #   puts "TAR creation failed. Exiting.".red
+  #   exit
+  # end
+rescue
+  puts 'Errors detected!'
+end
 
