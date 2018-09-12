@@ -7,7 +7,11 @@
 ## Usage:
 Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
 
-_Optional:_ `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+_Optional Flags:_ 
+
+* `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+
+* `-x` Do not bag outputs - this is useful if you will perform any manual tweaks to AIPs before bagging.
 
 Display help: `makeaip.rb -h`
 
@@ -27,7 +31,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
    - Checksums will be generated for source material and transferred material. These are compared to validate post-transfer file integrity. If this is successful, PREMIS log is updated and a `hashdeep` manifest is generated. If unsuccessful, the script will exit.
  * If existing `exiftool`metadata is not detected it will be generated and the PREMIS log updated to reflect this.
  * PREMIS log is finalized in the `Logs` directory within the AIP in progress.
- * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard.
+ * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard. (Unless the `-x` flag is selected).
 
 ## AIP Structure
 
