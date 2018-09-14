@@ -37,7 +37,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
  * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard. (Unless the `-x` flag is selected).
  * Human readable log is written (or appended to) in the target directory listing pass/fail of events and script.
 
-## AIP Structure
+## AIP Structure (Post Bagging)
 
 <pre><code>├── bag-info.txt [Contains information about the Bag, such as size and date of creation]
 ├── bagit.txt [This contains information about the version of the Bagit Standard bag was created in] 
