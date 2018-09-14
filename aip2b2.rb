@@ -1,6 +1,12 @@
 #!/usr/bin/env ruby
 require "pathname"
 require 'json'
+require 'optparse'
+
+ARGV.options do |opts|
+  opts.on("-d", "--dry-run")  { $dryrun = '--dryRun' }
+  opts.parse!
+end
 
 # Set up methods
 def premisreport(actiontype,outcome)
@@ -29,10 +35,12 @@ end
      puts "Input must be a directory! Exiting.".red && exit
    end
    packagename = File.basename(@target_path)
-   b2_target = 'b2://INSERT-PATH-HERE' + packagename
+   b2_target = '' + packagename
    logfile = @target_path + 'data' + 'logs' + "#{packagename}.log"
    @premis_structure = JSON.parse(File.read(logfile))
-   $command = 'b2 sync --dryRun ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
+   $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
+   puts $command
+   exit
    if system($command)
      puts "SUCCESS!".green
      premisreport('replication','pass')
