@@ -177,17 +177,18 @@ begin
       end
       
       if missingfiles.count > 0
-        puts "Puts the following missing files were discovered! Exiting.".red
+        puts "The following missing files were discovered! Exiting.".red
         puts missingfiles
+        premisreport('manifest check','fail')
         exit
       else
         puts "All expected files present".green
+        premisreport('manifest check','pass')
       end
 
       puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
       $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
-      hashvalidation = `#{$command}`
-      if hashvalidation.empty?
+      if system($command)
         puts "WOO! Existing hash manifest validated correctly".green
         premisreport('fixity check','pass')
         $existinghashpass = '1'
