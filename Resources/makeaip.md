@@ -26,7 +26,10 @@ This script relies on the following dependencies being installed: `bagit` (Java 
 * The new `Objects` directory is checked for existing metadata sidecar files (specifically a hashdeep manifest and an exiftool .json output). If discovered these files are moved to a `Metadata` directory within the AIP in progress.
 * If existing checksum metadata is discovered:
   - Files in AIP are checked against list of files in hashdeep manifest to verify all expected files are present. (If files are not present script will exit).
-  - Checksums for files in AIP are checked against hashdeep manifest to verify file integrity. If checksums validate script will update PREMIS log and move on to next step. If checksums do not validate __NOTE TO SELF - TWEAK MD5 FAILURE REPORTING__
+  - Checksums for files in AIP are checked against hashdeep manifest to verify file integrity. If checksums validate script will update PREMIS log and move on to next step. If checksums do not validate, script will update PREMIS log with a failure. It then will generate and compare checksums of target and source files to test if file change occured during transfer. If this check fails, script will report and exit. If this check passes, new hashdeep and exiftool outputs will be generated.
+  
+  __If an initial failure is logged, care should be taken to investigate if this was caused by an intentional or unintentional file change.__
+  
  * If existing checksum metadata is not discovered:
    - Checksums will be generated for source material and transferred material. These are compared to validate post-transfer file integrity. If this is successful, PREMIS log is updated and a `hashdeep` manifest is generated. If unsuccessful, the script will exit.
  * If existing `exiftool`metadata is not detected it will be generated and the PREMIS log updated to reflect this.
