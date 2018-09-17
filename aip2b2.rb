@@ -4,7 +4,7 @@ require 'json'
 require 'optparse'
 
 ARGV.options do |opts|
-  opts.on("-d", "--dry-run")  { $dryrun = '--dryRun' }
+  opts.on("-d", "--dry-run")  { $dryrun = '--dryRun ' }
   opts.parse!
 end
 
@@ -39,8 +39,7 @@ end
    logfile = @target_path + 'data' + 'logs' + "#{packagename}.log"
    @premis_structure = JSON.parse(File.read(logfile))
    $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
-   puts $command
-   exit
+
    if system($command)
      puts "SUCCESS!".green
      premisreport('replication','pass')
