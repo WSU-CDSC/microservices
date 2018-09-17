@@ -5,6 +5,7 @@ require 'optparse'
 
 ARGV.options do |opts|
   opts.on("-d", "--dry-run")  { $dryrun = '--dryRun ' }
+  opts.on("-p", "--path=val", String)  { |val| $b2path = val }
   opts.parse!
 end
 
@@ -33,6 +34,12 @@ class String
   end
 end
 
+# Check for b2 path
+if $b2path.nil?
+  puts "Please enter a B2 path using the -p flag.".red
+  exit
+end
+
  ARGV.each do |input_AIP|
    @target_path = Pathname.new(input_AIP)
    # Test for directory
@@ -40,7 +47,7 @@ end
      puts "Input must be a directory! Exiting.".red && exit
    end
    packagename = File.basename(@target_path)
-   b2_target = '' + packagename
+   b2_target = $b2path + '/' + packagename
    logfile = @target_path + 'data' + 'logs' + "#{packagename}.log"
    @premis_structure = JSON.parse(File.read(logfile))
    if $dryrun.nil?
