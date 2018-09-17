@@ -4,6 +4,7 @@ require 'json'
 require 'fileutils'
 require 'optparse'
 require 'digest'
+require 'tempfile'
 
 
 $inputTSV = ''
@@ -187,7 +188,12 @@ begin
       end
 
       puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
-      $command = "hashdeep -k '#{priorhashmanifest}' -xrle '#{$objectdir}'"
+      sorted_hashes = Tempfile.new
+      manifest.uniq.each do |line|
+        sorted_hashes << line
+      end
+      sorted_hashes.rewind
+      $command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{$objectdir}'"
       if system($command)
         puts "WOO! Existing hash manifest validated correctly".green
         premisreport('fixity check','pass')
