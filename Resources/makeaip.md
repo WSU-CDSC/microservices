@@ -2,14 +2,14 @@
 
 ## About:
 
-`makeaip.rb` is a script designed to build AIP structures from archival source directories. It creates pacakges compliant with the Bagit standard. It maintains file properties while also generating and/or validating checksums and technical metadata sidecar files.
+`makeaip.rb` is a script designed to build AIP structures from archival source directories. It creates packages compliant with the Bagit standard. It maintains file properties while also generating and/or validating checksums and technical metadata sidecar files.
 
 ## Usage:
 Create AIP: `makeaip.rb -t TARGET-DIRECTORY -o OUTPUT-DIRECTORY`
 
 _Optional Flags:_ 
 
-* `-a [file extenstion]` This allows the specification of files (by extenstion) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extenstion(s) will be moved.
+* `-a [file extension]` This allows the specification of files (by extension) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extension(s) will be moved.
 
 * `-x` Do not bag outputs - this is useful if you will perform any manual tweaks to AIPs before bagging.
 
@@ -26,7 +26,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
 * The new `Objects` directory is checked for existing metadata sidecar files (specifically a hashdeep manifest and an exiftool .json output). If discovered these files are moved to a `Metadata` directory within the AIP in progress.
 * If existing checksum metadata is discovered:
   - Files in AIP are checked against list of files in hashdeep manifest to verify all expected files are present. (If files are not present script will exit).
-  - Checksums for files in AIP are checked against hashdeep manifest to verify file integrity. If checksums validate, script will update PREMIS log and move on to next step. If checksums do not validate, script will update PREMIS log with a failure. It then will generate and compare checksums of target and source files to test if file change occured during transfer. If this check fails, script will report and exit. If this check passes, new hashdeep and exiftool outputs will be generated.
+  - Checksums for files in AIP are checked against hashdeep manifest to verify file integrity. If checksums validate, script will update PREMIS log and move on to next step. If checksums do not validate, script will update PREMIS log with a failure. It then will generate and compare checksums of target and source files to test if file change occurred during transfer. If this check fails, script will report and exit. If this check passes, new hashdeep and exiftool outputs will be generated.
   
   __If an initial failure is logged, care should be taken to investigate if this was caused by an intentional or unintentional file change.__
   
@@ -34,7 +34,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
    - Checksums will be generated for source material and transferred material. These are compared to validate post-transfer file integrity. If this is successful, PREMIS log is updated and a `hashdeep` manifest is generated. If unsuccessful, the script will exit.
  * If existing `exiftool`metadata is not detected it will be generated and the PREMIS log updated to reflect this.
  * PREMIS log is finalized in the `Logs` directory within the AIP in progress.
- * AIP contents are turned into a `Bag` according to the LoC's Baggit Standard. (Unless the `-x` flag is selected).
+ * AIP contents are turned into a `Bag` according to the LoC's Bagit Standard. (Unless the `-x` flag is selected).
  * Human readable log is written (or appended to) in the target directory listing pass/fail of events and script.
 
 ## AIP Structure (Post Bagging)
@@ -50,7 +50,7 @@ This script relies on the following dependencies being installed: `bagit` (Java 
    │   ├── MY_PACKAGE.json [JSON file containing exiftool output for Bag contents]
    │   └── MY_PACKAGE.md5 [File containing md5 checksums for Bag contents]
    └── objects [Houses Bag items]
-       ├── access [Houses items that were set by filetype during AIP creation to be identified as access files]
+       ├── access [Optional. Houses items that were set by file type during AIP creation to be identified as access files]
        │   ├── MY_ITEM.pdf [Example access file (assuming makeaip was set to assume pdfs as access files)]
        └── MY_ITEM [Target directory used in the makeaip process]
            ├── MY_ITEM_Page01.tif [Example contents of target directory]
