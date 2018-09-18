@@ -9,6 +9,10 @@ __Optonal Flag__
 ## Dependencies:
 Backblaze B2 CLI
 
+The B2 CLI app must be installed and configured with the correct account ID and key. These can be found in the B2 Web interface and then configured with the command `b2 authorize-account [<accountIdOrKeyId>] [<applicationKey>]`
+
+B2 CLI instructions are [available from Backblaze](https://www.backblaze.com/b2/docs/quick_command_line.html) 
+
 ## About
 This script controls the Backblaze B2 [CLI tool](https://www.backblaze.com/b2/docs/quick_command_line.html) to upload a target AIP to Backblaze B2 storage. It is designed to work with the directory of AIPs created with [makeaip.rb](https://github.com/WSU-CDSC/microservices/blob/master/Resources/makeaip.md).
 
