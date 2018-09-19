@@ -60,9 +60,10 @@ ARGV.each do |input_AIP|
   if ! @target_path.directory?
     puts "Input must be a directory! Exiting.".red && exit
   end
-  packagename = File.basename(@target_path)
-  b2_target = $b2path + '/' + packagename
-  logfile = @target_path + 'data' + 'logs' + "#{packagename}.log"
+  $packagename = File.basename(@target_path)
+  @targetdir = File.dirname(@target_path)
+  b2_target = $b2path + '/' + $packagename
+  logfile = @target_path + 'data' + 'logs' + "#{$packagename}.log"
   @premis_structure = JSON.parse(File.read(logfile))
   if $dryrun.nil?
    $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
@@ -75,7 +76,7 @@ ARGV.each do |input_AIP|
     premisreport('replication','pass')
     puts @premis_structure
     if $dryrun.nil?
-      File.open("#{@target_path.to_s}/#{packagename}_#{Time.now}_premis.log",'w') {|file| file.write(@premis_structure.to_json)}
+      File.open("#{@target_path.to_s}/#{$packagename}_#{Time.now}_premis.log",'w') {|file| file.write(@premis_structure.to_json)}
       system($command)
       outcomereport('premis')
     end
