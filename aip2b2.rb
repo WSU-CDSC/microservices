@@ -64,7 +64,7 @@ ARGV.each do |input_AIP|
   @targetdir = File.dirname(@target_path)
   b2_target = $b2path + '/' + $packagename
   logfile = @target_path + 'data' + 'logs' + "#{$packagename}.log"
-  @premis_structure = JSON.parse(File.read(logfile))
+  @premis_structure = Array.new
   if $dryrun.nil?
    $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   else
