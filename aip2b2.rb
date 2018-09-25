@@ -23,9 +23,11 @@ def outcomereport(status)
     elsif status == 'premis'
       log = JSON.parse(@premis_structure.to_json)
       log['events'].each do |event|
-        l.puts event[0]['eventDetail']
-        l.puts event[0]['eventOutcome']
-        l.puts ''
+        if event.include?('b2 sync')
+          l.puts event[0]['eventDetail']
+          l.puts event[0]['eventOutcome']
+          l.puts ''
+        end
       end
     elsif status == 'fail'
       l.puts "Errors occured\n"
@@ -64,7 +66,7 @@ ARGV.each do |input_AIP|
   @targetdir = File.dirname(@target_path)
   b2_target = $b2path + '/' + $packagename
   logfile = @target_path + 'data' + 'logs' + "#{$packagename}.log"
-  @premis_structure = Array.new
+  @premis_structure = JSON.parse(File.read(logfile))
   if $dryrun.nil?
    $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   else
