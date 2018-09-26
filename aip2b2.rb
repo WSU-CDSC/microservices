@@ -23,7 +23,7 @@ def outcomereport(status)
     elsif status == 'premis'
       log = JSON.parse(@premis_structure.to_json)
       log['events'].each do |event|
-        if event.include?('b2 sync')
+        if event[0]['eventDetail'].include?('b2 sync')
           l.puts event[0]['eventDetail']
           l.puts event[0]['eventOutcome']
           l.puts ''
@@ -70,7 +70,7 @@ ARGV.each do |input_AIP|
   if $dryrun.nil?
    $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   else
-    $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
+   $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   end
 
   if system($command)
