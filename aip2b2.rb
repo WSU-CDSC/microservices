@@ -11,7 +11,12 @@ end
 
 # Set up methods
 def premisreport(actiontype,outcome)
-   @premis_structure['events'] << [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
+  if ! @premis_structure.nil?
+     @premis_structure['events'] << [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
+  else
+    @premis_structure = Hash.new
+    @premis_structure['events'] = [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
+  end
 end
 
 def outcomereport(status)
@@ -22,9 +27,17 @@ def outcomereport(status)
       l.puts "No errors detected\n"
     elsif status == 'premis'
       log = JSON.parse(@premis_structure.to_json)
-      log['events'].each do |event|
-        l.puts event[0]['eventDetail']
-        l.puts event[0]['eventOutcome']
+      if log.length > 1
+        log['events'].each do |event|
+          if event[0]['eventDetail'].include?('b2 sync')
+            l.puts event[0]['eventDetail']
+            l.puts event[0]['eventOutcome']
+            l.puts ''
+          end
+        end
+      else
+        l.puts log['events'][0]['eventDetail']
+        l.puts log['events'][0]['eventOutcome']
         l.puts ''
       end
     elsif status == 'fail'
@@ -64,11 +77,13 @@ ARGV.each do |input_AIP|
   @targetdir = File.dirname(@target_path)
   b2_target = $b2path + '/' + $packagename
   logfile = @target_path + 'data' + 'logs' + "#{$packagename}.log"
-  @premis_structure = JSON.parse(File.read(logfile))
+  if File.exist?(logfile)
+    @premis_structure = JSON.parse(File.read(logfile))
+  end
   if $dryrun.nil?
    $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   else
-    $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
+   $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
   end
 
   if system($command)
