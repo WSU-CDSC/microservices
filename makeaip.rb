@@ -166,8 +166,8 @@ begin
         if ! path.nil?
           filename = File.basename(path).chomp
           if filename != 'filename'
-            command = $objectdir + '/**/' + filename
-            filesearch = (Dir.glob(command)[0])
+            $command = $objectdir + '/**/' + filename
+            filesearch = (Dir.glob($command)[0])
             if ! filesearch.nil?
               if ! File.exist?(filesearch)
                  missingfiles << filesearch
