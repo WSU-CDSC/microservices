@@ -3,7 +3,7 @@
 This is a repository of scripts/microservices that are being used at WSU Libraries. Usage documentation is provided in links for individual scripts.
 
 ## List of Scripts and Microservices
-* [aip2b2.rb](Recources/aip2b2.md): A script that works to upload AIPs generated with `makeaip.rb` to Backblaze B2. Generates a new JSON file incorporating `makeaip.rb` log and Backblaze upload PREMIS event.
+* [aip2b2.rb](Resources/aip2b2.md): A script that works to upload AIPs generated with `makeaip.rb` to Backblaze B2. Generates a new JSON file incorporating `makeaip.rb` log and Backblaze upload PREMIS event.
 * [extsurvey.rb](Resources/extsurvey.md): A tool for rapidly surveying directories for file types by extension. Can create an output in csv of extension types and counts, a file with complete file paths for a given extension, and a file with complete file paths for all extensions whose total count falls under a certain threshold.
 
 * [makeaip.rb](Resources/makeaip.md): A script for generating archival packages from source directories.
