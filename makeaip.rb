@@ -24,7 +24,6 @@ ARGV.options do |opts|
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
   opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
   opts.on("-x","--no-bag") { $nobag = true }
-  opts.on("-f","--file") { $filetarget = true }
   opts.parse!
 end
 
@@ -54,18 +53,17 @@ dependency_check('exiftool')
 # Set package variables
 
 $packagename = File.basename($inputDIR,".*")
-# if ! $filetarget
-  $packagedir = "#{$desinationDIR}/#{$packagename}"
-# else
-#   Dir.mkdir("#{$desinationDIR}/#{$packagename}")
-#   desinationDIR = "#{$desinationDIR}/#{$packagename}"
-# end
+$packagedir = "#{$desinationDIR}/#{$packagename}"
 $objectdir = "#{$desinationDIR}/#{$packagename}/objects"
 $accessdir = "#{$desinationDIR}/#{$packagename}/objects/access"
 $metadatadir = "#{$desinationDIR}/#{$packagename}/metadata"
 $logdir = "#{$desinationDIR}/#{$packagename}/logs"
 $existinghashpass = '0'
 EventLogs = Array.new
+
+if File.file?($inputDIR)
+  $filetarget = true
+end
 
 # Start setting up log output
 @premis_structure = Hash.new
