@@ -24,6 +24,7 @@ ARGV.options do |opts|
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
   opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
   opts.on("-x","--no-bag") { $nobag = true }
+  opts.on("-f","--file") { $filetarget = true }
   opts.parse!
 end
 
@@ -52,8 +53,13 @@ dependency_check('exiftool')
 
 # Set package variables
 
-$packagename = File.basename($inputDIR)
-$packagedir =  "#{$desinationDIR}/#{$packagename}"
+$packagename = File.basename($inputDIR,".*")
+# if ! $filetarget
+  $packagedir = "#{$desinationDIR}/#{$packagename}"
+# else
+#   Dir.mkdir("#{$desinationDIR}/#{$packagename}")
+#   desinationDIR = "#{$desinationDIR}/#{$packagename}"
+# end
 $objectdir = "#{$desinationDIR}/#{$packagename}/objects"
 $accessdir = "#{$desinationDIR}/#{$packagename}/objects/access"
 $metadatadir = "#{$desinationDIR}/#{$packagename}/metadata"
@@ -93,9 +99,11 @@ end
   
 
 #Exit if target not directory
-if ! File.directory?($inputDIR) || ! File.directory?($desinationDIR)
-  puts "Please confirm inputs are valid directories. Exiting.".red
-  exit
+if ! $filetarget
+  if ! File.directory?($inputDIR) || ! File.directory?($desinationDIR)
+    puts "Please confirm inputs are valid directories. Exiting.".red
+    exit
+  end
 end
 
 #Exit if target is in destination
@@ -124,8 +132,12 @@ end
 
 begin
   # Copy Target directory structure
-  $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
-  puts $command
+  if ! $filetarget
+    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+  else
+    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+  end
+
   if system($command)
     puts "Files transferred to target successfully".green
     premisreport('replication','pass')
@@ -210,7 +222,12 @@ begin
   if  $existinghashpass != '1'
     puts "Verifying transfer integrity for package: #{$packagename}".purple
     target_Hashes = Array.new
-    $target_list = Dir.glob("#{$inputDIR}/**/*")
+    if $filetarget
+      $target_list = Array.new
+      $target_list << $inputDIR
+    else
+      $target_list = Dir.glob("#{$inputDIR}/**/*")
+    end
     $target_list.each do |target|
       if ! File.directory?(target) && ! File.dirname(target).include?('metadata')
         target_hash = Digest::MD5.file(target).to_s
@@ -234,12 +251,14 @@ begin
       puts "Files copied successfully".green
       puts "Generating new checksums.".green
       hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
-      $command = 'hashdeep -rl -c md5 ' + $objectdir + ' >> ' +  hashmanifest
+      $command = 'hashdeep -rl -c md5 ' + "'" + $objectdir + "'" + ' >> ' +  "'" + hashmanifest + "'"
       if system($command)
           premisreport('message digest calculation','pass')
       end
     else
       puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
+      puts transferred_Hashes
+      puts target_Hashes
       premisreport('fixity check','fail')
       exit
     end
@@ -247,7 +266,7 @@ begin
 
   # Check if exiftool metadata exists and generate if needed
   technicalmanifest = "#{$metadatadir}/#{$packagename}.json"
-  $command = 'exiftool -json -r ' + $objectdir + ' >> ' +  technicalmanifest
+  $command = 'exiftool -json -r ' + "'" + $objectdir + "'" + ' >> ' + "'" + technicalmanifest + "'"
   if Dir.glob("#{$metadatadir}/*.json")[0].nil?
     puts "Generating technical metadata".green
     if system($command)
