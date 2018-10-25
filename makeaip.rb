@@ -22,8 +22,9 @@ end
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
-  opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
+  opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val }
   opts.on("-x","--no-bag") { $nobag = true }
+  opts.on("-p","--in-place=val", String) { |val| $inplace = true && $inputDIR = val && $desinationDIR = val }
   opts.parse!
 end
 
@@ -53,11 +54,15 @@ dependency_check('exiftool')
 # Set package variables
 
 $packagename = File.basename($inputDIR,".*")
-$packagedir = "#{$desinationDIR}/#{$packagename}"
-$objectdir = "#{$desinationDIR}/#{$packagename}/objects"
-$accessdir = "#{$desinationDIR}/#{$packagename}/objects/access"
-$metadatadir = "#{$desinationDIR}/#{$packagename}/metadata"
-$logdir = "#{$desinationDIR}/#{$packagename}/logs"
+if ! $inplace
+  $packagedir = "#{$desinationDIR}/#{$packagename}"
+else
+  $packagedir = $desinationDIR
+end
+$objectdir = "#{$packagedir}/objects"
+$accessdir = "#{$packagedir}/objects/access"
+$metadatadir = "#{$packagedir}/metadata"
+$logdir = "#{$packagedir}/logs"
 $existinghashpass = '0'
 EventLogs = Array.new
 
@@ -110,13 +115,20 @@ if File.dirname($inputDIR) == File.expand_path($desinationDIR)
   exit
 end
 
+# If in place get targets
+if $inplace
+  @original_files = Dir.glob("#{$packagedir}/**/*")
+end
+
 # Create package structure
 if ! File.exists?($packagedir)
   puts "Creating package at #{$packagedir}".green
   Dir.mkdir $packagedir
 else
-  puts "Directory with package name already exists in ouput directory! Exiting.".red
-  exit
+  if ! $inplace
+    puts "Directory with package name already exists in ouput directory! Exiting.".red
+    exit
+  end
 end
 if ! File.exists?($objectdir)
   Dir.mkdir $objectdir
@@ -130,20 +142,25 @@ end
 
 begin
   # Copy Target directory structure
-  if ! $filetarget
-    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+  if ! $inplace
+    if ! $filetarget
+      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+    else
+      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+    end
   else
-    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+    $command = 'rsync -rtvPih ' + "--exclude objects --exclude logs --exclude metadata " + "'" + "#{$inputDIR}/" + "'" + " " + "'" + "#{$objectdir}/" + "'"
   end
 
-  if system($command)
-    puts "Files transferred to target successfully".green
-    premisreport('replication','pass')
-  else
-    puts "Transfer error: Exiting".red
-    premisreport('replication','fail')
-    exit
-  end
+
+    if system($command)
+      puts "Files transferred to target successfully".green
+      premisreport('replication','pass')
+    else
+      puts "Transfer error: Exiting".red
+      premisreport('replication','fail')
+      exit
+    end
 
   ## OPTIONAL
   ## Move certain files to access directory
@@ -162,10 +179,12 @@ begin
   end
 
   #check for existing metadata and validate
-  if File.exist?("#{$objectdir}/metadata")
-    FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
-    FileUtils.rm_rf("#{$objectdir}/metadata")
-    puts "Existing Metadata detected, moving to metadata directory".purple
+  if File.exist?("#{$objectdir}/metadata") && ! Dir.glob("#{$objectdir}/metadata/*.md5").empty?
+    if ! inplace
+      FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
+      FileUtils.rm_rf("#{$objectdir}/metadata")
+      puts "Existing Metadata detected, moving to metadata directory".purple
+    end
     priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
     if File.exist? priorhashmanifest
       puts "Verifying completeness of files compared to prior manifest".green
@@ -252,6 +271,10 @@ begin
       $command = 'hashdeep -rl -c md5 ' + "'" + $objectdir + "'" + ' >> ' +  "'" + hashmanifest + "'"
       if system($command)
           premisreport('message digest calculation','pass')
+          puts "Cleaning up source files".purple
+          @original_files.each do |remove_me|
+            FileUtils.rm(remove_me)
+          end
       end
     else
       puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
@@ -295,7 +318,7 @@ begin
 
   if ! $nobag
     puts "Creating bag from package".green
-    if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
+    if system('bagit','baginplace','--verbose',$packagedir)
       puts "Bag created successfully".green
     else
       puts "Bag creation failed".red
