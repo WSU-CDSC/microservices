@@ -82,7 +82,12 @@ def premisreport(actiontype,outcome)
 end
 
 def outcomereport(status)
-  open("#{$desinationDIR}/OUTCOME_LOG.txt", "a") do |l|
+  if $inplace
+    dump_location = File.dirname($desinationDIR) + "/OUTCOME_LOG.txt"
+  else
+    dump_location = $desinationDIR + "/OUTCOME_LOG.txt"
+  end
+  open(dump_location, "a") do |l|
     l.puts ''
     l.puts "Package: #{$packagename}\n"
     if status == 'pass'
@@ -228,10 +233,15 @@ begin
         premisreport('fixity check','pass')
         $existinghashpass = '1'
       else
-        puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
-        FileUtils.rm(priorhashmanifest)
-        premisreport('fixity check','fail')
-        $existinghashpass = '2'
+        if inplace
+          puts "Existing hash manifest did not validate. Exiting.".red
+          exit
+        else
+          puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
+          FileUtils.rm(priorhashmanifest)
+          premisreport('fixity check','fail')
+          $existinghashpass = '2'
+        end
       end
     end
   end
@@ -270,11 +280,7 @@ begin
       hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
       $command = 'hashdeep -rl -c md5 ' + "'" + $objectdir + "'" + ' >> ' +  "'" + hashmanifest + "'"
       if system($command)
-          premisreport('message digest calculation','pass')
-          puts "Cleaning up source files".purple
-          @original_files.each do |remove_me|
-            FileUtils.rm(remove_me)
-          end
+        premisreport('message digest calculation','pass')
       end
     else
       puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
@@ -313,7 +319,14 @@ begin
   # Generate log
   File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
 
-
+  # Clean up source files if inplace mode
+  if $inplace
+    puts "Cleaning up source files".purple
+    @original_files.each do |remove_me|
+      FileUtils.rm(remove_me)
+    end
+  end
+  
   #Bag Package
 
   if ! $nobag
