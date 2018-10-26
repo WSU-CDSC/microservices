@@ -12,6 +12,7 @@ _Optional Flags:_
 * `-a [file extension]` This allows the specification of files (by extension) to be deemed 'access' files and moved to an access directory within the AIP. All file types of this extension(s) will be moved.
 
 * `-x` Do not bag outputs - this is useful if you will perform any manual tweaks to AIPs before bagging.
+* `-p` Allows AIP creation 'in place' (aka restructures target directory instead of copying and building AIP in separate location). Only works on directory inputs at this point.
 
 Display help: `makeaip.rb -h`
 
