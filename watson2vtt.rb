@@ -10,9 +10,15 @@ ARGV.each do |input|
   File.open("#{outputpath}/#{outputfile}.en.vtt", 'w') do |file|
     file.puts "WEBVTT"
     file.puts ""
-    data['results'].each do |results|
+    data['results'].each_with_index do |results, index|
       intime = results['alternatives'][0]['timestamps'][0][1].round(2)
       outtime = results['alternatives'][0]['timestamps'][-1][-1].round(2)
+      if ! data['results'][index+1].nil?
+        next_intime = data['results'][index+1]['alternatives'][0]['timestamps'][0][1].round(2)
+      else
+        next_intime = outtime
+      end
+
       segment_length = outtime - intime
 
       # Check length of Watson 'transcript' sections and break up into ~4 second chunks if longer than 4 seconds
@@ -41,9 +47,14 @@ ARGV.each do |input|
             segment_text.each do |text|
               concatinated_text << text[0]
             end
-            #Ugly/Hacky normalization of time from SS.ss to suitable time for .vtt
-            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
-            outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.") + @segment_outtime.to_s.split('.')[1]
+            #Normalize time from SS.ss to suitable time for .vtt
+            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%L")
+            #Extend if last chunk is less than two seconds
+            if intime - @segment_outtime < 2 && timestamps[1] == results['alternatives'][0]['timestamps'].last[1]
+              outtime_normalized = Time.at(next_intime - 0.2 ).utc.strftime("%H:%M:%S.%L")
+            else
+              outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.%L")
+            end
             file.puts "#{intime_normalized} --> #{outtime_normalized}"
             file.puts concatinated_text.join(' ').gsub "\%HESITATION" , '(PAUSE)'
             file.puts ""
@@ -52,9 +63,13 @@ ARGV.each do |input|
         end
       else
         # If less than four seconds parse the normal way
-        #Ugly/Hacky normalization of time from SS.ss to suitable time for .vtt with some tweaks to try for readability
-        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
-        outtime_normalized = Time.at(outtime + 1).utc.strftime("%H:%M:%S.") + outtime.to_s.split('.')[1]
+        #If less than two seconds, extend to just prior to next start point and normalize from SS.ss to suitable time for .vtt
+        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%L")
+        if segment_length < 2
+          outtime_normalized = Time.at(next_intime - 0.2 ).utc.strftime("%H:%M:%S.%L")
+        else
+          outtime_normalized = Time.at(outtime).utc.strftime("%H:%M:%S.%L")
+        end
         file.puts "#{intime_normalized} --> #{outtime_normalized}"
         file.puts results['alternatives'][0]['transcript'].gsub "\%HESITATION" , '(PAUSE)'
         file.puts ""
