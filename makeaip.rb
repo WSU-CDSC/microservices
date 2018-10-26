@@ -22,8 +22,9 @@ end
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| $inputDIR = val }
   opts.on("-o", "--output=val", String)     { |val| $desinationDIR = val }
-  opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val}
+  opts.on("-a", "--access-extension=val", Array) {|val| $access_extensions << val }
   opts.on("-x","--no-bag") { $nobag = true }
+  opts.on("-p","--in-place=val", String) { |val| $inplace = true && $inputDIR = val && $desinationDIR = val }
   opts.parse!
 end
 
@@ -53,11 +54,15 @@ dependency_check('exiftool')
 # Set package variables
 
 $packagename = File.basename($inputDIR,".*")
-$packagedir = "#{$desinationDIR}/#{$packagename}"
-$objectdir = "#{$desinationDIR}/#{$packagename}/objects"
-$accessdir = "#{$desinationDIR}/#{$packagename}/objects/access"
-$metadatadir = "#{$desinationDIR}/#{$packagename}/metadata"
-$logdir = "#{$desinationDIR}/#{$packagename}/logs"
+if ! $inplace
+  $packagedir = "#{$desinationDIR}/#{$packagename}"
+else
+  $packagedir = $desinationDIR
+end
+$objectdir = "#{$packagedir}/objects"
+$accessdir = "#{$packagedir}/objects/access"
+$metadatadir = "#{$packagedir}/metadata"
+$logdir = "#{$packagedir}/logs"
 $existinghashpass = '0'
 EventLogs = Array.new
 
@@ -77,7 +82,12 @@ def premisreport(actiontype,outcome)
 end
 
 def outcomereport(status)
-  open("#{$desinationDIR}/OUTCOME_LOG.txt", "a") do |l|
+  if $inplace
+    dump_location = File.dirname($desinationDIR) + "/OUTCOME_LOG.txt"
+  else
+    dump_location = $desinationDIR + "/OUTCOME_LOG.txt"
+  end
+  open(dump_location, "a") do |l|
     l.puts ''
     l.puts "Package: #{$packagename}\n"
     if status == 'pass'
@@ -110,13 +120,20 @@ if File.dirname($inputDIR) == File.expand_path($desinationDIR)
   exit
 end
 
+# If in place get targets
+if $inplace
+  @original_files = Dir.glob("#{$packagedir}/**/*")
+end
+
 # Create package structure
 if ! File.exists?($packagedir)
   puts "Creating package at #{$packagedir}".green
   Dir.mkdir $packagedir
 else
-  puts "Directory with package name already exists in ouput directory! Exiting.".red
-  exit
+  if ! $inplace
+    puts "Directory with package name already exists in ouput directory! Exiting.".red
+    exit
+  end
 end
 if ! File.exists?($objectdir)
   Dir.mkdir $objectdir
@@ -130,20 +147,25 @@ end
 
 begin
   # Copy Target directory structure
-  if ! $filetarget
-    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+  if ! $inplace
+    if ! $filetarget
+      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+    else
+      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+    end
   else
-    $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+    $command = 'rsync -rtvPih ' + "--exclude objects --exclude logs --exclude metadata " + "'" + "#{$inputDIR}/" + "'" + " " + "'" + "#{$objectdir}/" + "'"
   end
 
-  if system($command)
-    puts "Files transferred to target successfully".green
-    premisreport('replication','pass')
-  else
-    puts "Transfer error: Exiting".red
-    premisreport('replication','fail')
-    exit
-  end
+
+    if system($command)
+      puts "Files transferred to target successfully".green
+      premisreport('replication','pass')
+    else
+      puts "Transfer error: Exiting".red
+      premisreport('replication','fail')
+      exit
+    end
 
   ## OPTIONAL
   ## Move certain files to access directory
@@ -162,10 +184,12 @@ begin
   end
 
   #check for existing metadata and validate
-  if File.exist?("#{$objectdir}/metadata")
-    FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
-    FileUtils.rm_rf("#{$objectdir}/metadata")
-    puts "Existing Metadata detected, moving to metadata directory".purple
+  if File.exist?("#{$objectdir}/metadata") && ! Dir.glob("#{$objectdir}/metadata/*.md5").empty?
+    if ! $inplace
+      FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
+      FileUtils.rm_rf("#{$objectdir}/metadata")
+      puts "Existing Metadata detected, moving to metadata directory".purple
+    end
     priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
     if File.exist? priorhashmanifest
       puts "Verifying completeness of files compared to prior manifest".green
@@ -209,10 +233,15 @@ begin
         premisreport('fixity check','pass')
         $existinghashpass = '1'
       else
-        puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
-        FileUtils.rm(priorhashmanifest)
-        premisreport('fixity check','fail')
-        $existinghashpass = '2'
+        if $inplace
+          puts "Existing hash manifest did not validate. Exiting.".red
+          exit
+        else
+          puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
+          FileUtils.rm(priorhashmanifest)
+          premisreport('fixity check','fail')
+          $existinghashpass = '2'
+        end
       end
     end
   end
@@ -251,7 +280,7 @@ begin
       hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
       $command = 'hashdeep -rl -c md5 ' + "'" + $objectdir + "'" + ' >> ' +  "'" + hashmanifest + "'"
       if system($command)
-          premisreport('message digest calculation','pass')
+        premisreport('message digest calculation','pass')
       end
     else
       puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
@@ -290,12 +319,19 @@ begin
   # Generate log
   File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
 
-
+  # Clean up source files if inplace mode
+  if $inplace
+    puts "Cleaning up source files".purple
+    @original_files.each do |remove_me|
+      FileUtils.rm(remove_me)
+    end
+  end
+  
   #Bag Package
 
   if ! $nobag
     puts "Creating bag from package".green
-    if system('bagit','baginplace','--verbose',"#{$desinationDIR}/#{$packagename}")
+    if system('bagit','baginplace','--verbose',$packagedir)
       puts "Bag created successfully".green
     else
       puts "Bag creation failed".red
