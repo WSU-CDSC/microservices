@@ -185,7 +185,7 @@ begin
 
   #check for existing metadata and validate
   if File.exist?("#{$objectdir}/metadata") && ! Dir.glob("#{$objectdir}/metadata/*.md5").empty?
-    if ! inplace
+    if ! $inplace
       FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
       FileUtils.rm_rf("#{$objectdir}/metadata")
       puts "Existing Metadata detected, moving to metadata directory".purple
@@ -233,7 +233,7 @@ begin
         premisreport('fixity check','pass')
         $existinghashpass = '1'
       else
-        if inplace
+        if $inplace
           puts "Existing hash manifest did not validate. Exiting.".red
           exit
         else
