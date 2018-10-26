@@ -54,7 +54,7 @@ ARGV.each do |input|
         # If less than four seconds parse the normal way
         #Ugly/Hacky normalization of time from SS.ss to suitable time for .vtt with some tweaks to try for readability
         intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%L")
-        outtime_normalized = Time.at(outtime + 1).utc.strftime("%H:%M:%S.%L")
+        outtime_normalized = Time.at(outtime).utc.strftime("%H:%M:%S.%L")
         file.puts "#{intime_normalized} --> #{outtime_normalized}"
         file.puts results['alternatives'][0]['transcript'].gsub "\%HESITATION" , '(PAUSE)'
         file.puts ""
