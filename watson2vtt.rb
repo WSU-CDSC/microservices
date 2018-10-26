@@ -42,8 +42,8 @@ ARGV.each do |input|
               concatinated_text << text[0]
             end
             #Ugly/Hacky normalization of time from SS.ss to suitable time for .vtt
-            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
-            outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.") + @segment_outtime.to_s.split('.')[1]
+            intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%L")
+            outtime_normalized = Time.at(@segment_outtime).utc.strftime("%H:%M:%S.%L")
             file.puts "#{intime_normalized} --> #{outtime_normalized}"
             file.puts concatinated_text.join(' ').gsub "\%HESITATION" , '(PAUSE)'
             file.puts ""
@@ -53,8 +53,8 @@ ARGV.each do |input|
       else
         # If less than four seconds parse the normal way
         #Ugly/Hacky normalization of time from SS.ss to suitable time for .vtt with some tweaks to try for readability
-        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.") + intime.to_s.split('.')[1]
-        outtime_normalized = Time.at(outtime + 1).utc.strftime("%H:%M:%S.") + outtime.to_s.split('.')[1]
+        intime_normalized = Time.at(intime).utc.strftime("%H:%M:%S.%L")
+        outtime_normalized = Time.at(outtime + 1).utc.strftime("%H:%M:%S.%L")
         file.puts "#{intime_normalized} --> #{outtime_normalized}"
         file.puts results['alternatives'][0]['transcript'].gsub "\%HESITATION" , '(PAUSE)'
         file.puts ""
