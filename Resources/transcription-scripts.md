@@ -12,7 +12,7 @@ must be modified with the Username and Password keys that are associated with yo
 
 After setting up your credentials, simply run the script with an A/V file as an input like, `vid2watson.sh myinput.mp4`. The script will automatically create a directory and store the outputs of Watson.
 
-Once the first script has completed, take the `.json` file that was created by the process and parse it with the second script in the manner of `watson2vtt.rb myinput.rb`.
+Once the first script has completed, take the `.json` file that was created by the process and parse it with the second script in the manner of `watson2vtt.rb myinput.json`.
 
 This will create a `.vtt` file with the same name as the input. This can be viewed alongside its corresponding video if it is in the same directory and has the same name as its source. Simply open the video in a program like [VLC](https://www.videolan.org/vlc/index.html) and the subtitle track should load automatically. 
 
