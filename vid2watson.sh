@@ -6,7 +6,7 @@ outdir="${source_dir}"/"${project_name}"
 audio_track="${project_name}"_audio.ogg
 mkdir "${outdir}"
 
-#Extract/Convert audio track to mono FLAC at 16 kHz
+#Extract/Convert audio track to mono ogg/vorbis at 16 kHz
 ffmpeg -i "${target}" -map 0:a:0 -ac 2 -ar 16000 -c:a vorbis -strict -2 "${outdir}/${audio_track}"
 cd "${outdir}"
 for i in *.ogg ; do
