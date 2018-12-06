@@ -10,10 +10,10 @@ mkdir "${outdir}"
 ffmpeg -i "${target}" -map 0:a:0 -ac 2 -ar 16000 -c:a vorbis -strict -2 "${outdir}/${audio_track}"
 cd "${outdir}"
 for i in *.ogg ; do
-    curl -X POST -u USERNAME:PASSWORD \
+    curl -X POST -u "apikey:API-KEY-HERE" \
     --header "Content-Type: audio/ogg" \
     --data-binary  @"${outdir}"/"${i}" \
-    "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true" >> "${outdir}"/"${project_name}".json
+    https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true" >> "${outdir}"/"${project_name}".json
 done
 
 #Cleanup
