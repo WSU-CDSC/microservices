@@ -9,7 +9,8 @@ if ! File.directory?(target_dir)
   puts "Target must be a directory containing EAD files. Please check your input."
   exit
 end
-
+Dir.chdir(target_dir)
+target_dir = Dir.pwd
 Target_list = Dir.glob(target_dir + '/*.xml')
 # verify target contains XML files
 if Target_list.empty?
