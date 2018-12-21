@@ -107,7 +107,7 @@ end
   
 
 #Exit if target not directory
-if ! $filetarget
+if ! $filetarget && ! $inplace
   if ! File.directory?($inputDIR) || ! File.directory?($desinationDIR)
     puts "Please confirm inputs are valid directories. Exiting.".red
     exit
@@ -149,12 +149,12 @@ begin
   # Copy Target directory structure
   if ! $inplace
     if ! $filetarget
-      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}/" + "'" + " " + "'" + $objectdir + "'"
+      $command = 'rsync -rtvPih ' + '"' + "#{$inputDIR}/" + '"' + " " + '"' + $objectdir + '"'
     else
-      $command = 'rsync -rtvPih ' + "'" + "#{$inputDIR}" + "'" + " " + "'" + $objectdir + "'"
+      $command = 'rsync -rtvPih ' + '"' + "#{$inputDIR}" + '"' + " " + '"' + $objectdir + '"'
     end
   else
-    $command = 'rsync -rtvPih ' + "--exclude objects --exclude logs --exclude metadata " + "'" + "#{$inputDIR}/" + "'" + " " + "'" + "#{$objectdir}/" + "'"
+    $command = 'rsync -rtvPih ' + "--exclude objects --exclude logs --exclude metadata " + '"' + "#{$inputDIR}/" + '"' + " " + '"' + "#{$objectdir}/" + '"'
   end
 
 
@@ -278,9 +278,11 @@ begin
       puts "Files copied successfully".green
       puts "Generating new checksums.".green
       hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
-      $command = 'hashdeep -rl -c md5 ' + "'" + $objectdir + "'" + ' >> ' +  "'" + hashmanifest + "'"
+      $command = 'hashdeep -rl -c md5 ' + '"' + $objectdir + '"' + ' >> ' +  '"' + hashmanifest + '"'
       if system($command)
         premisreport('message digest calculation','pass')
+      else
+        premisreport('message digest calculation','fail')
       end
     else
       puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
@@ -293,7 +295,7 @@ begin
 
   # Check if exiftool metadata exists and generate if needed
   technicalmanifest = "#{$metadatadir}/#{$packagename}.json"
-  $command = 'exiftool -json -r ' + "'" + $objectdir + "'" + ' >> ' + "'" + technicalmanifest + "'"
+  $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + technicalmanifest + '"'
   if Dir.glob("#{$metadatadir}/*.json")[0].nil?
     puts "Generating technical metadata".green
     if system($command)
