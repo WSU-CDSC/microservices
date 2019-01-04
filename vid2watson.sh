@@ -13,7 +13,7 @@ for i in *.ogg ; do
     curl -X POST -u "apikey:API-KEY-HERE" \
     --header "Content-Type: audio/ogg" \
     --data-binary  @"${outdir}"/"${i}" \
-    "https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true&inactivity_timeout=-1" >> "${outdir}"/"${project_name}".json
+    "https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true&inactivity_timeout=120" >> "${outdir}"/"${project_name}".json
 done
 
 #Cleanup
