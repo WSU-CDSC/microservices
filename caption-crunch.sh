@@ -1,5 +1,6 @@
 #!/bin/bash
 # A lazy script for combining Gnu Parallel with the WSU Transcription scripts
+# Input needs to be a file containing a list of download links
 
 targetList="${1}"
 outputDir="$(dirname "${targetList}")"
