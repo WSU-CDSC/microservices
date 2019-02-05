@@ -19,4 +19,5 @@ ARGV.each do |inputFile|
     f.puts watsonOutput.to_json
   end
   FileUtils.rm(outputOgg)
+  FileUtils.mv(target, outputDirectory)
 end
