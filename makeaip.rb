@@ -146,7 +146,13 @@ if ! File.exists?($logdir)
 end
 
 # Check for AV contents
-AVCheck = 'Y'
+AVExtensions = [ 'mp4', 'mkv', 'mpg', 'vob', 'mpeg', 'mp2', 'm2v', 'mp3', 'avi', 'wav' ]
+AVExtensions.each do |extenstionTest|
+  if ! Dir.glob("#{$inputDIR}/**/*.#{extenstionTest}").empty?
+    AVCheck = 'Y'
+    break
+  end
+end
 
 begin
   # Copy Target directory structure
@@ -323,7 +329,7 @@ begin
   end
   if ( ! File.exist?(mediaInfoManifest) && AVCheck == 'Y' )
     puts "Generating mediainfo metadata".green
-    $command = 'mediainfo -f --Output==JSON ' + '"' + $objectdir + '"' + ' >> ' + '"' + mediaInfoManifest + '"'
+    $command = 'mediainfo -f --Output=JSON ' + '"' + $objectdir + '"' + ' >> ' + '"' + mediaInfoManifest + '"'
     if system($command)
       premisreport('metadata extraction','pass')
     else
