@@ -294,26 +294,24 @@ begin
   end
 
   # Check if exiftool metadata exists and generate if needed
-  technicalmanifest = "#{$metadatadir}/#{$packagename}.json"
-  $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + technicalmanifest + '"'
-  if Dir.glob("#{$metadatadir}/*.json")[0].nil?
-    puts "Generating technical metadata".green
+  exifToolManifest = "#{$metadatadir}/#{$packagename}.json"
+  mediaInfoManifest = "#{$metadatadir}/#{$packagename}_mediainfo.json"
+  $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + exifToolManifest + '"'
+  if ! File.exist?(exifToolManifest)
+    puts "Generating exif tool metadata".green
     if system($command)
       premisreport('metadata extraction','pass')
     else
       premisreport('metadata extraction','fail')
     end
   else
-    priorhashmanifest = Dir.glob("#{$metadatadir}/*.json")[0]
-    if File.exist?(priorhashmanifest)
-      if $existinghashpass == '2'
-        puts "As original hash manifest was inaccurate, generating new technical metadata".green
-        FileUtils.rm(technicalmanifest)
-        if system($command)
-          premisreport('metadata extraction','pass')
-        else
-          premisreport('metadata extraction','fail')
-        end
+    if ( File.exist?(exifToolManifest) && $existinghashpass == '2' )
+      puts "As original hash manifest was inaccurate, generating new technical metadata".green
+      FileUtils.rm(exifToolManifest)
+      if system($command)
+        premisreport('metadata extraction','pass')
+      else
+        premisreport('metadata extraction','fail')
       end
     end
   end
