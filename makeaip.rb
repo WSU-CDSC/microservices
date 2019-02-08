@@ -146,11 +146,18 @@ if ! File.exists?($logdir)
 end
 
 # Check for AV contents
-AVExtensions = [ 'mp4', 'mkv', 'mpg', 'vob', 'mpeg', 'mp2', 'm2v', 'mp3', 'avi', 'wav' ]
-AVExtensions.each do |extenstionTest|
-  if ! Dir.glob("#{$inputDIR}/**/*.#{extenstionTest}").empty?
-    AVCheck = 'Y'
-    break
+AVExtensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
+AVExtensions.each do |extensionTest|
+  if $filetarget
+    if File.extname($inputDIR) == extensionTest
+      AVCheck = 'Y'
+      break
+    end
+  else
+    if ! Dir.glob("#{$inputDIR}/**/*#{extensionTest}").empty?
+      AVCheck = 'Y'
+      break
+    end
   end
 end
 
