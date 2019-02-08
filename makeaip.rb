@@ -145,6 +145,9 @@ if ! File.exists?($logdir)
   Dir.mkdir $logdir
 end
 
+# Check for AV contents
+AVCheck = 'Y'
+
 begin
   # Copy Target directory structure
   if ! $inplace
@@ -293,26 +296,38 @@ begin
     end
   end
 
-  # Check if exiftool metadata exists and generate if needed
+  # Check if technical metadata exists and generate if needed
   exifToolManifest = "#{$metadatadir}/#{$packagename}.json"
   mediaInfoManifest = "#{$metadatadir}/#{$packagename}_mediainfo.json"
-  $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + exifToolManifest + '"'
+  # Clean up old manifests in event of prior fixity fail
+
+  if $existinghashpass == '2'
+    if File.exist?(exifToolManifest)
+      puts "Due to failed hash check, will regenerate exiftool metadata".red
+      FileUtils.rm(exifToolManifest)
+    end
+    if File.exist?(mediaInfoManifest)
+      puts "Due to failed hash check, will regenerate mediainfo metadata".red
+      FileUtils.rm(mediaInfoManifest)
+    end
+  end
+
   if ! File.exist?(exifToolManifest)
-    puts "Generating exif tool metadata".green
+    $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + exifToolManifest + '"'
+    puts "Generating exiftool metadata".green
     if system($command)
       premisreport('metadata extraction','pass')
     else
       premisreport('metadata extraction','fail')
     end
-  else
-    if ( File.exist?(exifToolManifest) && $existinghashpass == '2' )
-      puts "As original hash manifest was inaccurate, generating new technical metadata".green
-      FileUtils.rm(exifToolManifest)
-      if system($command)
-        premisreport('metadata extraction','pass')
-      else
-        premisreport('metadata extraction','fail')
-      end
+  end
+  if ( ! File.exist?(mediaInfoManifest) && AVCheck == 'Y' )
+    puts "Generating mediainfo metadata".green
+    $command = 'mediainfo -f --Output==JSON ' + '"' + $objectdir + '"' + ' >> ' + '"' + mediaInfoManifest + '"'
+    if system($command)
+      premisreport('metadata extraction','pass')
+    else
+      premisreport('metadata extraction','fail')
     end
   end
 
