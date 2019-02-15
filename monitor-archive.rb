@@ -1,8 +1,5 @@
 #!/usr/bin/env ruby
 scriptLocation = File.expand_path(File.dirname(__FILE__))
-#log and compare last runtime of script
-logLocation = "#{scriptLocation}/.monitor-archive.log"
-File.write(logLocation,Time.now)
 
 require 'time'
 require 'json'
@@ -57,7 +54,8 @@ changedDirs = Array.new
 changedWithMeta = Array.new
 
 scanDirList.each do |scanDir|
-  if lastProcessingTime < File.mtime(scanDir)
+  logTimeRead(scanDir)
+  if (File.mtime(scanDir) - @priorRunTime) > 10
     changedDirs << scanDir
   end
 end
@@ -79,9 +77,10 @@ purple("Will generate metadata")
 changedNoMeta.each do |needsMeta|
   green("Generating metadata for: #{needsMeta}")
   CleanUpMeta(needsMeta)
+  logTimeWrite(needsMeta)
 end
 
-red("Directories found with innacurate existing metadata")
+red("Directories found with inacurate existing metadata")
 changedWithMeta.each do |target|
   CompareContents(target)
 end

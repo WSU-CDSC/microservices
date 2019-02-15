@@ -7,7 +7,6 @@ def CleanUpMeta(fileInput)
   exifMeta = "#{targetDir}/metadata/#{baseName}.json"
   hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
   hashDeepCommand = "hashdeep -c md5 -r -l ./"
-
   Dir.chdir(targetDir)
 
   if ! Dir.exist?('metadata')
@@ -56,18 +55,33 @@ def red(input)
 end
 
 # Logs time of script being run on target in JSON file
-def logTime(target)
+def logTimeRead(target)
   scriptLocation = File.expand_path(File.dirname(__FILE__))
-  scriptName = File.expand_path(File.basename(__FILE__))
-  logName = ".#{scriptName}_time.log"
+  scriptName = File.basename(__FILE__)
+  logName = "#{scriptLocation}/.#{scriptName}_time.log"
   if ! File.exists?(logName)
     targetTimes = Hash.new
     targetTimes["Initial Run"] = Time.now
     File.write(logName,targetTimes.to_json)
   end
   loggedTimes = JSON.parse(File.read(logName))
-  @priorRunTime = loggedTimes[target]
+  if loggedTimes[target].nil?
+    @priorRunTime = Time.parse('2018-06-25 09:30:16 -0700')
+  else
+    @priorRunTime = Time.parse(loggedTimes[target])
+  end
+end
+
+def logTimeWrite(target)
+  scriptLocation = File.expand_path(File.dirname(__FILE__))
+  scriptName = File.basename(__FILE__)
+  logName = "#{scriptLocation}/.#{scriptName}_time.log"
+  if ! File.exists?(logName)
+    targetTimes = Hash.new
+    targetTimes["Initial Run"] = Time.now
+    File.write(logName,targetTimes.to_json)
+  end
+  loggedTimes = JSON.parse(File.read(logName))
   loggedTimes[target] = Time.now
   File.write(logName,loggedTimes.to_json)
-  puts @priorRunTime
 end
