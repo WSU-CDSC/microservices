@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
+scriptLocation = File.expand_path(File.dirname(__FILE__))
+#log and compare last runtime of script
+logLocation = "#{scriptLocation}/.monitor-archive.log"
+File.write(logLocation,Time.now)
 
 require 'time'
 require 'json'
+require "#{scriptLocation}/wsu-functions.rb"
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
@@ -50,8 +55,6 @@ watchDir = ARGV[0]
 scanDirList = Dir.glob("#{watchDir}/*")
 changedDirs = Array.new
 changedWithMeta = Array.new
-# Last Time this script was run
-lastProcessingTime = Time.parse('2018-07-19 16:29:18 -0700')
 
 scanDirList.each do |scanDir|
   if lastProcessingTime < File.mtime(scanDir)
@@ -71,10 +74,14 @@ changedDirs.each do |checkForMetadata|
 end
 
 changedNoMeta = changedDirs - changedWithMeta
-puts "FOUND WITH NO METADATA"
-puts changedNoMeta
+red("Directories found that do not contain metadata")
+purple("Will generate metadata")
+changedNoMeta.each do |needsMeta|
+  green("Generating metadata for: #{needsMeta}")
+  CleanUpMeta(needsMeta)
+end
 
-puts "CHANGED WITH METADATA"
+red("Directories found with innacurate existing metadata")
 changedWithMeta.each do |target|
   CompareContents(target)
 end
