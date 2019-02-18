@@ -53,6 +53,7 @@ if ! changedWithMeta.empty?
   end
   puts "Needs Examination!"
   puts needExamination
+  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),needExamination)
 end
 
 unchangedDirList = (scanDirList - changedNoMeta - changedWithMeta)
