@@ -36,7 +36,8 @@ def CompareContents(changedDirectory)
     puts "No file discrepencies found"
   else
     @newFiles = (currentFileList - hashFileList.uniq)
-    if ! @newFiles.empty? && @missingFiles.nil?
+    @missingFiles = (hashFileList.uniq - currentFileList)
+    if ! @newFiles.empty? && @missingFiles.empty?
       red("New Files Found in #{changedDirectory}!")
       purple("Will verify hashes for existing files")
       verifyExistingHashManifest(changedDirectory)
@@ -48,7 +49,6 @@ def CompareContents(changedDirectory)
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
     end
-    @missingFiles = (hashFileList.uniq - currentFileList)
     if ! @missingFiles.empty?
       red("Warning! Missing files found in #{changedDirectory}!")
     end
