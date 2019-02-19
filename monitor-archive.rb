@@ -10,7 +10,8 @@ scanDirList = Dir.glob("#{watchDir}/*")
 changedDirs = Array.new
 changedWithMeta = Array.new
 changedNoMeta = Array.new
-needExamination = Array.new
+needExaminationHash = ['Needs Examination for hash failure!']
+needExaminationChanged = ['Needs Examination for file manifest changes!']
 
 scanDirList.each do |scanDir|
   logTimeRead(scanDir)
@@ -45,15 +46,21 @@ end
 if ! changedWithMeta.empty?
   changedWithMeta.each do |target|
     CompareContents(target)
-    if @missingFiles.empty? &&  @fixityCheck != 'fail'
+    if @missingFiles.nil? &&  @fixityCheck != 'fail'
       logTimeWrite(target)
+    elsif @fixityCheck == 'fail'
+      needExaminationHash << target
+      @fixityCheck = ''
     else
-      needExamination << target
+      needExaminationChanged << target
     end
   end
-  puts "Needs Examination!"
-  puts needExamination
-  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),needExamination)
+  red("Needs Examination for hash failure!")
+  puts needExaminationHash
+  puts "---"
+  red("Needs Examination for file manifest changes!")
+  puts needExaminationChanged
+  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
 end
 
 # Update log times for unchanged directories

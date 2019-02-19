@@ -33,7 +33,8 @@ def CompareContents(changedDirectory)
   currentFileList.delete("#{baseName}.md5")
 
   if currentFileList == hashFileList.uniq
-    puts "No file discrepencies found"
+    purple("Will verify hashes for existing files")
+    verifyExistingHashManifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)
     @missingFiles = (hashFileList.uniq - currentFileList)
@@ -48,10 +49,12 @@ def CompareContents(changedDirectory)
         @fixityCheck == 'fail'
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
-    end
-    if ! @missingFiles.empty?
+    elsif ! @missingFiles.empty?
       red("Warning! Missing files found in #{changedDirectory}!")
     end
+    # if ! @missingFiles.empty?
+    #   red("Warning! Missing files found in #{changedDirectory}!")
+    # end
   end
 end
 
@@ -61,6 +64,7 @@ def verifyExistingHashManifest(fileInput)
   baseName = File.basename(targetDir)
   hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
   manifest = File.readlines(hashMeta)
+  @fixityCheck = ''
   manifest.uniq.each do |line|
     sorted_hashes << line
   end
@@ -70,7 +74,7 @@ def verifyExistingHashManifest(fileInput)
     puts "Fixity infomation valid"
     @fixityCheck = 'pass'
   else
-    puts "Bad fixity information present!"
+    red("Bad fixity information present!")
     @fixityCheck = 'fail'
   end
 end
