@@ -56,5 +56,6 @@ if ! changedWithMeta.empty?
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),needExamination)
 end
 
+# Update log times for unchanged directories
 unchangedDirList = (scanDirList - changedNoMeta - changedWithMeta)
 unchangedDirList.each { |target| logTimeWrite(target) }
