@@ -17,8 +17,17 @@ scanDirList.each do |scanDir|
   logTimeRead(scanDir)
   if (File.mtime(scanDir) - @priorRunTime) > 10
     changedDirs << scanDir
+  else
+    subDirs = Dir.glob("#{scanDir}/**/*").select { |target| File.directory?(target) }
+    subDirs.each do |scanSubDir|
+      if (File.mtime(scanSubDir) - @priorRunTime) > 10
+        changedDirs << scanDir
+      end
+    end
   end
 end
+
+puts changedDirs
 
 changedDirs.each do |checkForMetadata|
   metaDir = "#{checkForMetadata}/metadata"
