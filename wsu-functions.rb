@@ -34,6 +34,7 @@ def CompareContents(changedDirectory)
 
   if currentFileList == hashFileList.uniq
     purple("Will verify hashes for existing files")
+    @noChange = 'true'
     verifyExistingHashManifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)

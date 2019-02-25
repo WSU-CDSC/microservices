@@ -55,8 +55,10 @@ end
 if ! changedWithMeta.empty?
   changedWithMeta.each do |target|
     CompareContents(target)
-    if @missingFiles.nil? &&  @fixityCheck != 'fail'
+    if (@noChange = 'true' &&  @fixityCheck == 'pass')
       logTimeWrite(target)
+      @noChange = ''
+      @fixityCheck = ''
     elsif @fixityCheck == 'fail'
       needExaminationHash << target
       @fixityCheck = ''
