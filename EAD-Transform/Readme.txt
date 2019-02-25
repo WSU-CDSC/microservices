@@ -3,7 +3,7 @@ MAKE-EAD.rb:
 -----
 ABOUT:
 
-This script is for converting EAD XML files into HTML Finding aids using WSU's adaption of the Archivists' Toolkit template. It will target all XMl files in the same directory as the script, creating HTML files with the same names.
+This script is for converting EAD XML files into HTML Finding aids using WSU's adaption of the Archivists' Toolkit template. It will target all XML files in the same directory as the script, creating HTML files with the same names.
 
 INSTALLATION:
 
