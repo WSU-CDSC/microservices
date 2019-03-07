@@ -52,10 +52,12 @@ def CompareContents(changedDirectory)
       end
     elsif ! @missingFiles.empty?
       red("Warning! Missing files found in #{changedDirectory}!")
+      if @missingFiles.count > @newFiles.count
+        puts @missingFiles
+        puts "-----"
+        puts @newFiles
+      end
     end
-    # if ! @missingFiles.empty?
-    #   red("Warning! Missing files found in #{changedDirectory}!")
-    # end
   end
 end
 
@@ -67,7 +69,9 @@ def verifyExistingHashManifest(fileInput)
   manifest = File.readlines(hashMeta)
   @fixityCheck = ''
   manifest.uniq.each do |line|
-    sorted_hashes << line
+    if ! line.include? ('Thumbs.db')
+      sorted_hashes << line
+    end
   end
   sorted_hashes.rewind
   command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{fileInput}'"
