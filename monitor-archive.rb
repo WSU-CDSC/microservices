@@ -6,12 +6,12 @@ require "#{scriptLocation}/wsu-functions.rb"
 #Start of script process
 
 watchDir = ARGV[0]
-scanDirList = Dir.glob("#{watchDir}/*")
+scanDirList = Dir.glob("#{watchDir}/*").select { |target| File.directory?(target) }
 changedDirs = Array.new
 changedWithMeta = Array.new
 changedNoMeta = Array.new
-needExaminationHash = ['Needs Examination for hash failure!']
-needExaminationChanged = ['Needs Examination for file manifest changes!']
+needExaminationHash = Array.new
+needExaminationChanged = Array.new
 
 scanDirList.each do |scanDir|
   logTimeRead(scanDir)
@@ -66,11 +66,15 @@ if ! changedWithMeta.empty?
       needExaminationChanged << target
     end
   end
-  red("Needs Examination for hash failure!")
-  puts needExaminationHash
-  puts "---"
-  red("Needs Examination for file manifest changes!")
-  puts needExaminationChanged
+  if ! needExaminationHash.empty?
+    red("Needs Examination for hash failure!")
+    puts needExaminationHash
+    puts "---"
+  end
+  if ! needExaminationChanged.empty?
+    red("Needs Examination for file manifest changes!")
+    puts needExaminationChanged
+  end
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
 end
 
