@@ -107,6 +107,41 @@ def CleanUpMeta(fileInput)
   makeExifMeta(targetDir,exifMeta)
 end
 
+# Find fixity failed files
+def checkHashFail(fileInput)
+  sorted_hashes = Tempfile.new
+  targetDir = File.expand_path(fileInput)
+  baseName = File.basename(targetDir)
+  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
+  manifest = File.readlines(hashMeta)
+  @fixityCheck = ''
+  failedHashes = Array.new
+  manifest.uniq.each do |line|
+    if ! line.include? ('Thumbs.db')
+      sorted_hashes << line
+    end
+  end
+  sorted_hashes.rewind
+  sorted_hashesArray = File.readlines(sorted_hashes)
+  command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{fileInput}'"
+  changedOrNew = `#{command}`
+  changedOrNew.split("\n").each do |problemFile|
+    sorted_hashesArray.each do |meh|
+      if meh.include?(File.basename(problemFile))
+        failedHashes << problemFile
+      end
+    end
+  end
+  if ! failedHashes.empty?
+    puts "FOUND!"
+    puts failedHashes
+  else
+    puts "Array was empty!"
+  end
+  puts
+  changedOrNew
+end
+
 # Makes a hashdeep md5 sidecar
 def makeHashdeepMeta(targetDir,hashMeta)
   Dir.chdir(targetDir)
