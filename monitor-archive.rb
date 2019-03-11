@@ -78,6 +78,12 @@ if ! changedWithMeta.empty?
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
 end
 
+if changedDirs.empty?
+  green("No changed directories found!")
+  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),"No changed directories found!")
+end
+
+
 # Update log times for unchanged directories
 unchangedDirList = (scanDirList - changedNoMeta - changedWithMeta)
 unchangedDirList.each { |target| logTimeWrite(target) }
