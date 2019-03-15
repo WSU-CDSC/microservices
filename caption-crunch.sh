@@ -8,7 +8,7 @@ cd "${outputDir}"
 echo "Downloading Targets: Please wait!"
 cat targets.txt | parallel youtube-dl {}
 echo "Sending files to Watson: Please wait!"
-find . -iname "*.mp4" | parallel vid2watson.rb {}
+find . -iname "*.mp4" -o -iname "*.mkv" -o -iname "*.m4a" | parallel vid2watson.rb {}
 if ! [ -d JSON ] ; then
     mkdir JSON
 fi
