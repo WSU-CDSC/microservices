@@ -7,6 +7,15 @@ ARGV.each do |input|
   outputfile = File.basename(input, ".json")
   source = File.read(input)
   data = JSON.parse(source)
+  # Check for errors
+  if data["code_descripttion"]
+    puts "Watson reported an error for this transcript. Skipping!"
+    next
+  elsif data["results"].nil?
+    puts "No text detected to parse. Skipping!"
+    next
+  end
+    
   File.open("#{outputpath}/#{outputfile}.en.vtt", 'w') do |file|
     file.puts "WEBVTT"
     file.puts ""
