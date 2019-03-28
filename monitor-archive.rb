@@ -7,6 +7,7 @@ require "#{scriptLocation}/wsu-functions.rb"
 
 watchDir = ARGV[0]
 scanDirList = Dir.glob("#{watchDir}/*").select { |target| File.directory?(target) }
+scanDirList.reject! { |dir_name| File.basename(dir_name).include?('Unprocessed') }
 changedDirs = Array.new
 changedWithMeta = Array.new
 changedNoMeta = Array.new
