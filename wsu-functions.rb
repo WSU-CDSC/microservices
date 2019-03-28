@@ -2,6 +2,7 @@
 require 'time'
 require 'json'
 require 'tempfile'
+require 'digest'
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
@@ -59,6 +60,20 @@ def CompareContents(changedDirectory)
       end
     end
   end
+end
+
+def check_old_manifest(fileInput)
+  old_hash_list = []
+  new_hash_list = []
+  targetDir = File.expand_path(fileInput)
+  baseName = File.basename(targetDir)
+  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
+  target_list = Dir["#{targetDir}/**/*"].reject { |target| File.directory?(target) }
+  target_list.uniq!
+  hash_file = File.readlines(hashMeta).reject {|line| line.include?('%%%%') || line.include?('##') || line.include?('Thumbs.db') || line.include?('/metadata/')}
+  hash_file.each {|line| old_hash_list << line.split(',')[1]}
+  target_list.each {|target_file| new_hash_list << Digest::MD5.hexdigest(File.read(target_file))}
+  puts old_hash_list - new_hash_list
 end
 
 def verifyExistingHashManifest(fileInput)
