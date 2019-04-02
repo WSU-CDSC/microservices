@@ -112,9 +112,9 @@ def CleanUpMeta(fileInput)
       File.delete(avMeta)
     end
   end
-  makeHashdeepMeta(targetDir,hashMeta)
-  makeExifMeta(targetDir,exifMeta)
-  make_av_meta(targetDir,avMeta)
+  makeHashdeepMeta(fileInput)
+  makeExifMeta(fileInput)
+  make_av_meta(fileInput)
 end
 
 # Find fixity failed files
@@ -153,19 +153,39 @@ def checkHashFail(fileInput)
 end
 
 # Makes a hashdeep md5 sidecar
-def makeHashdeepMeta(targetDir,hashMeta)
-  Dir.chdir(targetDir)
-  hashDeepCommand = "hashdeep -c md5 -r -l ./"
-  hashDeepOutput = `#{hashDeepCommand}`
-  File.write(hashMeta,"'" + hashDeepOutput + "'")
+def makeHashdeepMeta(fileInput)
+  targetDir = File.expand_path(fileInput)
+  baseName = File.basename(targetDir)
+  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
+  unless Dir.exist?("#{targetDir}/metadata")
+    Dir.mkdir("#{targetDir}/metadata")
+  end
+  unless File.exist?(hashMeta)
+    Dir.chdir(targetDir)
+    hashDeepCommand = "hashdeep -c md5 -r -l ./"
+    hashDeepOutput = `#{hashDeepCommand}`
+    File.write(hashMeta,hashDeepOutput)
+  else
+    puts "Hashdeep metadata already exists!"
+  end
 end
 
 # makes an exiftool sidecar in JSON
-def makeExifMeta(targetDir,exifMeta)
-  Dir.chdir(targetDir)
-  exifCommand = "exiftool -r -json ./"
-  exifOutput = `#{exifCommand}`
-  File.write(exifMeta,"'" + exifOutput + "'")
+def makeExifMeta(fileInput)
+  targetDir = File.expand_path(fileInput)
+  baseName = File.basename(targetDir)
+  exifMeta = "#{targetDir}/metadata/#{baseName}.json"
+  unless Dir.exist?("#{targetDir}/metadata")
+    Dir.mkdir("#{targetDir}/metadata")
+  end
+  unless File.exist?(exifMeta)
+    Dir.chdir(targetDir)
+    exifCommand = "exiftool -r -json ./"
+    exifOutput = `#{exifCommand}`
+    File.write(exifMeta,exifOutput)
+  else
+    puts "Exiftool metadata already exists!"
+  end
 end
 
 def make_av_meta(fileInput)
@@ -175,12 +195,19 @@ def make_av_meta(fileInput)
   unless Dir.exist?("#{targetDir}/metadata")
     Dir.mkdir("#{targetDir}/metadata")
   end
-  av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
-  av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
-  unless av_files.empty?
-    mediainfo_out = []
-    av_files.each { |mediainfo_target| mediainfo_out << JSON.parse(`mediainfo -f --Output=JSON #{mediainfo_target}`) }
-    File.write(avMeta,mediainfo_out.to_json)
+  unless File.exist?(avMeta)
+    av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
+    av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
+    unless av_files.empty?
+      mediainfo_out = []
+      av_files.each do |mediainfo_target|
+        mediainfo_command = 'mediainfo -f --Output=JSON ' + "'" + mediainfo_target + "'" 
+        mediainfo_out << JSON.parse(`#{mediainfo_command}`)
+      end
+      File.write(avMeta,mediainfo_out.to_json)
+    end
+  else
+    puts "AV metadata already exists!"
   end
 end
 
