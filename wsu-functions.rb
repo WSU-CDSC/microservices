@@ -95,6 +95,7 @@ def CleanUpMeta(fileInput)
   baseName = File.basename(targetDir)
   exifMeta = "#{targetDir}/metadata/#{baseName}.json"
   hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
+  avMeta = "#{targetDir}/metadata/#{baseName}_mediainfo.json"
   hashDeepCommand = "hashdeep -c md5 -r -l ./"
   Dir.chdir(targetDir)
 
@@ -107,9 +108,13 @@ def CleanUpMeta(fileInput)
     if File.exist?(hashMeta)
       File.delete(hashMeta)
     end
+    if File.exist?(avMeta)
+      File.delete(avMeta)
+    end
   end
   makeHashdeepMeta(targetDir,hashMeta)
   makeExifMeta(targetDir,exifMeta)
+  make_av_meta(targetDir,avMeta)
 end
 
 # Find fixity failed files
@@ -161,6 +166,15 @@ def makeExifMeta(targetDir,exifMeta)
   exifCommand = "exiftool -r -json ./"
   exifOutput = `#{exifCommand}`
   File.write(exifMeta,"'" + exifOutput + "'")
+end
+
+def make_av_meta(targetDir,avMeta)
+  av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
+  av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
+  unless av_files.empty?
+    @mediainfo_out = []
+    av_files.each { |mediainfo_target| @mediainfo_out << JSON.parse(`mediainfo -f --Output=JSON #{mediainfo_target}`) }
+  end
 end
 
 # Functions for colored text output
