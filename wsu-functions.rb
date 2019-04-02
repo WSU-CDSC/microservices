@@ -168,12 +168,19 @@ def makeExifMeta(targetDir,exifMeta)
   File.write(exifMeta,"'" + exifOutput + "'")
 end
 
-def make_av_meta(targetDir,avMeta)
+def make_av_meta(fileInput)
+  targetDir = File.expand_path(fileInput)
+  baseName = File.basename(targetDir)
+  avMeta = "#{targetDir}/metadata/#{baseName}_mediainfo.json"
+  unless Dir.exist?("#{targetDir}/metadata")
+    Dir.mkdir("#{targetDir}/metadata")
+  end
   av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
   av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
   unless av_files.empty?
-    @mediainfo_out = []
-    av_files.each { |mediainfo_target| @mediainfo_out << JSON.parse(`mediainfo -f --Output=JSON #{mediainfo_target}`) }
+    mediainfo_out = []
+    av_files.each { |mediainfo_target| mediainfo_out << JSON.parse(`mediainfo -f --Output=JSON #{mediainfo_target}`) }
+    File.write(avMeta,mediainfo_out.to_json)
   end
 end
 
