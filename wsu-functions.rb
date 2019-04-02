@@ -152,7 +152,7 @@ def makeHashdeepMeta(targetDir,hashMeta)
   Dir.chdir(targetDir)
   hashDeepCommand = "hashdeep -c md5 -r -l ./"
   hashDeepOutput = `#{hashDeepCommand}`
-  File.write(hashMeta,hashDeepOutput)
+  File.write(hashMeta,"'" + hashDeepOutput + "'")
 end
 
 # makes an exiftool sidecar in JSON
