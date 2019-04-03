@@ -204,7 +204,7 @@ def make_av_meta(fileInput)
         mediainfo_command = 'mediainfo -f --Output=JSON ' + "'" + mediainfo_target + "'" 
         mediainfo_out << JSON.parse(`#{mediainfo_command}`)
       end
-      File.write(avMeta,mediainfo_out.to_json)
+      File.write(avMeta,JSON.pretty_generate(mediainfo_out))
     end
   else
     puts "AV metadata already exists!"
