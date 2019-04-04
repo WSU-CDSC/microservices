@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 require 'time'
 require 'json'
 require 'tempfile'
@@ -188,6 +189,7 @@ def makeExifMeta(fileInput)
   end
 end
 
+# makes a mediainfo sidecar in JSON
 def make_av_meta(fileInput)
   targetDir = File.expand_path(fileInput)
   baseName = File.basename(targetDir)
@@ -201,7 +203,7 @@ def make_av_meta(fileInput)
     unless av_files.empty?
       mediainfo_out = []
       av_files.each do |mediainfo_target|
-        mediainfo_command = 'mediainfo -f --Output=JSON ' + "'" + mediainfo_target + "'" 
+        mediainfo_command = 'mediainfo -f --Output=JSON ' + '"' + mediainfo_target + '"'
         mediainfo_out << JSON.parse(`#{mediainfo_command}`)
       end
       File.write(avMeta,JSON.pretty_generate(mediainfo_out))

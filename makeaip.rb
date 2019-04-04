@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+scriptLocation = File.expand_path(File.dirname(__FILE__))
+require "#{scriptLocation}/wsu-functions.rb"
 require 'json'
 require 'fileutils'
 require 'optparse'
@@ -26,24 +28,6 @@ ARGV.options do |opts|
   opts.on("-x","--no-bag") { $nobag = true }
   opts.on("-p","--in-place=val", String) { |val| $inplace = true && $inputDIR = val && $desinationDIR = val }
   opts.parse!
-end
-
-class String
-  # colorization
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
-
-  def red
-    colorize(31)
-  end
-
-  def green
-    colorize(32)
-  end
-  def purple
-    colorize(95)
-  end
 end
 
 # Check for dependencies
@@ -109,14 +93,14 @@ end
 #Exit if target not directory
 if ! $filetarget && ! $inplace
   if ! File.directory?($inputDIR) || ! File.directory?($desinationDIR)
-    puts "Please confirm inputs are valid directories. Exiting.".red
+    red("Please confirm inputs are valid directories. Exiting.)
     exit
   end
 end
 
 #Exit if target is in destination
 if File.dirname($inputDIR) == File.expand_path($desinationDIR)
-  puts "Destination directory must be in a different location from target directory!".red
+  red("Destination directory must be in a different location from target directory!")
   exit
 end
 
@@ -127,11 +111,11 @@ end
 
 # Create package structure
 if ! File.exists?($packagedir)
-  puts "Creating package at #{$packagedir}".green
+  green("Creating package at #{$packagedir}")
   Dir.mkdir $packagedir
 else
   if ! $inplace
-    puts "Directory with package name already exists in ouput directory! Exiting.".red
+    red("Directory with package name already exists in ouput directory! Exiting.")
     exit
   end
 end
@@ -175,10 +159,10 @@ begin
 
 
     if system($command)
-      puts "Files transferred to target successfully".green
+      green("Files transferred to target successfully")
       premisreport('replication','pass')
     else
-      puts "Transfer error: Exiting".red
+      red("Transfer error: Exiting")
       premisreport('replication','fail')
       exit
     end
@@ -190,7 +174,7 @@ begin
       Dir.mkdir($accessdir)
     end
     $access_extensions.each do |extension|
-      puts "Moving files with extenstion: #{extension[0]} to access directory".purple
+      puts purple("Moving files with extenstion: #{extension[0]} to access directory")
       access_files = Dir.glob("#{$objectdir}/*.#{extension[0]}")
       access_files.each do |file|
         FileUtils.cp(file,$accessdir)
@@ -204,11 +188,11 @@ begin
     if ! $inplace
       FileUtils.cp_r("#{$objectdir}/metadata/.",$metadatadir)
       FileUtils.rm_rf("#{$objectdir}/metadata")
-      puts "Existing Metadata detected, moving to metadata directory".purple
+      purple("Existing Metadata detected, moving to metadata directory")
     end
     priorhashmanifest = Dir.glob("#{$metadatadir}/*.md5")[0]
     if File.exist? priorhashmanifest
-      puts "Verifying completeness of files compared to prior manifest".green
+      green("Verifying completeness of files compared to prior manifest")
       manifest = File.readlines(priorhashmanifest)
       missingfiles = Array.new
       manifest.each do |line|
@@ -228,16 +212,16 @@ begin
       end
       
       if missingfiles.count > 0
-        puts "The following missing files were discovered! Exiting.".red
+        red("The following missing files were discovered! Exiting.")
         puts missingfiles
         premisreport('manifest check','fail')
         exit
       else
-        puts "All expected files present".green
+        green("All expected files present")
         premisreport('manifest check','pass')
       end
 
-      puts "Attempting to validate using existing hash information for Package:#{$packagename}".purple
+      purple("Attempting to validate using existing hash information for Package:#{$packagename}")
       sorted_hashes = Tempfile.new
       manifest.uniq.each do |line|
         sorted_hashes << line
@@ -245,15 +229,15 @@ begin
       sorted_hashes.rewind
       $command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{$objectdir}'"
       if system($command)
-        puts "WOO! Existing hash manifest validated correctly".green
+        green("WOO! Existing hash manifest validated correctly")
         premisreport('fixity check','pass')
         $existinghashpass = '1'
       else
         if $inplace
-          puts "Existing hash manifest did not validate. Exiting.".red
+          red("Existing hash manifest did not validate. Exiting.")
           exit
         else
-          puts "Existing hash manifest did not validate. Will generate new manifest/check transfer integrity".red
+          red("Existing hash manifest did not validate. Will generate new manifest/check transfer integrity")
           FileUtils.rm(priorhashmanifest)
           premisreport('fixity check','fail')
           $existinghashpass = '2'
@@ -263,7 +247,7 @@ begin
   end
 
   if  $existinghashpass != '1'
-    puts "Verifying transfer integrity for package: #{$packagename}".purple
+    purple("Verifying transfer integrity for package: #{$packagename}")
     target_Hashes = Array.new
     if $filetarget
       $target_list = Array.new
@@ -291,8 +275,8 @@ begin
     if hashcomparison.empty?
       $command = 'transferred_Hashes - target_Hashes | target_Hashes - transferred_Hashes'
       premisreport('fixity check','pass')
-      puts "Files copied successfully".green
-      puts "Generating new checksums.".green
+      green("Files copied successfully")
+      green("Generating new checksums.")
       hashmanifest = "#{$metadatadir}/#{$packagename}.md5"
       $command = 'hashdeep -rl -c md5 ' + '"' + $objectdir + '"' + ' >> ' +  '"' + hashmanifest + '"'
       if system($command)
@@ -301,7 +285,7 @@ begin
         premisreport('message digest calculation','fail')
       end
     else
-      puts "Mismatching hashes detected between target directory and transfer directory. Exiting.".red
+      red("Mismatching hashes detected between target directory and transfer directory. Exiting.")
       puts transferred_Hashes
       puts target_Hashes
       premisreport('fixity check','fail')
@@ -316,18 +300,18 @@ begin
 
   if $existinghashpass == '2'
     if File.exist?(exifToolManifest)
-      puts "Due to failed hash check, will regenerate exiftool metadata".red
+      red("Due to failed hash check, will regenerate exiftool metadata")
       FileUtils.rm(exifToolManifest)
     end
     if File.exist?(mediaInfoManifest)
-      puts "Due to failed hash check, will regenerate mediainfo metadata".red
+      red("Due to failed hash check, will regenerate mediainfo metadata")
       FileUtils.rm(mediaInfoManifest)
     end
   end
 
   if ! File.exist?(exifToolManifest)
     $command = 'exiftool -json -r ' + '"' + $objectdir + '"' + ' >> ' + '"' + exifToolManifest + '"'
-    puts "Generating exiftool metadata".green
+    green("Generating exiftool metadata")
     if system($command)
       premisreport('metadata extraction','pass')
     else
@@ -335,7 +319,7 @@ begin
     end
   end
   if ( ! File.exist?(mediaInfoManifest) && AVCheck == 'Y' )
-    puts "Generating mediainfo metadata".green
+    green("Generating mediainfo metadata")
     $command = 'mediainfo -f --Output=JSON ' + '"' + $objectdir + '"' + ' >> ' + '"' + mediaInfoManifest + '"'
     if system($command)
       premisreport('metadata extraction','pass')
@@ -349,7 +333,7 @@ begin
 
   # Clean up source files if inplace mode
   if $inplace
-    puts "Cleaning up source files".purple
+    purple("Cleaning up source files")
     @original_files.each do |remove_me|
       FileUtils.rm(remove_me)
     end
@@ -358,21 +342,21 @@ begin
   #Bag Package
 
   if ! $nobag
-    puts "Creating bag from package".green
+    green("Creating bag from package")
     if system('bagit','baginplace','--verbose',$packagedir)
-      puts "Bag created successfully".green
+      green"Bag created successfully")
     else
-      puts "Bag creation failed".red
+      red("Bag creation failed")
       exit
     end
   end
 
   # Commented out as not part of current work flow
   # #TAR Bag
-  # puts "Creating TAR from Bag".green
+  # green("Creating TAR from Bag")
   # Dir.chdir($desinationDIR)
   # if system('tar','--posix','-cvf',"#{$packagedir}.tar",$packagename)
-  #   puts "TAR Created successfully: Cleaning up".green
+  #   green("TAR Created successfully: Cleaning up")
   #   FileUtils.rm_rf($packagename)
   #   system('cowsay',"Package creation finished for:#{$packagename}")
   # else
