@@ -157,9 +157,10 @@ end
 def makeHashdeepMeta(fileInput)
   targetDir = File.expand_path(fileInput)
   baseName = File.basename(targetDir)
-  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
-  unless Dir.exist?("#{targetDir}/metadata")
-    Dir.mkdir("#{targetDir}/metadata")
+  metadata_dir = "#{targetDir}/metadata"
+  hashMeta = "#{metadata_dir}/#{baseName}.md5"
+  unless Dir.exist?(metadata_dir)
+    Dir.mkdir(metadata_dir)
   end
   unless File.exist?(hashMeta)
     Dir.chdir(targetDir)
@@ -175,9 +176,10 @@ end
 def makeExifMeta(fileInput)
   targetDir = File.expand_path(fileInput)
   baseName = File.basename(targetDir)
-  exifMeta = "#{targetDir}/metadata/#{baseName}.json"
-  unless Dir.exist?("#{targetDir}/metadata")
-    Dir.mkdir("#{targetDir}/metadata")
+  metadata_dir = "#{targetDir}/metadata"
+  exifMeta = "#{metadata_dir}/#{baseName}.json"
+  unless Dir.exist?(metadata_dir)
+    Dir.mkdir(metadata_dir)
   end
   unless File.exist?(exifMeta)
     Dir.chdir(targetDir)
@@ -193,9 +195,10 @@ end
 def make_av_meta(fileInput)
   targetDir = File.expand_path(fileInput)
   baseName = File.basename(targetDir)
-  avMeta = "#{targetDir}/metadata/#{baseName}_mediainfo.json"
-  unless Dir.exist?("#{targetDir}/metadata")
-    Dir.mkdir("#{targetDir}/metadata")
+  metadata_dir = "#{targetDir}/metadata"
+  avMeta = "#{metadata_dir}/#{baseName}_mediainfo.json"
+  unless Dir.exist?(metadata_dir)
+    Dir.mkdir(metadata_dir)
   end
   unless File.exist?(avMeta)
     av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
@@ -240,7 +243,7 @@ def logTimeRead(target)
   end
   loggedTimes = JSON.parse(File.read(logName))
   if loggedTimes[target].nil?
-    @priorRunTime = Time.parse('2018-06-25 09:30:16 -0700')
+    @priorRunTime = Time.parse('2018-06-29 09:30:16 -0700')
   else
     @priorRunTime = Time.parse(loggedTimes[target])
   end
