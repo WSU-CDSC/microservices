@@ -93,7 +93,7 @@ end
 #Exit if target not directory
 if ! $filetarget && ! $inplace
   if ! File.directory?($inputDIR) || ! File.directory?($desinationDIR)
-    red("Please confirm inputs are valid directories. Exiting.)
+    red("Please confirm inputs are valid directories. Exiting.")
     exit
   end
 end
