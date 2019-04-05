@@ -2,44 +2,33 @@
 scriptLocation = File.expand_path(File.dirname(__FILE__))
 
 require "#{scriptLocation}/wsu-functions.rb"
+require 'set'
 
 #Start of script process
 
 watchDir = ARGV[0]
-scanDirList = Dir.glob("#{watchDir}/*").select { |target| File.directory?(target) }
+scanDirList = Dir.glob("#{watchDir}/*").select { |target| File.directory?(target) }.to_set
 scanDirList.reject! { |dir_name| File.basename(dir_name).include?('Unprocessed') }
-changedDirs = Array.new
-changedWithMeta = Array.new
-changedNoMeta = Array.new
-needExaminationHash = Array.new
-needExaminationChanged = Array.new
+changedWithMeta = Set[]
+changedNoMeta = Set[]
+needExaminationHash = []
+needExaminationChanged = []
 
 scanDirList.each do |scanDir|
+  metaDir = "#{scanDir}/metadata"
+  md5Base = File.basename(scanDir) + '.md5'
+  md5File = "#{metaDir}/#{md5Base}"
   logTimeRead(scanDir)
-  if (File.mtime(scanDir) - @priorRunTime) > 10
-    changedDirs << scanDir
-  else
-    subDirs = Dir.glob("#{scanDir}/**/*").select { |target| File.directory?(target) }
-    subDirs.each do |scanSubDir|
-      if (File.mtime(scanSubDir) - @priorRunTime) > 10
-        changedDirs << scanDir
+  dirList =  Dir.glob("#{scanDir}/**/*").select { |target| File.directory?(target) }
+  dirList << scanDir
+  dirList.each do |dir|
+    if (File.mtime(dir) - @priorRunTime) > 10
+      if (! File.exist?(metaDir) || ! File.exist?(md5File))
+        changedNoMeta << scanDir
+      elsif File.mtime(metaDir) < File.mtime(dir)
+        changedWithMeta << scanDir
       end
     end
-  end
-end
-
-puts changedDirs
-
-changedDirs.each do |checkForMetadata|
-  metaDir = "#{checkForMetadata}/metadata"
-  md5Base = File.basename(checkForMetadata) + '.md5'
-  md5File = "#{metaDir}/#{md5Base}"
-  if ! File.exist?(metaDir)
-    changedNoMeta << checkForMetadata
-  elsif ! File.exist?(md5File)
-    changedNoMeta << checkForMetadata
-  elsif File.mtime(metaDir) < File.mtime(checkForMetadata)
-    changedWithMeta << checkForMetadata
   end
 end
 
@@ -79,7 +68,7 @@ if ! changedWithMeta.empty?
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
 end
 
-if changedDirs.empty?
+if (changedNoMeta.empty? && changedWithMeta.empty?)
   green("No changed directories found!")
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),"No changed directories found!")
 end
