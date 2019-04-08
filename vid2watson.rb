@@ -7,14 +7,14 @@ ARGV.each do |inputFile|
   projectName = File.basename(target,'.*')
   sourceDirectory = File.dirname(target)
   outputDirectory = "#{sourceDirectory}/#{projectName}"
-  outputOgg = "#{outputDirectory}/temp.ogg"
+  outputMP3 = "#{outputDirectory}/temp.mp3"
   outputJSON = "#{outputDirectory}/#{projectName}.json"
   if ! File.exist?(outputDirectory)
     Dir.mkdir(outputDirectory)
   end
-  command = 'ffmpeg -i ' + '"' + target + '"' + ' -map 0:a:0 -ac 2 -ar 16000 -c:a vorbis -strict -2 ' + '"' + outputOgg + '"'
+  command = 'ffmpeg -i ' + '"' + target + '"' + ' -af dynaudnorm -map 0:a:0 -ac 1 -ar 16000 -c:a mp3 ' + '"' + outputMP3 + '"'
   system(command)
-  watsonCommand = "curl -X POST -u 'apikey:KEY-GOES-HERE' --header 'Content-Type: audio/ogg' --data-binary  @" + '"' + outputOgg + '"' + " 'https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true&inactivity_timeout=120'"
+  watsonCommand = "curl -X POST -u 'apikey:KEY-GOES-HERE' --header 'Content-Type: audio/mp3' --data-binary  @" + '"' + outputMP3 + '"' + " 'https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true&inactivity_timeout=120'"
   puts watsonCommand
   watsonOutput = JSON.parse(`#{watsonCommand}`)
   File.open(outputJSON, 'w') do |f|
