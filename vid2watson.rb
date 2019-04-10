@@ -16,10 +16,10 @@ ARGV.each do |inputFile|
   system(command)
   watsonCommand = "curl -X POST -u 'apikey:KEY-GOES-HERE' --header 'Content-Type: audio/mp3' --data-binary  @" + '"' + outputMP3 + '"' + " 'https://gateway-wdc.watsonplatform.net/speech-to-text/api/v1/recognize?profanity_filter=false&timestamps=true&inactivity_timeout=120'"
   puts watsonCommand
-  watsonOutput = JSON.parse(`#{watsonCommand}`)
+  watsonOutput = `#{watsonCommand}`
   File.open(outputJSON, 'w') do |f|
-    f.puts watsonOutput.to_json
+    f.puts watsonOutput
   end
-  FileUtils.rm(outputOgg)
+  FileUtils.rm(outputMP3)
   FileUtils.mv(target, outputDirectory)
 end
