@@ -3,12 +3,20 @@ scriptLocation = File.expand_path(File.dirname(__FILE__))
 
 require "#{scriptLocation}/wsu-functions.rb"
 require 'set'
+require 'optparse'
+
+scanDirList = Set[]
+
+ARGV.options do |opts|
+  opts.on("-t", "--target=val", String)  { |val| scanDirList << val }
+  opts.parse!
+end
 
 #Start of script process
-
-watchDir = ARGV[0]
-scanDirList = Dir.glob("#{watchDir}/*").select { |target| File.directory?(target) }.to_set
-scanDirList.reject! { |dir_name| File.basename(dir_name).include?('Unprocessed') }
+if scanDirList.empty?
+  scanDirList = Dir.glob("#{ARGV[0]}/*").select { |target| File.directory?(target) }.to_set
+  scanDirList.reject! { |dir_name| File.basename(dir_name).include?('Unprocessed') }
+end
 changedWithMeta = Set[]
 changedNoMeta = Set[]
 needExaminationHash = []
