@@ -40,6 +40,9 @@ scanDirList.each do |scanDir|
   end
 end
 
+green("Will Scan the following directories:")
+puts scanDirList
+
 if ! changedNoMeta.empty?
   red("Directories found that do not contain metadata")
   purple("Will generate metadata")

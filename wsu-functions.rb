@@ -97,22 +97,6 @@ def CleanUpMeta(fileInput)
   exifMeta = "#{targetDir}/metadata/#{baseName}.json"
   hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
   avMeta = "#{targetDir}/metadata/#{baseName}_mediainfo.json"
-  hashDeepCommand = "hashdeep -c md5 -r -l ./"
-  Dir.chdir(targetDir)
-
-  if ! Dir.exist?('metadata')
-    Dir.mkdir("#{targetDir}/metadata")
-  else
-    if File.exist?(exifMeta)
-      File.delete(exifMeta)
-    end
-    if File.exist?(hashMeta)
-      File.delete(hashMeta)
-    end
-    if File.exist?(avMeta)
-      File.delete(avMeta)
-    end
-  end
   makeHashdeepMeta(fileInput)
   makeExifMeta(fileInput)
   make_av_meta(fileInput)
@@ -162,14 +146,10 @@ def makeHashdeepMeta(fileInput)
   unless Dir.exist?(metadata_dir)
     Dir.mkdir(metadata_dir)
   end
-  unless File.exist?(hashMeta)
-    Dir.chdir(targetDir)
-    hashDeepCommand = "hashdeep -c md5 -r -l ./"
-    hashDeepOutput = `#{hashDeepCommand}`
-    File.write(hashMeta,hashDeepOutput)
-  else
-    puts "Hashdeep metadata already exists!"
-  end
+  Dir.chdir(targetDir)
+  hashDeepCommand = "hashdeep -c md5 -r -l ./"
+  hashDeepOutput = `#{hashDeepCommand}`
+  File.write(hashMeta,hashDeepOutput)
 end
 
 # makes an exiftool sidecar in JSON
@@ -181,14 +161,10 @@ def makeExifMeta(fileInput)
   unless Dir.exist?(metadata_dir)
     Dir.mkdir(metadata_dir)
   end
-  unless File.exist?(exifMeta)
-    Dir.chdir(targetDir)
-    exifCommand = "exiftool -r -json ./"
-    exifOutput = `#{exifCommand}`
-    File.write(exifMeta,exifOutput)
-  else
-    puts "Exiftool metadata already exists!"
-  end
+  Dir.chdir(targetDir)
+  exifCommand = "exiftool -r -json ./"
+  exifOutput = `#{exifCommand}`
+  File.write(exifMeta,exifOutput)
 end
 
 # makes a mediainfo sidecar in JSON
@@ -200,19 +176,15 @@ def make_av_meta(fileInput)
   unless Dir.exist?(metadata_dir)
     Dir.mkdir(metadata_dir)
   end
-  unless File.exist?(avMeta)
-    av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
-    av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
-    unless av_files.empty?
-      mediainfo_out = []
-      av_files.each do |mediainfo_target|
-        mediainfo_command = 'mediainfo -f --Output=JSON ' + '"' + mediainfo_target + '"'
-        mediainfo_out << JSON.parse(`#{mediainfo_command}`)
-      end
-      File.write(avMeta,JSON.pretty_generate(mediainfo_out))
+  av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
+  av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
+  unless av_files.empty?
+    mediainfo_out = []
+    av_files.each do |mediainfo_target|
+      mediainfo_command = 'mediainfo -f --Output=JSON ' + '"' + mediainfo_target + '"'
+      mediainfo_out << JSON.parse(`#{mediainfo_command}`)
     end
-  else
-    puts "AV metadata already exists!"
+    File.write(avMeta,JSON.pretty_generate(mediainfo_out))
   end
 end
 
@@ -236,7 +208,7 @@ def logTimeRead(target)
   scriptLocation = File.expand_path(File.dirname(__FILE__))
   scriptName = File.basename(__FILE__)
   logName = "#{scriptLocation}/.#{scriptName}_time.log"
-  if ! File.exists?(logName)
+  if ! File.exist?(logName)
     targetTimes = Hash.new
     targetTimes["Initial Run"] = Time.now
     File.write(logName,targetTimes.to_json)
@@ -253,7 +225,7 @@ def logTimeWrite(target)
   scriptLocation = File.expand_path(File.dirname(__FILE__))
   scriptName = File.basename(__FILE__)
   logName = "#{scriptLocation}/.#{scriptName}_time.log"
-  if ! File.exists?(logName)
+  if ! File.exist?(logName)
     targetTimes = Hash.new
     targetTimes["Initial Run"] = Time.now
     File.write(logName,targetTimes.to_json)
