@@ -67,6 +67,7 @@ end
 def check_old_manifest(fileInput)
   old_hash_list = []
   new_hash_list = []
+  progress_count = 1
   targetDir = File.expand_path(fileInput)
   baseName = File.basename(targetDir)
   hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
@@ -74,7 +75,11 @@ def check_old_manifest(fileInput)
   target_list.uniq!
   hash_file = File.readlines(hashMeta).reject {|line| line.include?('%%%%') || line.include?('##') || line.include?('Thumbs.db') || line.include?('/metadata/')}
   hash_file.each {|line| old_hash_list << line.split(',')[1]}
-  target_list.each {|target_file| new_hash_list << Digest::MD5.file(File.open(target_file)).hexdigest}
+  target_list.each {|target_file| new_hash_list << Digest::MD5.file(File.open(target_file)).hexdigest
+  printf("\rChecking file %d of #{target_list.count}",progress_count)
+  progress_count += 1
+  }
+  puts ""
   hash_difference = old_hash_list - new_hash_list
 
   if hash_difference.count == 0
