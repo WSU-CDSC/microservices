@@ -33,6 +33,7 @@ def CompareContents(changedDirectory)
   currentFileList.delete('Thumbs.db')
   currentFileList.delete("#{baseName}.json")
   currentFileList.delete("#{baseName}.md5")
+  currentFileList.delete("#{baseName}_mediainfo.json")
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
@@ -215,7 +216,7 @@ def logTimeRead(target)
   end
   loggedTimes = JSON.parse(File.read(logName))
   if loggedTimes[target].nil?
-    @priorRunTime = Time.parse('2018-06-29 09:30:16 -0700')
+    @priorRunTime = Time.parse('2018-07-01 09:30:16 -0700')
   else
     @priorRunTime = Time.parse(loggedTimes[target])
   end
