@@ -40,9 +40,11 @@ scanDirList.each do |scanDir|
   end
 end
 
-unless (changedWithMeta.empty? && changedNoMeta.empty?)
+unless changedNoMeta.empty?
   green("Missing metadata found in the following directories:")
   changedNoMeta.each { |dir| puts dir }
+end
+unless changedWithMeta.empty?
   green("Changed directories found:")
   changedWithMeta.each { |dir| puts dir }
 end
