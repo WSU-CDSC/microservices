@@ -16,15 +16,19 @@ ARGV.each do |target|
 end
 
 pdf_files.each do |file|
-  pdf_text = []
+  pdf_text = 0
   pdf_data = PDF::Reader.new(file)
-  # pdf_text << pdf_data.page(1).text
-  pdf_data.pages.each do |page|
-    pdf_text << page.text
-  end
-  if pdf_text.to_s.length > 50
-    puts "TEXT FOUND!"
+  if pdf_data.page(1).text.length == 0
+    puts "ZERO"
+    pdf_data.pages.each do |page|
+      pdf_text += page.text.length
+    end
   else
-    puts "NO TEXT!"
+    pdf_text += pdf_data.page(1).text.length
+  end
+  if pdf_text > 5
+    puts "TEXT FOUND in #{file}!"
+  else
+    puts "NO TEXT found in #{file}!"
   end
 end
