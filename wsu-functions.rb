@@ -212,8 +212,8 @@ end
 # Logs time of script being run on target in JSON file
 def logTimeRead(target)
   scriptLocation = File.expand_path(File.dirname(__FILE__))
-  scriptName = File.basename(__FILE__)
-  logName = "#{scriptLocation}/.#{scriptName}_time.log"
+  scriptName = File.basename(__FILE__,".*")
+  logName = "#{scriptLocation}/#{scriptName}_time.log"
   if ! File.exist?(logName)
     targetTimes = Hash.new
     targetTimes["Initial Run"] = Time.now
@@ -229,8 +229,8 @@ end
 
 def logTimeWrite(target)
   scriptLocation = File.expand_path(File.dirname(__FILE__))
-  scriptName = File.basename(__FILE__)
-  logName = "#{scriptLocation}/.#{scriptName}_time.log"
+  scriptName = File.basename(__FILE__,".*")
+  logName = "#{scriptLocation}/#{scriptName}_time.log"
   if ! File.exist?(logName)
     targetTimes = Hash.new
     targetTimes["Initial Run"] = Time.now
