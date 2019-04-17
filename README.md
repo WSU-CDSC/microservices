@@ -22,3 +22,4 @@ This is a repository of scripts/microservices that are being used at WSU Librari
 * Misc
   - [extsurvey.rb](Resources/extsurvey.md): A tool for rapidly surveying directories for file types by extension. Can create an output in csv of extension types and counts, a file with complete file paths for a given extension, and a file with complete file paths for all extensions whose total count falls under a certain threshold.
   - [make-ead.rb](EAD-Transform/) A tool for generating finding aids via applying WSU's adaption of Archivists' Toolkit's EAD to HTML style sheet.
+  - [ocr_test.rb](/Resources/ocr_test.md) A tool for scanning PDFs for OCR text data. Creates a CSV file with results.
