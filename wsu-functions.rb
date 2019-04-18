@@ -5,6 +5,33 @@ require 'json'
 require 'tempfile'
 require 'digest'
 
+# functions for PREMIS logging
+def set_up_premis(target)
+  targetDir = File.expand_path(target)
+  baseName = File.basename(targetDir)
+  metadata_dir = "#{targetDir}/metadata"
+  premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+  unless Dir.exist?(metadata_dir)
+    Dir.mkdir(metadata_dir)
+  end
+  unless File.exist?(premisLog)
+    premis_meta = Hash.new
+    premis_meta['package name'] = File.basename(target)
+    premis_meta['package source'] = File.expand_path(target)
+    premis_meta['creation time'] = Time.now
+    premis_meta['events'] = []
+    File.open(premisLog,'w') {|file| file.write(premis_meta.to_json)}
+  end
+end
+
+def premis_report(premis_var,method_name,action_type,outcome)
+    premis_structure['events'] << [{'eventType':actiontype,'eventDetail':premis_var,'eventDateTime':Time.now,'eventOutcome':outcome}] 
+end
+
+def write_premis_report(target)
+  File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
+end
+
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
   puts "Changed directory found: #{changedDirectory}"
