@@ -344,7 +344,7 @@ begin
   if ! $nobag
     green("Creating bag from package")
     if system('bagit','baginplace','--verbose',$packagedir)
-      green"Bag created successfully")
+      green("Bag created successfully")
     else
       red("Bag creation failed")
       exit
