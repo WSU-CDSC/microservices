@@ -97,12 +97,15 @@ def CompareContents(changedDirectory)
   #lazy cleanup
   hashFileList.delete("#{baseName}.md5")
   hashFileList.delete("#{baseName}.json")
+  hashFileList.delete("#{baseName}_mediainfo.json")
+  hashFileList.delete("#{baseName}_PREMIS.log")
   hashFileList.delete('Thumbs.db')
   currentFileList.delete('filename')
   currentFileList.delete('Thumbs.db')
   currentFileList.delete("#{baseName}.json")
   currentFileList.delete("#{baseName}.md5")
   currentFileList.delete("#{baseName}_mediainfo.json")
+  currentFileList.delete("#{baseName}_PREMIS.log")
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
