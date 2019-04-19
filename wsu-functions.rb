@@ -33,20 +33,38 @@ def write_premis_event(target,method_name,action_type,outcome)
     set_up_premis(target)
   end
   premis_structure = JSON.parse(File.read(premisLog))
-  premis_structure['events'] << [{'eventType':action_type,'eventDetail':method_name,'eventDateTime':Time.now,'eventOutcome':outcome}]
+  premis_structure['events'] << {eventType:action_type,eventDetail:method_name,eventDateTime:Time.now,eventOutcome:outcome}
   File.open(premisLog,'w') {|file| file.write(premis_structure.to_json)}
 end
 
 def log_premis_pass(target,method_name)
-  creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
-  if creation_methods.include?(method_name)
-    action_type = 'metadata creation'
+  hash_creation_methods = ['makeHashdeepMeta']
+  tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
+  verification_methods = ['checkHashFail']
+  transfer_methods = ['']
+  if hash_creation_methods.include?(method_name)
+    action_type = 'message digest creation'
+  elsif tech_meta_creation_methods.include?(method_name)
+    action_type = 'metadata extraction'
+  elsif verification_methods.include?(method_name)
+    action_type = 'fixity check'
   end
   write_premis_event(target,method_name,action_type,'pass')
 end
 
 def log_premis_fail
-  creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
+  hash_creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
+  tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
+  verification_methods = ['checkHashFail']
+  replication_methods = ['']
+  if hash_creation_methods.include?(method_name)
+    action_type = 'message digest creation'
+  elsif tech_meta_creation_methods.include?(method_name)
+    action_type = 'metadata extraction'
+  elsif verification_methods.include?(method_name)
+    action_type = 'fixity check'
+  end
+  write_premis_event(target,method_name,action_type,'fail')
 end
 
 
@@ -83,12 +101,14 @@ def CompareContents(changedDirectory)
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
     @noChange = 'true'
+    ### NEEDS PREMIS PASS
     check_old_manifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)
     @missingFiles = (hashFileList.uniq - currentFileList)
     if ! @newFiles.empty? && @missingFiles.empty?
       red("New Files Found in #{changedDirectory}!")
+      ### NEEDS PREMIS FAIL/CLARIFICATION
       purple("Will verify hashes for existing files")
       check_old_manifest(changedDirectory)
       if @fixityCheck == 'pass'
@@ -96,9 +116,11 @@ def CompareContents(changedDirectory)
         CleanUpMeta(changedDirectory)
       elsif
         @fixityCheck == 'fail'
+        ### NEEDS PREMIS FAIL
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
     elsif ! @missingFiles.empty?
+      ### NEEDS PREMIS FAIL
       red("Warning! Missing files found in #{changedDirectory}!")
         puts 'missing:'
         puts @missingFiles
@@ -151,41 +173,6 @@ def CleanUpMeta(fileInput)
   makeHashdeepMeta(fileInput)
   makeExifMeta(fileInput)
   make_av_meta(fileInput)
-end
-
-# Find fixity failed files
-def checkHashFail(fileInput)
-  sorted_hashes = Tempfile.new
-  targetDir = File.expand_path(fileInput)
-  baseName = File.basename(targetDir)
-  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
-  manifest = File.readlines(hashMeta)
-  @fixityCheck = ''
-  failedHashes = Array.new
-  manifest.uniq.each do |line|
-    if ! line.include? ('Thumbs.db')
-      sorted_hashes << line
-    end
-  end
-  sorted_hashes.rewind
-  sorted_hashesArray = File.readlines(sorted_hashes)
-  command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{fileInput}'"
-  changedOrNew = `#{command}`
-  changedOrNew.split("\n").each do |problemFile|
-    sorted_hashesArray.each do |meh|
-      if meh.include?(File.basename(problemFile))
-        failedHashes << problemFile
-      end
-    end
-  end
-  if ! failedHashes.empty?
-    puts "FOUND!"
-    puts failedHashes
-  else
-    puts "Array was empty!"
-  end
-  puts
-  changedOrNew
 end
 
 # Makes a hashdeep md5 sidecar
