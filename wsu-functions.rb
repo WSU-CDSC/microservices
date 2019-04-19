@@ -24,13 +24,31 @@ def set_up_premis(target)
   end
 end
 
-def premis_report(premis_var,method_name,action_type,outcome)
-    premis_structure['events'] << [{'eventType':actiontype,'eventDetail':premis_var,'eventDateTime':Time.now,'eventOutcome':outcome}] 
+def write_premis_event(target,method_name,action_type,outcome)
+  targetDir = File.expand_path(target)
+  baseName = File.basename(targetDir)
+  metadata_dir = "#{targetDir}/metadata"
+  premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+  unless File.exist?(premisLog)
+    set_up_premis(target)
+  end
+  premis_structure = JSON.parse(File.read(premisLog))
+  premis_structure['events'] << [{'eventType':action_type,'eventDetail':method_name,'eventDateTime':Time.now,'eventOutcome':outcome}]
+  File.open(premisLog,'w') {|file| file.write(premis_structure.to_json)}
 end
 
-def write_premis_report(target)
-  File.open("#{$logdir}/#{$packagename}.log",'w') {|file| file.write(@premis_structure.to_json)}
+def log_premis_pass(target,method_name)
+  creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
+  if creation_methods.include?(method_name)
+    action_type = 'metadata creation'
+  end
+  write_premis_event(target,method_name,action_type,'pass')
 end
+
+def log_premis_fail
+  creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
+end
+
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
@@ -183,6 +201,7 @@ def makeHashdeepMeta(fileInput)
   hashDeepCommand = "hashdeep -c md5 -r -l ./"
   hashDeepOutput = `#{hashDeepCommand}`
   File.write(hashMeta,hashDeepOutput)
+  log_premis_pass(fileInput,__method__.to_s)
 end
 
 # makes an exiftool sidecar in JSON
@@ -198,6 +217,7 @@ def makeExifMeta(fileInput)
   exifCommand = "exiftool -r -json ./"
   exifOutput = `#{exifCommand}`
   File.write(exifMeta,exifOutput)
+  log_premis_pass(fileInput,__method__.to_s)
 end
 
 # makes a mediainfo sidecar in JSON
@@ -218,6 +238,7 @@ def make_av_meta(fileInput)
       mediainfo_out << JSON.parse(`#{mediainfo_command}`)
     end
     File.write(avMeta,JSON.pretty_generate(mediainfo_out))
+    log_premis_pass(fileInput,__method__.to_s)
   end
 end
 
