@@ -40,29 +40,35 @@ end
 def log_premis_pass(target,method_name)
   hash_creation_methods = ['makeHashdeepMeta']
   tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
-  verification_methods = ['checkHashFail']
+  hash_verification_methods = ['checkHashFail']
+  manifest_verification_methods = ['CompareContents']
   transfer_methods = ['']
   if hash_creation_methods.include?(method_name)
     action_type = 'message digest creation'
   elsif tech_meta_creation_methods.include?(method_name)
     action_type = 'metadata extraction'
-  elsif verification_methods.include?(method_name)
+  elsif hash_verification_methods.include?(method_name)
     action_type = 'fixity check'
+  elsif manifest_verification_methods.include?(method_name)
+    action_type = 'manifest check'
   end
   write_premis_event(target,method_name,action_type,'pass')
 end
 
-def log_premis_fail
-  hash_creation_methods = ['makeHashdeepMeta','makeExifMeta','make_av_meta']
+def log_premis_fail(target,method_name)
+  hash_creation_methods = ['makeHashdeepMeta']
   tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
-  verification_methods = ['checkHashFail']
-  replication_methods = ['']
+  hash_verification_methods = ['check_old_manifest']
+  manifest_verification_methods = ['CompareContents']
+  transfer_methods = ['']
   if hash_creation_methods.include?(method_name)
     action_type = 'message digest creation'
   elsif tech_meta_creation_methods.include?(method_name)
     action_type = 'metadata extraction'
-  elsif verification_methods.include?(method_name)
+  elsif hash_verification_methods.include?(method_name)
     action_type = 'fixity check'
+  elsif manifest_verification_methods.include?(method_name)
+    action_type = 'manifest check'
   end
   write_premis_event(target,method_name,action_type,'fail')
 end
@@ -101,14 +107,14 @@ def CompareContents(changedDirectory)
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
     @noChange = 'true'
-    ### NEEDS PREMIS PASS
+    log_premis_pass(changedDirectory,__method__.to_s)
     check_old_manifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)
     @missingFiles = (hashFileList.uniq - currentFileList)
     if ! @newFiles.empty? && @missingFiles.empty?
       red("New Files Found in #{changedDirectory}!")
-      ### NEEDS PREMIS FAIL/CLARIFICATION
+      log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
       check_old_manifest(changedDirectory)
       if @fixityCheck == 'pass'
@@ -116,11 +122,11 @@ def CompareContents(changedDirectory)
         CleanUpMeta(changedDirectory)
       elsif
         @fixityCheck == 'fail'
-        ### NEEDS PREMIS FAIL
+        log_premis_fail(changedDirectory,__method__.to_s)
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
     elsif ! @missingFiles.empty?
-      ### NEEDS PREMIS FAIL
+      log_premis_fail(changedDirectory,__method__.to_s)
       red("Warning! Missing files found in #{changedDirectory}!")
         puts 'missing:'
         puts @missingFiles
@@ -151,9 +157,11 @@ def check_old_manifest(fileInput)
 
   if hash_difference.count == 0
     puts "Fixity infomation valid"
+    log_premis_pass(fileInput,__method__.to_s)
     @fixityCheck = 'pass'
   else
     red("Bad fixity information or missing files present!")
+    log_premis_fail(fileInput,__method__.to_s)
     @fixityCheck = 'fail'
     hash_fail_list = []
     hash_difference.each do |hash|
