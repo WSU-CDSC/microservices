@@ -15,7 +15,8 @@ end
 # Set up methods
 
 def outcomereport(target)
-  open("#{@targetdir}/OUTCOME_LOG.txt", "a") do |l|
+  outcome_log = ENV['HOME'] + "/Desktop/aip2_rb_OUTCOME_LOG.txt"
+  open(outcome_log, "a") do |l|
     l.puts ''
     l.puts "Package: #{target}\n"
       targetDir = File.expand_path(target)
