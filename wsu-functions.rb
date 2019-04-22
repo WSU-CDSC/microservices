@@ -5,6 +5,75 @@ require 'json'
 require 'tempfile'
 require 'digest'
 
+# functions for PREMIS logging
+def set_up_premis(target)
+  targetDir = File.expand_path(target)
+  baseName = File.basename(targetDir)
+  metadata_dir = "#{targetDir}/metadata"
+  premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+  unless Dir.exist?(metadata_dir)
+    Dir.mkdir(metadata_dir)
+  end
+  unless File.exist?(premisLog)
+    premis_meta = Hash.new
+    premis_meta['package name'] = File.basename(target)
+    premis_meta['package source'] = File.expand_path(target)
+    premis_meta['creation time'] = Time.now
+    premis_meta['events'] = []
+    File.open(premisLog,'w') {|file| file.write(premis_meta.to_json)}
+  end
+end
+
+def write_premis_event(target,method_name,action_type,outcome)
+  targetDir = File.expand_path(target)
+  baseName = File.basename(targetDir)
+  metadata_dir = "#{targetDir}/metadata"
+  premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+  unless File.exist?(premisLog)
+    set_up_premis(target)
+  end
+  premis_structure = JSON.parse(File.read(premisLog))
+  premis_structure['events'] << {eventType:action_type,eventDetail:method_name,eventDateTime:Time.now,eventOutcome:outcome}
+  File.open(premisLog,'w') {|file| file.write(premis_structure.to_json)}
+end
+
+def log_premis_pass(target,method_name)
+  hash_creation_methods = ['makeHashdeepMeta']
+  tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
+  hash_verification_methods = ['checkHashFail']
+  manifest_verification_methods = ['CompareContents']
+  transfer_methods = ['']
+  if hash_creation_methods.include?(method_name)
+    action_type = 'message digest creation'
+  elsif tech_meta_creation_methods.include?(method_name)
+    action_type = 'metadata extraction'
+  elsif hash_verification_methods.include?(method_name)
+    action_type = 'fixity check'
+  elsif manifest_verification_methods.include?(method_name)
+    action_type = 'manifest check'
+  end
+  write_premis_event(target,method_name,action_type,'pass')
+end
+
+def log_premis_fail(target,method_name)
+  hash_creation_methods = ['makeHashdeepMeta']
+  tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
+  hash_verification_methods = ['check_old_manifest']
+  manifest_verification_methods = ['CompareContents']
+  transfer_methods = ['']
+  if hash_creation_methods.include?(method_name)
+    action_type = 'message digest creation'
+  elsif tech_meta_creation_methods.include?(method_name)
+    action_type = 'metadata extraction'
+  elsif hash_verification_methods.include?(method_name)
+    action_type = 'fixity check'
+  elsif manifest_verification_methods.include?(method_name)
+    action_type = 'manifest check'
+  end
+  write_premis_event(target,method_name,action_type,'fail')
+end
+
+
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
   puts "Changed directory found: #{changedDirectory}"
@@ -28,22 +97,27 @@ def CompareContents(changedDirectory)
   #lazy cleanup
   hashFileList.delete("#{baseName}.md5")
   hashFileList.delete("#{baseName}.json")
+  hashFileList.delete("#{baseName}_mediainfo.json")
+  hashFileList.delete("#{baseName}_PREMIS.log")
   hashFileList.delete('Thumbs.db')
   currentFileList.delete('filename')
   currentFileList.delete('Thumbs.db')
   currentFileList.delete("#{baseName}.json")
   currentFileList.delete("#{baseName}.md5")
   currentFileList.delete("#{baseName}_mediainfo.json")
+  currentFileList.delete("#{baseName}_PREMIS.log")
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
     @noChange = 'true'
+    log_premis_pass(changedDirectory,__method__.to_s)
     check_old_manifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)
     @missingFiles = (hashFileList.uniq - currentFileList)
     if ! @newFiles.empty? && @missingFiles.empty?
       red("New Files Found in #{changedDirectory}!")
+      log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
       check_old_manifest(changedDirectory)
       if @fixityCheck == 'pass'
@@ -51,9 +125,11 @@ def CompareContents(changedDirectory)
         CleanUpMeta(changedDirectory)
       elsif
         @fixityCheck == 'fail'
+        log_premis_fail(changedDirectory,__method__.to_s)
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
     elsif ! @missingFiles.empty?
+      log_premis_fail(changedDirectory,__method__.to_s)
       red("Warning! Missing files found in #{changedDirectory}!")
         puts 'missing:'
         puts @missingFiles
@@ -84,9 +160,11 @@ def check_old_manifest(fileInput)
 
   if hash_difference.count == 0
     puts "Fixity infomation valid"
+    log_premis_pass(fileInput,__method__.to_s)
     @fixityCheck = 'pass'
   else
     red("Bad fixity information or missing files present!")
+    log_premis_fail(fileInput,__method__.to_s)
     @fixityCheck = 'fail'
     hash_fail_list = []
     hash_difference.each do |hash|
@@ -108,41 +186,6 @@ def CleanUpMeta(fileInput)
   make_av_meta(fileInput)
 end
 
-# Find fixity failed files
-def checkHashFail(fileInput)
-  sorted_hashes = Tempfile.new
-  targetDir = File.expand_path(fileInput)
-  baseName = File.basename(targetDir)
-  hashMeta = "#{targetDir}/metadata/#{baseName}.md5"
-  manifest = File.readlines(hashMeta)
-  @fixityCheck = ''
-  failedHashes = Array.new
-  manifest.uniq.each do |line|
-    if ! line.include? ('Thumbs.db')
-      sorted_hashes << line
-    end
-  end
-  sorted_hashes.rewind
-  sorted_hashesArray = File.readlines(sorted_hashes)
-  command = "hashdeep -k '#{sorted_hashes.path}' -xrle '#{fileInput}'"
-  changedOrNew = `#{command}`
-  changedOrNew.split("\n").each do |problemFile|
-    sorted_hashesArray.each do |meh|
-      if meh.include?(File.basename(problemFile))
-        failedHashes << problemFile
-      end
-    end
-  end
-  if ! failedHashes.empty?
-    puts "FOUND!"
-    puts failedHashes
-  else
-    puts "Array was empty!"
-  end
-  puts
-  changedOrNew
-end
-
 # Makes a hashdeep md5 sidecar
 def makeHashdeepMeta(fileInput)
   targetDir = File.expand_path(fileInput)
@@ -156,6 +199,7 @@ def makeHashdeepMeta(fileInput)
   hashDeepCommand = "hashdeep -c md5 -r -l ./"
   hashDeepOutput = `#{hashDeepCommand}`
   File.write(hashMeta,hashDeepOutput)
+  log_premis_pass(fileInput,__method__.to_s)
 end
 
 # makes an exiftool sidecar in JSON
@@ -171,6 +215,7 @@ def makeExifMeta(fileInput)
   exifCommand = "exiftool -r -json ./"
   exifOutput = `#{exifCommand}`
   File.write(exifMeta,exifOutput)
+  log_premis_pass(fileInput,__method__.to_s)
 end
 
 # makes a mediainfo sidecar in JSON
@@ -191,6 +236,7 @@ def make_av_meta(fileInput)
       mediainfo_out << JSON.parse(`#{mediainfo_command}`)
     end
     File.write(avMeta,JSON.pretty_generate(mediainfo_out))
+    log_premis_pass(fileInput,__method__.to_s)
   end
 end
 
