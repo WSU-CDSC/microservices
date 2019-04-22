@@ -42,7 +42,7 @@ def log_premis_pass(target,method_name)
   tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
   hash_verification_methods = ['checkHashFail']
   manifest_verification_methods = ['CompareContents']
-  transfer_methods = ['']
+  transfer_methods = ['aip2b2.rb']
   if hash_creation_methods.include?(method_name)
     action_type = 'message digest creation'
   elsif tech_meta_creation_methods.include?(method_name)
@@ -51,6 +51,8 @@ def log_premis_pass(target,method_name)
     action_type = 'fixity check'
   elsif manifest_verification_methods.include?(method_name)
     action_type = 'manifest check'
+  elsif transfer_methods.include?(method_name)
+    action_type = 'transfer'
   end
   write_premis_event(target,method_name,action_type,'pass')
 end
@@ -60,7 +62,7 @@ def log_premis_fail(target,method_name)
   tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
   hash_verification_methods = ['check_old_manifest']
   manifest_verification_methods = ['CompareContents']
-  transfer_methods = ['']
+  transfer_methods = ['aip2b2.rb']
   if hash_creation_methods.include?(method_name)
     action_type = 'message digest creation'
   elsif tech_meta_creation_methods.include?(method_name)
@@ -69,6 +71,8 @@ def log_premis_fail(target,method_name)
     action_type = 'fixity check'
   elsif manifest_verification_methods.include?(method_name)
     action_type = 'manifest check'
+  elsif transfer_methods.include?(method_name)
+    action_type = 'transfer'
   end
   write_premis_event(target,method_name,action_type,'fail')
 end

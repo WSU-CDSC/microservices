@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
+
 require "pathname"
 require 'json'
 require 'optparse'
+scriptLocation = File.expand_path(File.dirname(__FILE__))
+require "#{scriptLocation}/wsu-functions.rb"
 
 ARGV.options do |opts|
   opts.on("-d", "--dry-run")  { $dryrun = '--dryRun ' }
@@ -10,14 +13,6 @@ ARGV.options do |opts|
 end
 
 # Set up methods
-def premisreport(actiontype,outcome)
-  if ! @premis_structure.nil?
-     @premis_structure['events'] << [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
-  else
-    @premis_structure = Hash.new
-    @premis_structure['events'] = [{'eventType':actiontype,'eventDetail':$command,'eventDateTime':Time.now,'eventOutcome':outcome}] 
-  end
-end
 
 def outcomereport(status)
   open("#{@targetdir}/OUTCOME_LOG.txt", "a") do |l|
@@ -43,21 +38,6 @@ def outcomereport(status)
     elsif status == 'fail'
       l.puts "Errors occured\n"
     end
-  end
-end
-
-class String
-  # colorization
-  def colorize(color_code)
-    "\e[#{color_code}m#{self}\e[0m"
-  end
-
-  def red
-    colorize(31)
-  end
-
-  def green
-    colorize(32)
   end
 end
 
@@ -87,17 +67,16 @@ ARGV.each do |input_AIP|
   end
 
   if system($command)
-    puts "SUCCESS!".green
-    premisreport('replication','pass')
-    puts @premis_structure
+    green("SUCCESS!")
     if $dryrun.nil?
-      File.open("#{@target_path.to_s}/#{$packagename}_#{Time.now}_premis.log",'w') {|file| file.write(@premis_structure.to_json)}
+      log_premis_pass(input_AIP,'aip2b2.rb')
       system($command)
       outcomereport('premis')
     end
   else
     if $dryrun.nil?
-      premisreport('replication','fail')
+      red("SUCCESS!")
+      log_premis_fail(input_AIP,'aip2b2.rb')
       outcomereport('premis')
     end
   end
