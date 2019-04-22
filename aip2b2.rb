@@ -14,30 +14,18 @@ end
 
 # Set up methods
 
-def outcomereport(status)
+def outcomereport(target)
   open("#{@targetdir}/OUTCOME_LOG.txt", "a") do |l|
     l.puts ''
-    l.puts "Package: #{$packagename}\n"
-    if status == 'pass'
-      l.puts "No errors detected\n"
-    elsif status == 'premis'
-      log = JSON.parse(@premis_structure.to_json)
-      if log.length > 1
-        log['events'].each do |event|
-          if event[0]['eventDetail'].include?('b2 sync')
-            l.puts event[0]['eventDetail']
-            l.puts event[0]['eventOutcome']
-            l.puts ''
-          end
-        end
-      else
-        l.puts log['events'][0]['eventDetail']
-        l.puts log['events'][0]['eventOutcome']
-        l.puts ''
-      end
-    elsif status == 'fail'
-      l.puts "Errors occured\n"
-    end
+    l.puts "Package: #{target}\n"
+      targetDir = File.expand_path(target)
+      baseName = File.basename(targetDir)
+      metadata_dir = "#{targetDir}/metadata"
+      premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+      log = JSON.parse(File.read(premisLog))
+      l.puts log['events'].last['eventDetail']
+      l.puts log['events'].last['eventOutcome']
+      l.puts ''
   end
 end
 
@@ -71,13 +59,13 @@ ARGV.each do |input_AIP|
     if $dryrun.nil?
       log_premis_pass(input_AIP,'aip2b2.rb')
       system($command)
-      outcomereport('premis')
+      outcomereport(input_AIP)
     end
   else
     if $dryrun.nil?
-      red("SUCCESS!")
+      red("FAIL!")
       log_premis_fail(input_AIP,'aip2b2.rb')
-      outcomereport('premis')
+      outcomereport(input_AIP)
     end
   end
 end
