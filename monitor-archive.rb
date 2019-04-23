@@ -61,14 +61,12 @@ end
 
 if ! changedWithMeta.empty?
   changedWithMeta.each do |target|
-    CompareContents(target)
-    if (@noChange = 'true' &&  @fixityCheck == 'pass')
+    contents_comparison = CompareContents(target)
+    if (contents_comparison[0] = 'no change' &&  contents_comparison[1] == 'pass')
       logTimeWrite(target)
-      @noChange = ''
-      @fixityCheck = ''
-    elsif @fixityCheck == 'fail'
+    elsif contents_comparison[1] == 'fail'
       needExaminationHash << target
-      @fixityCheck = ''
+      needExaminationHash << contents_comparison[2]
     else
       needExaminationChanged << target
     end

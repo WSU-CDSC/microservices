@@ -130,35 +130,37 @@ def CompareContents(changedDirectory)
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
-    @noChange = 'true'
-    log_premis_pass(changedDirectory,__method__.to_s)
+    # log_premis_pass(changedDirectory,__method__.to_s)
+    manifest_status = 'no change'
     fixity_check = check_old_manifest(changedDirectory)
+    contents_results = [manifest_status]
+    fixity_check.each { |check| contents_results << check }
   else
-    @newFiles = (currentFileList - hashFileList.uniq)
-    @missingFiles = (hashFileList.uniq - currentFileList)
-    if ! @newFiles.empty? && @missingFiles.empty?
-      red("New Files Found in #{changedDirectory}!")
-      log_premis_fail(changedDirectory,__method__.to_s)
+    newFiles = (currentFileList - hashFileList.uniq)
+    missingFiles = (hashFileList.uniq - currentFileList)
+    if ! newFiles.empty? && missingFiles.empty?
+      manifest_status = 'new files'
+      # log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
       fixity_check = check_old_manifest(changedDirectory)
-      if fixity_check == 'pass'
-        green("Existing hashes for #{changedDirectory} were valid: Will generate new metadata to reflect new files.")
-        CleanUpMeta(changedDirectory)
-      elsif
-        fixity_check == 'fail'
-        log_premis_fail(changedDirectory,__method__.to_s)
-        red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
-      end
-    elsif ! @missingFiles.empty?
-      log_premis_fail(changedDirectory,__method__.to_s)
-      red("Warning! Missing files found in #{changedDirectory}!")
-        puts 'missing:'
-        puts @missingFiles
-        puts "-----"
-        puts 'new'
-        puts @newFiles
+      contents_results = [manifest_status]
+      fixity_check.each { |check| contents_results << check }
+      # if fixity_check[0] == 'pass'
+      #   green("Existing hashes for #{changedDirectory} were valid: Will generate new metadata to reflect new files.")
+      #   CleanUpMeta(changedDirectory)
+      # elsif
+      #   fixity_check[0] == 'fail'
+      #   log_premis_fail(changedDirectory,__method__.to_s)
+      #   red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
+      #   puts fixity_check[1]
+      # end
+    elsif ! missingFiles.empty?
+      # log_premis_fail(changedDirectory,__method__.to_s)
+      manifest_status = 'missing files'
+      contents_results = [manifest_status, missingFiles]
     end
   end
+  return contents_results
 end
 
 def check_old_manifest(fileInput)
@@ -184,7 +186,6 @@ def check_old_manifest(fileInput)
     log_premis_pass(fileInput,__method__.to_s)
     fixity_check = ['pass','']
   else
-    red("Bad fixity information or missing files present!")
     log_premis_fail(fileInput,__method__.to_s)
     hash_fail_list = []
     hash_difference.each do |hash|
