@@ -182,16 +182,15 @@ def check_old_manifest(fileInput)
   if hash_difference.count == 0
     puts "Fixity infomation valid"
     log_premis_pass(fileInput,__method__.to_s)
-    fixity_check = 'pass'
+    fixity_check = ['pass','']
   else
     red("Bad fixity information or missing files present!")
     log_premis_fail(fileInput,__method__.to_s)
-    fixity_check = 'fail'
     hash_fail_list = []
     hash_difference.each do |hash|
       hash_fail_list << hash_file.select { |line| line.include?(hash)}
     end
-    puts hash_fail_list
+    fixity_check = ['fail', hash_fail_list]
   end
   return fixity_check
 end
