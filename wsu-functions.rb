@@ -77,6 +77,23 @@ def log_premis_fail(target,method_name)
   write_premis_event(target,method_name,action_type,'fail')
 end
 
+def check_cloud_status(target)
+  targetDir = File.expand_path(target)
+  baseName = File.basename(targetDir)
+  metadata_dir = "#{targetDir}/metadata"
+  premisLog = "#{metadata_dir}/#{baseName}_PREMIS.log"
+  cloud_status = 0
+  if File.exist?(premisLog)
+    premis_data = JSON.parse(File.read(premisLog))
+    premis_data['events'].each do |event|
+      if event['eventDetail'] == 'aip2b2.rb' 
+        cloud_status = 1
+      end
+    end
+  end
+  return cloud_status
+end
+
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
