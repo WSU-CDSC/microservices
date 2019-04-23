@@ -132,7 +132,7 @@ def CompareContents(changedDirectory)
     purple("Will verify hashes for existing files")
     @noChange = 'true'
     log_premis_pass(changedDirectory,__method__.to_s)
-    check_old_manifest(changedDirectory)
+    fixity_check = check_old_manifest(changedDirectory)
   else
     @newFiles = (currentFileList - hashFileList.uniq)
     @missingFiles = (hashFileList.uniq - currentFileList)
@@ -140,12 +140,12 @@ def CompareContents(changedDirectory)
       red("New Files Found in #{changedDirectory}!")
       log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
-      check_old_manifest(changedDirectory)
-      if @fixityCheck == 'pass'
+      fixity_check = check_old_manifest(changedDirectory)
+      if fixity_check == 'pass'
         green("Existing hashes for #{changedDirectory} were valid: Will generate new metadata to reflect new files.")
         CleanUpMeta(changedDirectory)
       elsif
-        @fixityCheck == 'fail'
+        fixity_check == 'fail'
         log_premis_fail(changedDirectory,__method__.to_s)
         red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
       end
@@ -182,17 +182,18 @@ def check_old_manifest(fileInput)
   if hash_difference.count == 0
     puts "Fixity infomation valid"
     log_premis_pass(fileInput,__method__.to_s)
-    @fixityCheck = 'pass'
+    fixity_check = 'pass'
   else
     red("Bad fixity information or missing files present!")
     log_premis_fail(fileInput,__method__.to_s)
-    @fixityCheck = 'fail'
+    fixity_check = 'fail'
     hash_fail_list = []
     hash_difference.each do |hash|
       hash_fail_list << hash_file.select { |line| line.include?(hash)}
     end
     puts hash_fail_list
   end
+  return fixity_check
 end
 
 # Makes metadata directory or deletes current contents of existing metadata directory
