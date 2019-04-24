@@ -100,7 +100,8 @@ if ! changedWithMeta.empty?
 end
 puts ''
 puts '----'
-output_file = File.open(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),"w")
+output_file_path = File.expand_path("~/Desktop/monitor-archive-warnings.txt")
+output_file = File.open(output_file_path,"w")
   if ! needExaminationHash.empty?
     output_file.puts "Needs Examination for hash failure!"
     output_file.puts needExaminationHash
@@ -115,6 +116,7 @@ output_file = File.open(File.expand_path("~/Desktop/monitor-archive-warnings.txt
     output_file.puts newFilesInCloud
   end
 output_file.close
+File.readlines(output_file_path).each { |line| puts line }
 
 if (changedNoMeta.empty? && changedWithMeta.empty?)
   green("No changed directories found!")
