@@ -71,14 +71,23 @@ if ! changedWithMeta.empty?
       CleanUpMeta(target)
       logTimeWrite(target)
     elsif contents_comparison[1] == 'fail'
-      needExaminationHash << target
-      needExaminationHash << contents_comparison[2]
       red("Fixity failure detected!")
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+      else
+        cloud_status = ''
+      end
+      needExaminationHash << [target,contents_comparison[2],cloud_status]
     else
-      needExaminationChanged << target
-      needExaminationChanged << contents_comparison[1]
-      needExaminationChanged << contents_comparison[2]
       red("Manifest changes detected!")
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+      else
+        cloud_status = ''
+      end
+      needExaminationChanged << [target,contents_comparison[1],contents_comparison[2],cloud_status]
     end
   end
   puts ''
