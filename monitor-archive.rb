@@ -97,23 +97,24 @@ if ! changedWithMeta.empty?
       needExaminationChanged << [target,contents_comparison[1],contents_comparison[2],cloud_status]
     end
   end
-  puts ''
-  puts '----'
+end
+puts ''
+puts '----'
+output_file = File.open(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),"w")
   if ! needExaminationHash.empty?
-    red("Needs Examination for hash failure!")
-    puts needExaminationHash
-    puts "---"
+    output_file.puts "Needs Examination for hash failure!"
+    output_file.puts needExaminationHash
+    output_file.puts "---"
   end
   if ! needExaminationChanged.empty?
-    red("Needs Examination for file manifest changes!")
-    puts needExaminationChanged
+    output_file.puts "Needs Examination for file manifest changes!"
+    output_file.puts needExaminationChanged
   end
   if ! newFilesInCloud.empty?
-    red('New files detected in collections stored in cloud! Sync needed!')
-    puts newFilesInCloud
+    output_file.puts 'New files detected in collections stored in cloud! Sync needed!'
+    output_file.puts newFilesInCloud
   end
-  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
-end
+output_file.close
 
 if (changedNoMeta.empty? && changedWithMeta.empty?)
   green("No changed directories found!")
