@@ -43,10 +43,12 @@ end
 unless changedNoMeta.empty?
   green("Missing metadata found in the following directories:")
   changedNoMeta.each { |dir| puts dir }
+  puts "----"
 end
 unless changedWithMeta.empty?
   green("Changed directories found:")
   changedWithMeta.each { |dir| puts dir }
+  puts "----"
 end
 
 if ! changedNoMeta.empty?
@@ -71,11 +73,16 @@ if ! changedWithMeta.empty?
     elsif contents_comparison[1] == 'fail'
       needExaminationHash << target
       needExaminationHash << contents_comparison[2]
+      red("Fixity failure detected!")
     else
       needExaminationChanged << target
       needExaminationChanged << contents_comparison[1]
+      needExaminationChanged << contents_comparison[2]
+      red("Manifest changes detected!")
     end
   end
+  puts ''
+  puts '----'
   if ! needExaminationHash.empty?
     red("Needs Examination for hash failure!")
     puts needExaminationHash

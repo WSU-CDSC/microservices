@@ -100,7 +100,7 @@ def CompareContents(changedDirectory)
   puts "Checking status of: #{changedDirectory}"
   baseName = File.basename(changedDirectory)
   hashDataFile = "#{changedDirectory}/metadata/#{baseName}.md5"
-  allFiles = Dir.glob("#{changedDirectory}/**/*").reject {|f| File.directory?(f)}
+  allFiles = Dir.glob("#{changedDirectory}/**/*").reject { |f| File.directory?(f) ; f.include?('/metadata') }
   hashData = File.readlines(hashDataFile)
   hashFileList = Array.new
   currentFileList = Array.new
@@ -120,11 +120,10 @@ def CompareContents(changedDirectory)
   hashFileList.delete('Thumbs.db')
   currentFileList.delete('filename')
   currentFileList.delete('Thumbs.db')
-  currentFileList.delete_if {|line| line.include?('/metadata')}
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
-    # log_premis_pass(changedDirectory,__method__.to_s)
+    log_premis_pass(changedDirectory,__method__.to_s)
     manifest_status = 'no change'
     fixity_check = check_old_manifest(changedDirectory)
     contents_results = [manifest_status]
@@ -134,24 +133,15 @@ def CompareContents(changedDirectory)
     missingFiles = (hashFileList.uniq - currentFileList)
     if ! newFiles.empty? && missingFiles.empty?
       manifest_status = 'new files'
-      # log_premis_fail(changedDirectory,__method__.to_s)
+      log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
       fixity_check = check_old_manifest(changedDirectory)
       contents_results = [manifest_status]
       fixity_check.each { |check| contents_results << check }
-      # if fixity_check[0] == 'pass'
-      #   green("Existing hashes for #{changedDirectory} were valid: Will generate new metadata to reflect new files.")
-      #   CleanUpMeta(changedDirectory)
-      # elsif
-      #   fixity_check[0] == 'fail'
-      #   log_premis_fail(changedDirectory,__method__.to_s)
-      #   red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
-      #   puts fixity_check[1]
-      # end
     elsif ! missingFiles.empty?
-      # log_premis_fail(changedDirectory,__method__.to_s)
+      log_premis_fail(changedDirectory,__method__.to_s)
       manifest_status = 'missing files'
-      contents_results = [manifest_status, missingFiles]
+      contents_results = [manifest_status, missingFiles, newFiles]
     end
   end
   return contents_results
