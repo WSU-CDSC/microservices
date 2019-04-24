@@ -21,6 +21,7 @@ changedWithMeta = Set[]
 changedNoMeta = Set[]
 needExaminationHash = []
 needExaminationChanged = []
+newFilesInCloud = []
 
 scanDirList.each do |scanDir|
   metaDir = "#{scanDir}/metadata"
@@ -70,6 +71,12 @@ if ! changedWithMeta.empty?
       green("New files detected - will update metadata")
       CleanUpMeta(target)
       logTimeWrite(target)
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+        newFilesInCloud << [target]
+      else
+      end
     elsif contents_comparison[1] == 'fail'
       red("Fixity failure detected!")
       cloud_check = check_cloud_status(target)
@@ -100,6 +107,10 @@ if ! changedWithMeta.empty?
   if ! needExaminationChanged.empty?
     red("Needs Examination for file manifest changes!")
     puts needExaminationChanged
+  end
+  if ! newFilesInCloud.empty?
+    red('New files detected in collections stored in cloud! Sync needed!')
+    puts newFilesInCloud
   end
   File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
 end
