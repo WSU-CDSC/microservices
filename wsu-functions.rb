@@ -100,7 +100,7 @@ def CompareContents(changedDirectory)
   puts "Checking status of: #{changedDirectory}"
   baseName = File.basename(changedDirectory)
   hashDataFile = "#{changedDirectory}/metadata/#{baseName}.md5"
-  allFiles = Dir.glob("#{changedDirectory}/**/*").reject { |line| File.directory?(line) ; line.include?('/metadata') }
+  allFiles = Dir.glob("#{changedDirectory}/**/*").reject { |line| (File.directory?(line) || line.include?('/metadata')) }
   hashData = File.readlines(hashDataFile).reject { |line| line.include?('/metadata') }
   hashFileList = Array.new
   currentFileList = Array.new
