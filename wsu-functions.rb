@@ -97,7 +97,7 @@ end
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
-  puts "Changed directory found: #{changedDirectory}"
+  puts "Checking status of: #{changedDirectory}"
   baseName = File.basename(changedDirectory)
   hashDataFile = "#{changedDirectory}/metadata/#{baseName}.md5"
   allFiles = Dir.glob("#{changedDirectory}/**/*").reject {|f| File.directory?(f)}
@@ -116,17 +116,11 @@ def CompareContents(changedDirectory)
   end
 
   #lazy cleanup
-  hashFileList.delete("#{baseName}.md5")
-  hashFileList.delete("#{baseName}.json")
-  hashFileList.delete("#{baseName}_mediainfo.json")
-  hashFileList.delete("#{baseName}_PREMIS.log")
+  hashFileList.delete_if {|line| line.include?('/metadata')}
   hashFileList.delete('Thumbs.db')
   currentFileList.delete('filename')
   currentFileList.delete('Thumbs.db')
-  currentFileList.delete("#{baseName}.json")
-  currentFileList.delete("#{baseName}.md5")
-  currentFileList.delete("#{baseName}_mediainfo.json")
-  currentFileList.delete("#{baseName}_PREMIS.log")
+  currentFileList.delete_if {|line| line.include?('/metadata')}
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")

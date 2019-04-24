@@ -62,13 +62,18 @@ end
 if ! changedWithMeta.empty?
   changedWithMeta.each do |target|
     contents_comparison = CompareContents(target)
-    if (contents_comparison[0] = 'no change' &&  contents_comparison[1] == 'pass')
+    if (contents_comparison[0] == 'no change' &&  contents_comparison[1] == 'pass')
+      logTimeWrite(target)
+    elsif contents_comparison[0] == 'new files' && contents_comparison[1] == 'pass'
+      green("New files detected - will update metadata")
+      CleanUpMeta(target)
       logTimeWrite(target)
     elsif contents_comparison[1] == 'fail'
       needExaminationHash << target
       needExaminationHash << contents_comparison[2]
     else
       needExaminationChanged << target
+      needExaminationChanged << contents_comparison[1]
     end
   end
   if ! needExaminationHash.empty?
