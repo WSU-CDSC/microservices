@@ -10,6 +10,8 @@ To use, first you will need to create an account on the IBM Watson service. Then
 
 must be modified with the API key that is associated with your Watson account.
 
+Additionally, it has been found that Watson changes the base URL for their services from time to time, so make sure to compare the base URL in line 19 with the one that shows up in your Watson dashboard.
+
 After setting up your credentials, simply run the script with an A/V file(s) as an input like, `vid2watson.rb myinput1.mp4 myinput2.mp4`. The script will automatically create a directory and store the outputs of Watson.
 
 Once the first script has completed, take the `.json` file that was created by the process and parse it with the second script in the manner of `watson2vtt.rb myinput.json`.
