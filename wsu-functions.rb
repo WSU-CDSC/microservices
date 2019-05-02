@@ -97,11 +97,11 @@ end
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
-  puts "Changed directory found: #{changedDirectory}"
+  puts "Checking status of: #{changedDirectory}"
   baseName = File.basename(changedDirectory)
   hashDataFile = "#{changedDirectory}/metadata/#{baseName}.md5"
-  allFiles = Dir.glob("#{changedDirectory}/**/*").reject {|f| File.directory?(f)}
-  hashData = File.readlines(hashDataFile)
+  allFiles = Dir.glob("#{changedDirectory}/**/*").reject { |line| (File.directory?(line) || line.include?('/metadata')) }
+  hashData = File.readlines(hashDataFile).reject { |line| line.include?('/metadata') }
   hashFileList = Array.new
   currentFileList = Array.new
   hashData.each do |hashLine|
@@ -116,49 +116,35 @@ def CompareContents(changedDirectory)
   end
 
   #lazy cleanup
-  hashFileList.delete("#{baseName}.md5")
-  hashFileList.delete("#{baseName}.json")
-  hashFileList.delete("#{baseName}_mediainfo.json")
-  hashFileList.delete("#{baseName}_PREMIS.log")
+  hashFileList.delete_if {|line| line.include?('/metadata')}
   hashFileList.delete('Thumbs.db')
   currentFileList.delete('filename')
   currentFileList.delete('Thumbs.db')
-  currentFileList.delete("#{baseName}.json")
-  currentFileList.delete("#{baseName}.md5")
-  currentFileList.delete("#{baseName}_mediainfo.json")
-  currentFileList.delete("#{baseName}_PREMIS.log")
 
   if currentFileList.sort == hashFileList.uniq.sort
     purple("Will verify hashes for existing files")
-    @noChange = 'true'
     log_premis_pass(changedDirectory,__method__.to_s)
-    check_old_manifest(changedDirectory)
+    manifest_status = 'no change'
+    fixity_check = check_old_manifest(changedDirectory)
+    contents_results = [manifest_status]
+    fixity_check.each { |check| contents_results << check }
   else
-    @newFiles = (currentFileList - hashFileList.uniq)
-    @missingFiles = (hashFileList.uniq - currentFileList)
-    if ! @newFiles.empty? && @missingFiles.empty?
-      red("New Files Found in #{changedDirectory}!")
+    newFiles = (currentFileList - hashFileList.uniq)
+    missingFiles = (hashFileList.uniq - currentFileList)
+    if ! newFiles.empty? && missingFiles.empty?
+      manifest_status = 'new files'
       log_premis_fail(changedDirectory,__method__.to_s)
       purple("Will verify hashes for existing files")
-      check_old_manifest(changedDirectory)
-      if @fixityCheck == 'pass'
-        green("Existing hashes for #{changedDirectory} were valid: Will generate new metadata to reflect new files.")
-        CleanUpMeta(changedDirectory)
-      elsif
-        @fixityCheck == 'fail'
-        log_premis_fail(changedDirectory,__method__.to_s)
-        red("Warning: Invalid hash information detected. Please examine #{changedDirectory} for changes")
-      end
-    elsif ! @missingFiles.empty?
+      fixity_check = check_old_manifest(changedDirectory)
+      contents_results = [manifest_status]
+      fixity_check.each { |check| contents_results << check }
+    elsif ! missingFiles.empty?
       log_premis_fail(changedDirectory,__method__.to_s)
-      red("Warning! Missing files found in #{changedDirectory}!")
-        puts 'missing:'
-        puts @missingFiles
-        puts "-----"
-        puts 'new'
-        puts @newFiles
+      manifest_status = 'missing files'
+      contents_results = [manifest_status, missingFiles, newFiles]
     end
   end
+  return contents_results
 end
 
 def check_old_manifest(fileInput)
@@ -182,17 +168,16 @@ def check_old_manifest(fileInput)
   if hash_difference.count == 0
     puts "Fixity infomation valid"
     log_premis_pass(fileInput,__method__.to_s)
-    @fixityCheck = 'pass'
+    fixity_check = ['pass','']
   else
-    red("Bad fixity information or missing files present!")
     log_premis_fail(fileInput,__method__.to_s)
-    @fixityCheck = 'fail'
     hash_fail_list = []
     hash_difference.each do |hash|
       hash_fail_list << hash_file.select { |line| line.include?(hash)}
     end
-    puts hash_fail_list
+    fixity_check = ['fail', hash_fail_list]
   end
+  return fixity_check
 end
 
 # Makes metadata directory or deletes current contents of existing metadata directory

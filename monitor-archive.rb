@@ -21,6 +21,7 @@ changedWithMeta = Set[]
 changedNoMeta = Set[]
 needExaminationHash = []
 needExaminationChanged = []
+newFilesInCloud = []
 
 scanDirList.each do |scanDir|
   metaDir = "#{scanDir}/metadata"
@@ -43,10 +44,12 @@ end
 unless changedNoMeta.empty?
   green("Missing metadata found in the following directories:")
   changedNoMeta.each { |dir| puts dir }
+  puts "----"
 end
 unless changedWithMeta.empty?
   green("Changed directories found:")
   changedWithMeta.each { |dir| puts dir }
+  puts "----"
 end
 
 if ! changedNoMeta.empty?
@@ -61,29 +64,59 @@ end
 
 if ! changedWithMeta.empty?
   changedWithMeta.each do |target|
-    CompareContents(target)
-    if (@noChange = 'true' &&  @fixityCheck == 'pass')
+    contents_comparison = CompareContents(target)
+    if (contents_comparison[0] == 'no change' &&  contents_comparison[1] == 'pass')
       logTimeWrite(target)
-      @noChange = ''
-      @fixityCheck = ''
-    elsif @fixityCheck == 'fail'
-      needExaminationHash << target
-      @fixityCheck = ''
+    elsif contents_comparison[0] == 'new files' && contents_comparison[1] == 'pass'
+      green("New files detected - will update metadata")
+      CleanUpMeta(target)
+      logTimeWrite(target)
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+        newFilesInCloud << [target]
+      else
+      end
+    elsif contents_comparison[1] == 'fail'
+      red("Fixity failure detected!")
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+      else
+        cloud_status = ''
+      end
+      needExaminationHash << [target,contents_comparison[2],cloud_status]
     else
-      needExaminationChanged << target
+      red("Manifest changes detected!")
+      cloud_check = check_cloud_status(target)
+      if cloud_check == 1
+        cloud_status = "WARNING IN CLOUD"
+      else
+        cloud_status = ''
+      end
+      needExaminationChanged << [target,contents_comparison[1],contents_comparison[2],cloud_status]
     end
   end
+end
+puts ''
+puts '----'
+output_file_path = File.expand_path("~/Desktop/monitor-archive-warnings.txt")
+output_file = File.open(output_file_path,"w")
   if ! needExaminationHash.empty?
-    red("Needs Examination for hash failure!")
-    puts needExaminationHash
-    puts "---"
+    output_file.puts "Needs Examination for hash failure!"
+    output_file.puts needExaminationHash
+    output_file.puts "---"
   end
   if ! needExaminationChanged.empty?
-    red("Needs Examination for file manifest changes!")
-    puts needExaminationChanged
+    output_file.puts "Needs Examination for file manifest changes!"
+    output_file.puts needExaminationChanged
   end
-  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),(needExaminationHash + needExaminationChanged))   
-end
+  if ! newFilesInCloud.empty?
+    output_file.puts 'New files detected in collections stored in cloud! Sync needed!'
+    output_file.puts newFilesInCloud
+  end
+output_file.close
+File.readlines(output_file_path).each { |line| puts line }
 
 if (changedNoMeta.empty? && changedWithMeta.empty?)
   green("No changed directories found!")

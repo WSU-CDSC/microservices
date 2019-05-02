@@ -5,9 +5,12 @@ require 'json'
 require 'optparse'
 scriptLocation = File.expand_path(File.dirname(__FILE__))
 require "#{scriptLocation}/wsu-functions.rb"
+$b2_delete = ''
+$dryrun = ''
 
 ARGV.options do |opts|
-  opts.on("-d", "--dry-run")  { $dryrun = '--dryRun ' }
+  opts.on("-d", "--dry-run")  { $dryrun = ' --dryRun ' }
+  opts.on("-x", "--delete")  { $b2_delete = ' --delete ' }
   opts.on("-p", "--path=val", String)  { |val| $b2path = val }
   opts.parse!
 end
@@ -15,7 +18,7 @@ end
 # Set up methods
 
 def outcomereport(target)
-  outcome_log = ENV['HOME'] + "/Desktop/aip2_rb_OUTCOME_LOG.txt"
+  outcome_log = ENV['HOME'] + "/Desktop/aip2_B2_OUTCOME_LOG.txt"
   open(outcome_log, "a") do |l|
     l.puts ''
     l.puts "Package: #{target}\n"
@@ -32,7 +35,7 @@ end
 
 # Check for b2 path
 if $b2path.nil?
-  puts "Please enter a B2 path using the -p flag.".red
+  puts red("Please enter a B2 path using the -p flag.")
   exit
 end
 
@@ -40,7 +43,7 @@ ARGV.each do |input_AIP|
   @target_path = Pathname.new(input_AIP)
   # Test for directory
   if ! @target_path.directory?
-    puts "Input must be a directory! Exiting.".red && exit
+    puts red("Input must be a directory! Exiting.") && exit
   end
   $packagename = File.basename(@target_path)
   @targetdir = File.dirname(@target_path)
@@ -49,21 +52,18 @@ ARGV.each do |input_AIP|
   if File.exist?(logfile)
     @premis_structure = JSON.parse(File.read(logfile))
   end
-  if $dryrun.nil?
-   $command = 'b2 sync ' + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
-  else
-   $command = 'b2 sync ' + $dryrun + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
-  end
+
+   $command = 'b2 sync ' + $dryrun + $b2_delete + '"' + @target_path.to_s + '" ' + '"' + b2_target + '"'
 
   if system($command)
     green("SUCCESS!")
-    if $dryrun.nil?
+    if $dryrun.empty?
       log_premis_pass(input_AIP,'aip2b2.rb')
       system($command)
       outcomereport(input_AIP)
     end
   else
-    if $dryrun.nil?
+    if $dryrun.empty?
       red("FAIL!")
       log_premis_fail(input_AIP,'aip2b2.rb')
       outcomereport(input_AIP)
