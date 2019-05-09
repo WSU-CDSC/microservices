@@ -862,11 +862,11 @@
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname[@role='subject']">
+        <xsl:if test="ead:controlaccess/ead:persname">
             <h4>Personal Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:controlaccess/ead:persname[@role='subject']">
-                    <li><xsl:apply-templates/></li>
+                <xsl:for-each select="ead:controlaccess/ead:persname[@role!='creator']">
+                    <li><xsl:value-of select="."/> -- <xsl:value-of select="./@role"/></li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
@@ -878,8 +878,24 @@
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname[@role='creator']">
-            <h4>Creators:</h4>
+        <xsl:if test="ead:controlaccess/ead:persname[@role='creator'] or ead:controlaccess/ead:corpname[@role='creator']">
+            <h4>Additional Creator(s)</h4>
+            <xsl:if test="ead:controlaccess/ead:persname[@role='creator']">
+                <p><strong>Personal Names:</strong></p>
+                <ul>
+                    <xsl:for-each select="ead:controlaccess/ead:persname[@role='creator']">
+                        <li><xsl:value-of select="."/></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if>
+            <xsl:if test="ead:controlaccess/ead:corpname[@role='creator']">
+                <p><strong>Corporate Names:</strong></p>
+                <ul>
+                    <xsl:for-each select="ead:controlaccess/ead:corpname[@role='creator']">
+                        <li><xsl:value-of select="."/></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if>
         </xsl:if>
         <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
     </xsl:template>
