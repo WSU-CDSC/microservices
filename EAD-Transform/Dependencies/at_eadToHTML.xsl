@@ -809,8 +809,8 @@
             <xsl:when test="ead:head"><xsl:apply-templates select="ead:head"/></xsl:when>
             <xsl:otherwise>
                 <xsl:choose>
-                    <xsl:when test="parent::ead:archdesc"><h3 id="contlAcc">Controlled Access Headings</h3></xsl:when>
-                    <xsl:otherwise><h4 id="contlAcc">Controlled Access Headings</h4></xsl:otherwise>
+                    <xsl:when test="parent::ead:archdesc"><h3 id="contlAcc">Names and Subjects</h3></xsl:when>
+                    <xsl:otherwise><h4 id="contlAcc">Names and Subjects</h4></xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
@@ -862,11 +862,11 @@
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname">
+        <xsl:if test="ead:controlaccess/ead:persname[@role='subject']">
             <h4>Personal Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:controlaccess/ead:persname">
-                    <li><xsl:apply-templates/> </li>
+                <xsl:for-each select="ead:controlaccess/ead:persname[@role='subject']">
+                    <li><xsl:apply-templates/></li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
@@ -877,6 +877,9 @@
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
+        </xsl:if>
+        <xsl:if test="ead:controlaccess/ead:persname[@role='creator']">
+            <h4>Creators:</h4>
         </xsl:if>
         <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
     </xsl:template>
