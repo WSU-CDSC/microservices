@@ -585,7 +585,7 @@
  
      <!-- Named template for a generic p element with a link back to the table of contents  -->
     <xsl:template name="returnTOC">                
-        <p class="returnTOC"><a href="#toc">Return to Table of Contents »</a></p>
+        <p class="returnTOC"><a href="#top">Return to Top »</a></p>
         <hr/>
     </xsl:template>
     <xsl:template match="ead:eadheader">
