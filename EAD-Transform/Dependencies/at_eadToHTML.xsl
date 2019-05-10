@@ -559,7 +559,7 @@
                                 <xsl:choose>
                                     <xsl:when test="ead:head">
                                         <xsl:value-of select="ead:head"/></xsl:when>
-                                    <xsl:otherwise>Collection Inventory</xsl:otherwise>
+                                    <xsl:otherwise>Detailed Description of Collection</xsl:otherwise>
                                 </xsl:choose>
                             </a>
                         </dt>                
@@ -1498,7 +1498,7 @@
                 <xsl:apply-templates select="ead:head"/>
             </xsl:when>
             <xsl:otherwise>
-                <h3><xsl:call-template name="anchor"/>Collection Inventory</h3>
+                <h3><xsl:call-template name="anchor"/>Detailed Description of Collection</h3>
             </xsl:otherwise>
         </xsl:choose>
         <!-- Creates a table for container lists, defaults to 5 cells, for up to 4 container lists.  -->
