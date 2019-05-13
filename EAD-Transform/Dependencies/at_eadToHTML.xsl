@@ -77,7 +77,7 @@
 					 and displays the WSU icon in the browser
 				-->
 				<link href="http://wsu.edu/cougar.ico" rel="shortcut icon" title="Washington State University" />
-				<link rel="stylesheet" href="http://www.wsulibs.wsu.edu/masc/css/at_ead_stylesheet.css" />
+				<link rel="stylesheet" href="wsu-ead.css" />
 
             </head>
             <body>
@@ -190,6 +190,17 @@
 					
 					add this to any updated AT xsl files
 				-->
+
+                <script type="text/javascript">
+                      window.onscroll = function changeTOC(){
+                      var scrollPosY = window.pageYOffset | document.body.scrollTop;
+                      if(scrollPosY <xsl:text disable-output-escaping="yes">&gt;</xsl:text> 315) {
+                        toc.className = ('toc-scrolling');
+                        } else {
+                             toc.className =  ('toc-top');
+                        }
+                    }
+                </script>
 				<script type="text/javascript">
 					var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 					document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -583,7 +594,7 @@
         </div>
     </xsl:template>
  
-     <!-- Named template for a generic p element with a link back to the table of contents  -->
+     <!-- Named template for a generic p element with a link back to the top of page  -->
     <xsl:template name="returnTOC">                
         <p class="returnTOC"><a href="#top">Return to Top »</a></p>
         <hr/>
