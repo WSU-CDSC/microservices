@@ -430,7 +430,7 @@
     <!-- Creates an ordered table of contents that matches the order of the archdesc 
         elements. To change the order rearrange the if/for-each statements. -->  
     <xsl:template name="toc">
-        <div id="toc">
+        <div id="toc" class="toc-top">
             <h3>Table of Contents</h3>
             <dl>
                 <xsl:if test="/ead:ead/ead:archdesc/ead:did">
