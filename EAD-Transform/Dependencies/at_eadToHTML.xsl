@@ -504,7 +504,7 @@
                             <xsl:choose>
                                 <xsl:when test="ead:head">
                                     <xsl:value-of select="ead:head"/></xsl:when>
-                                <xsl:otherwise>Controlled Access Headings</xsl:otherwise>
+                                <xsl:otherwise>Names and Subjects</xsl:otherwise>
                             </xsl:choose>
                         </a>
                     </dt>   
@@ -748,31 +748,6 @@
                                 <xsl:when test="self::ead:appraisal"><h4><xsl:call-template name="anchor"/>Appraisal</h4></xsl:when>                        
                             </xsl:choose>
                     </xsl:when>
-                    <xsl:otherwise>
-                        <h4><xsl:call-template name="anchor"/>
-                            <xsl:choose>
-                                <xsl:when test="self::ead:bibliography">Bibliography</xsl:when>
-                                <xsl:when test="self::ead:odd">Other Descriptive Data</xsl:when>
-                                <xsl:when test="self::ead:accruals">Accruals</xsl:when>
-                                <xsl:when test="self::ead:arrangement">Arrangement</xsl:when>
-                                <xsl:when test="self::ead:bioghist">Biography/History</xsl:when>
-                                <xsl:when test="self::ead:accessrestrict">Restrictions on Access</xsl:when>
-                                <xsl:when test="self::ead:userestrict">Restrictions on Use</xsl:when>
-                                <xsl:when test="self::ead:custodhist">Custodial History</xsl:when>
-                                <xsl:when test="self::ead:altformavail">Alternative Form Available</xsl:when>
-                                <xsl:when test="self::ead:originalsloc">Original Location</xsl:when>
-                                <xsl:when test="self::ead:fileplan">File Plan</xsl:when>
-                                <xsl:when test="self::ead:acqinfo">Acquisition Information</xsl:when>
-                                <xsl:when test="self::ead:otherfindaid">Other Finding Aids</xsl:when>
-                                <xsl:when test="self::ead:phystech">Physical Characteristics and Technical Requirements</xsl:when>
-                                <xsl:when test="self::ead:processinfo">Processing Information</xsl:when>
-                                <xsl:when test="self::ead:relatedmaterial">Related Material</xsl:when>
-                                <xsl:when test="self::ead:scopecontent">Scope and Content</xsl:when>
-                                <xsl:when test="self::ead:separatedmaterial">Separated Material</xsl:when>
-                                <xsl:when test="self::ead:appraisal">Appraisal</xsl:when>                       
-                            </xsl:choose>
-                        </h4>
-                    </xsl:otherwise>
                 </xsl:choose>
                 <xsl:apply-templates/>
             </xsl:otherwise>
