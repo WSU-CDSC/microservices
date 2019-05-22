@@ -1898,7 +1898,14 @@
             </xsl:when>
             <!--Otherwise render the text in its normal font.-->
             <xsl:otherwise>
-                <p><xsl:call-template name="component-did-core"/></p>
+                <xsl:choose>
+                    <xsl:when test="../ead:scopecontent">
+                        <p style="font-weight:bold"><xsl:call-template name="component-did-core"/></p>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <p><xsl:call-template name="component-did-core"/></p>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
