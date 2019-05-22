@@ -1408,7 +1408,7 @@
              <xsl:otherwise>
                  <xsl:choose>
                      <xsl:when test="@label"><h4><xsl:value-of select="@label"/></h4><xsl:apply-templates/></xsl:when>
-                     <xsl:otherwise><h4>Note</h4><xsl:apply-templates/></xsl:otherwise>
+                     <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
                  </xsl:choose>
              </xsl:otherwise>
          </xsl:choose>
