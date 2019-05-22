@@ -315,6 +315,15 @@
     background-color: #dddddd;
   }
 
+
+  tr.series h4 {
+    font-size: 1.5em;
+  }
+
+  tr.subseries h4 {
+    font-size: 1.2em;
+  }
+
   .containerHeader {
     font-variant: small-caps;
     font-weight:bold;
@@ -354,6 +363,7 @@
 
   table td.c01 {
     padding-left: 0;
+    border-bottom: 3px solid white;
   }
 
   table td.c02 {
