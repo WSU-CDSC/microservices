@@ -77,7 +77,7 @@
 					 and displays the WSU icon in the browser
 				-->
 				<link href="http://wsu.edu/cougar.ico" rel="shortcut icon" title="Washington State University" />
-				<link rel="stylesheet" href="http://www.wsulibs.wsu.edu/masc/css/at_ead_stylesheet.css" />
+				<link rel="stylesheet" href="wsu-ead.css" />
 
             </head>
             <body>
@@ -190,6 +190,17 @@
 					
 					add this to any updated AT xsl files
 				-->
+
+                <script type="text/javascript">
+                      window.onscroll = function changeTOC(){
+                      var scrollPosY = window.pageYOffset | document.body.scrollTop;
+                      if(scrollPosY <xsl:text disable-output-escaping="yes">&gt;</xsl:text> 315) {
+                        toc.className = ('toc-scrolling');
+                        } else {
+                             toc.className =  ('toc-top');
+                        }
+                    }
+                </script>
 				<script type="text/javascript">
 					var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 					document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -419,7 +430,7 @@
     <!-- Creates an ordered table of contents that matches the order of the archdesc 
         elements. To change the order rearrange the if/for-each statements. -->  
     <xsl:template name="toc">
-        <div id="toc">
+        <div id="toc" class="toc-top">
             <h3>Table of Contents</h3>
             <dl>
                 <xsl:if test="/ead:ead/ead:archdesc/ead:did">
@@ -493,7 +504,7 @@
                             <xsl:choose>
                                 <xsl:when test="ead:head">
                                     <xsl:value-of select="ead:head"/></xsl:when>
-                                <xsl:otherwise>Controlled Access Headings</xsl:otherwise>
+                                <xsl:otherwise>Names and Subjects</xsl:otherwise>
                             </xsl:choose>
                         </a>
                     </dt>   
@@ -559,7 +570,7 @@
                                 <xsl:choose>
                                     <xsl:when test="ead:head">
                                         <xsl:value-of select="ead:head"/></xsl:when>
-                                    <xsl:otherwise>Collection Inventory</xsl:otherwise>
+                                    <xsl:otherwise>Detailed Description of Collection</xsl:otherwise>
                                 </xsl:choose>
                             </a>
                         </dt>                
@@ -583,9 +594,9 @@
         </div>
     </xsl:template>
  
-     <!-- Named template for a generic p element with a link back to the table of contents  -->
+     <!-- Named template for a generic p element with a link back to the top of page  -->
     <xsl:template name="returnTOC">                
-        <p class="returnTOC"><a href="#toc">Return to Table of Contents »</a></p>
+        <p class="returnTOC"><a href="#top">Return to Top »</a></p>
         <hr/>
     </xsl:template>
     <xsl:template match="ead:eadheader">
@@ -737,31 +748,6 @@
                                 <xsl:when test="self::ead:appraisal"><h4><xsl:call-template name="anchor"/>Appraisal</h4></xsl:when>                        
                             </xsl:choose>
                     </xsl:when>
-                    <xsl:otherwise>
-                        <h4><xsl:call-template name="anchor"/>
-                            <xsl:choose>
-                                <xsl:when test="self::ead:bibliography">Bibliography</xsl:when>
-                                <xsl:when test="self::ead:odd">Other Descriptive Data</xsl:when>
-                                <xsl:when test="self::ead:accruals">Accruals</xsl:when>
-                                <xsl:when test="self::ead:arrangement">Arrangement</xsl:when>
-                                <xsl:when test="self::ead:bioghist">Biography/History</xsl:when>
-                                <xsl:when test="self::ead:accessrestrict">Restrictions on Access</xsl:when>
-                                <xsl:when test="self::ead:userestrict">Restrictions on Use</xsl:when>
-                                <xsl:when test="self::ead:custodhist">Custodial History</xsl:when>
-                                <xsl:when test="self::ead:altformavail">Alternative Form Available</xsl:when>
-                                <xsl:when test="self::ead:originalsloc">Original Location</xsl:when>
-                                <xsl:when test="self::ead:fileplan">File Plan</xsl:when>
-                                <xsl:when test="self::ead:acqinfo">Acquisition Information</xsl:when>
-                                <xsl:when test="self::ead:otherfindaid">Other Finding Aids</xsl:when>
-                                <xsl:when test="self::ead:phystech">Physical Characteristics and Technical Requirements</xsl:when>
-                                <xsl:when test="self::ead:processinfo">Processing Information</xsl:when>
-                                <xsl:when test="self::ead:relatedmaterial">Related Material</xsl:when>
-                                <xsl:when test="self::ead:scopecontent">Scope and Content</xsl:when>
-                                <xsl:when test="self::ead:separatedmaterial">Separated Material</xsl:when>
-                                <xsl:when test="self::ead:appraisal">Appraisal</xsl:when>                       
-                            </xsl:choose>
-                        </h4>
-                    </xsl:otherwise>
                 </xsl:choose>
                 <xsl:apply-templates/>
             </xsl:otherwise>
@@ -809,8 +795,8 @@
             <xsl:when test="ead:head"><xsl:apply-templates select="ead:head"/></xsl:when>
             <xsl:otherwise>
                 <xsl:choose>
-                    <xsl:when test="parent::ead:archdesc"><h3 id="contlAcc">Controlled Access Headings</h3></xsl:when>
-                    <xsl:otherwise><h4 id="contlAcc">Controlled Access Headings</h4></xsl:otherwise>
+                    <xsl:when test="parent::ead:archdesc"><h3 id="contlAcc">Names and Subjects</h3></xsl:when>
+                    <xsl:otherwise><h4 id="contlAcc">Names and Subjects</h4></xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
@@ -865,8 +851,8 @@
         <xsl:if test="ead:controlaccess/ead:persname">
             <h4>Personal Name(s)</h4>
             <ul>
-                <xsl:for-each select="ead:controlaccess/ead:persname">
-                    <li><xsl:apply-templates/> </li>
+                <xsl:for-each select="ead:controlaccess/ead:persname[@role!='creator']">
+                    <li><xsl:value-of select="."/> -- <xsl:value-of select="./@role"/></li>
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
@@ -877,6 +863,25 @@
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
+        </xsl:if>
+        <xsl:if test="ead:controlaccess/ead:persname[@role='creator'] or ead:controlaccess/ead:corpname[@role='creator']">
+            <h4>Additional Creator(s)</h4>
+            <xsl:if test="ead:controlaccess/ead:persname[@role='creator']">
+                <p><strong>Personal Names:</strong></p>
+                <ul>
+                    <xsl:for-each select="ead:controlaccess/ead:persname[@role='creator']">
+                        <li><xsl:value-of select="."/></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if>
+            <xsl:if test="ead:controlaccess/ead:corpname[@role='creator']">
+                <p><strong>Corporate Names:</strong></p>
+                <ul>
+                    <xsl:for-each select="ead:controlaccess/ead:corpname[@role='creator']">
+                        <li><xsl:value-of select="."/></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:if>
         </xsl:if>
         <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
     </xsl:template>
@@ -1403,7 +1408,7 @@
              <xsl:otherwise>
                  <xsl:choose>
                      <xsl:when test="@label"><h4><xsl:value-of select="@label"/></h4><xsl:apply-templates/></xsl:when>
-                     <xsl:otherwise><h4>Note</h4><xsl:apply-templates/></xsl:otherwise>
+                     <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
                  </xsl:choose>
              </xsl:otherwise>
          </xsl:choose>
@@ -1479,7 +1484,7 @@
                 <xsl:apply-templates select="ead:head"/>
             </xsl:when>
             <xsl:otherwise>
-                <h3><xsl:call-template name="anchor"/>Collection Inventory</h3>
+                <h3><xsl:call-template name="anchor"/>Detailed Description of Collection</h3>
             </xsl:otherwise>
         </xsl:choose>
         <!-- Creates a table for container lists, defaults to 5 cells, for up to 4 container lists.  -->
@@ -1893,7 +1898,14 @@
             </xsl:when>
             <!--Otherwise render the text in its normal font.-->
             <xsl:otherwise>
-                <p><xsl:call-template name="component-did-core"/></p>
+                <xsl:choose>
+                    <xsl:when test="../ead:scopecontent">
+                        <p style="font-weight:bold"><xsl:call-template name="component-did-core"/></p>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <p><xsl:call-template name="component-did-core"/></p>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
