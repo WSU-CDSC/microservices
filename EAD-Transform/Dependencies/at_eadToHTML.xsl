@@ -851,7 +851,7 @@
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname">
+        <xsl:if test="ead:controlaccess/ead:persname[@role!='creator']">
             <h4>Personal Name(s)</h4>
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:persname[@role!='creator']">
