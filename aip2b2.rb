@@ -63,6 +63,8 @@ ARGV.each do |input_AIP|
       outcomereport(input_AIP)
     end
   else
+    red("FAIL!")
+    red("Retrying...")
     unless system($command)
       if $dryrun.empty?
         red("FAIL!")
