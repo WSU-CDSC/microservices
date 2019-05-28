@@ -809,7 +809,7 @@
         <xsl:if test="ead:controlaccess/ead:corpname">
             <h4>Corporate Name(s)</h4>
             <xsl:for-each select="ead:controlaccess/ead:corpname[count(. | key('corp-names-and-roles', @role)[1]) = 1]">
-                <h5><xsl:value-of select="@role" />:</h5>
+                <h5><xsl:value-of select="@role" />(s) :</h5>
                 <ul>
                     <xsl:for-each select="key('corp-names-and-roles', @role)">
                         <li><xsl:value-of select="." /></li>
@@ -860,7 +860,7 @@
         <xsl:if test="ead:controlaccess/ead:persname">
             <h4>Personal Name(s)</h4>
             <xsl:for-each select="ead:controlaccess/ead:persname[count(. | key('names-and-roles', @role)[1]) = 1]">
-                <h5><xsl:value-of select="@role" />:</h5>
+                <h5><xsl:value-of select="@role" />(s) :</h5>
                 <ul>
                     <xsl:for-each select="key('names-and-roles', @role)">
                         <li><xsl:value-of select="." /></li>
