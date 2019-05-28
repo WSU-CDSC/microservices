@@ -65,6 +65,10 @@ Target_list.each do |target_file|
     end
     language.delete('langcode')
   end
+  # Capitalize roles in Archdesc section
+  doc.xpath("/ead/archdesc/controlaccess/controlaccess/persname").each {|meh| meh.attributes["role"].value = meh.attributes["role"].value.capitalize}
+  doc.xpath("/ead/archdesc/controlaccess/controlaccess/corpname").each {|meh| meh.attributes["role"].value = meh.attributes["role"].value.capitalize}
+
   #
   File.write(temp_xml_file,doc.to_xml)
   temp_xml_file.close

@@ -793,6 +793,9 @@
     </xsl:template>
     
     <!-- Formats controlled access terms -->
+    <xsl:key name="names-and-roles" match="ead:controlaccess/ead:persname" use="@role" />
+    <xsl:key name="corp-names-and-roles" match="ead:controlaccess/ead:corpname" use="@role" />
+
     <xsl:template match="ead:controlaccess">
         <xsl:choose>
             <xsl:when test="ead:head"><xsl:apply-templates select="ead:head"/></xsl:when>
@@ -805,11 +808,14 @@
         </xsl:choose>
         <xsl:if test="ead:controlaccess/ead:corpname">
             <h4>Corporate Name(s)</h4>
-            <ul>
-                <xsl:for-each select="ead:controlaccess/ead:corpname">
-                    <li><xsl:apply-templates/> </li>
-                </xsl:for-each>
-            </ul>            
+            <xsl:for-each select="ead:controlaccess/ead:corpname[count(. | key('corp-names-and-roles', @role)[1]) = 1]">
+                <h5><xsl:value-of select="@role" />(s) :</h5>
+                <ul>
+                    <xsl:for-each select="key('corp-names-and-roles', @role)">
+                        <li><xsl:value-of select="." /></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:for-each>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:famname">
             <h4>Family Name(s)</h4>
@@ -851,13 +857,16 @@
                 </xsl:for-each>                        
             </ul>
         </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname[@role!='creator']">
+        <xsl:if test="ead:controlaccess/ead:persname">
             <h4>Personal Name(s)</h4>
-            <ul>
-                <xsl:for-each select="ead:controlaccess/ead:persname[@role!='creator']">
-                    <li><xsl:value-of select="."/> -- <xsl:value-of select="./@role"/></li>
-                </xsl:for-each>                        
-            </ul>
+            <xsl:for-each select="ead:controlaccess/ead:persname[count(. | key('names-and-roles', @role)[1]) = 1]">
+                <h5><xsl:value-of select="@role" />(s) :</h5>
+                <ul>
+                    <xsl:for-each select="key('names-and-roles', @role)">
+                        <li><xsl:value-of select="." /></li>
+                    </xsl:for-each>
+                </ul>
+            </xsl:for-each>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:subject">
             <h4>Subject(s)</h4>
@@ -866,25 +875,6 @@
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>                        
             </ul>
-        </xsl:if>
-        <xsl:if test="ead:controlaccess/ead:persname[@role='creator'] or ead:controlaccess/ead:corpname[@role='creator']">
-            <h4>Additional Creator(s)</h4>
-            <xsl:if test="ead:controlaccess/ead:persname[@role='creator']">
-                <p><strong>Personal Names:</strong></p>
-                <ul>
-                    <xsl:for-each select="ead:controlaccess/ead:persname[@role='creator']">
-                        <li><xsl:value-of select="."/></li>
-                    </xsl:for-each>
-                </ul>
-            </xsl:if>
-            <xsl:if test="ead:controlaccess/ead:corpname[@role='creator']">
-                <p><strong>Corporate Names:</strong></p>
-                <ul>
-                    <xsl:for-each select="ead:controlaccess/ead:corpname[@role='creator']">
-                        <li><xsl:value-of select="."/></li>
-                    </xsl:for-each>
-                </ul>
-            </xsl:if>
         </xsl:if>
         <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
     </xsl:template>
