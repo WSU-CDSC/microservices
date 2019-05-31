@@ -6,9 +6,11 @@ require 'set'
 require 'optparse'
 
 scanDirList = Set[]
+ignoreDirList = Set[]
 
 ARGV.options do |opts|
   opts.on("-t", "--target=val", String)  { |val| scanDirList << val }
+  opts.on("-x", "--ignore=val", String)  { |val| ignoreDirList << val }
   opts.parse!
 end
 
@@ -17,6 +19,12 @@ if scanDirList.empty?
   scanDirList = Dir.glob("#{ARGV[0]}/*").select { |target| File.directory?(target) }.to_set
   scanDirList.reject! { |dir_name| File.basename(dir_name).include?('Unprocessed') }
 end
+
+#remove directories flagged as 'ignore'
+unless ignoreDirList.empty?
+  scanDirList = (scanDirList - ignoreDirList)
+end
+
 changedWithMeta = Set[]
 changedNoMeta = Set[]
 needExaminationHash = []
