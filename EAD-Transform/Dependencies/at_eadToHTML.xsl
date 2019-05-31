@@ -1908,11 +1908,6 @@
             <xsl:apply-templates select="ead:unitid"/>
             <xsl:text>&#160;</xsl:text>
         </xsl:if>
-        <!--Inserts origination and a space if it exists in the markup.-->
-        <xsl:if test="ead:origination">
-            <xsl:apply-templates select="ead:origination"/>
-            <xsl:text>&#160;</xsl:text>
-        </xsl:if>
         <!--This choose statement selects between cases where unitdate is a child of unittitle and where it is a separate child of did.-->
         <xsl:choose>
             <!--This code processes the elements when unitdate is a child of unittitle.-->
@@ -1932,8 +1927,17 @@
                 </xsl:for-each>
             </xsl:otherwise>
         </xsl:choose>
+        <!--Inserts origination and a space if it exists in the markup.-->
+        <xsl:if test="ead:origination">
+            <br>
+            <xsl:apply-templates select="ead:origination"/>
+            <xsl:if test="ead:origination/ead:persname[@role]">
+                <xsl:text>&#160;(</xsl:text>
+                <xsl:apply-templates select="ead:origination/ead:persname/@role"/>
+                <xsl:text>)</xsl:text>
+            </xsl:apply-templates>
+        </xsl:if>
         <xsl:if test="ead:physdesc">
-            <xsl:text>&#160;</xsl:text>
             <xsl:apply-templates select="ead:physdesc"/>
         </xsl:if>
     </xsl:template>

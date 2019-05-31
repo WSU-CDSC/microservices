@@ -12,7 +12,7 @@ Target_list.each do |target_file|
   target_xml = Pathname.new(target_file)
   msxsl_path = Pathname.new(script_path + '/Dependencies/msxsl.exe')
   xslfile_path = Pathname.new(script_path + '/Dependencies/at_eadToHTML.xsl')
-  output_file = script_path + "/" + File.basename(target_xml,".*") + '.html'
+  output_file = script_path + "/" + File.basename(target_xml,".*") + '.htm'
   temp_xml_file = Tempfile.new
   temp_xml_path = Pathname.new(temp_xml_file)
 
