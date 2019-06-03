@@ -5,13 +5,13 @@ This is a repository of scripts/microservices that are being used at WSU Librari
 ## List of Scripts and Microservices
 
 * Metadata Creation & Monitoring
-  - [monitor-archive.rb](Resources/archive-tools.md)
-  - [makemetadata.rb](Resources/archive-tools.md)
+  - [checkmeta.rb](Resources/archive-tools.md)
+  - [makemeta.rb](Resources/archive-tools.md)
   - [wsumetaedit.rb](wsumetaedit/) A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool.
   
 * Cloud Migration Scripts
   - [makeaip.rb](Resources/makeaip.md): A script for generating archival packages from source directories.
-  - [aip2b2.rb](Resources/aip2b2.md): A script that works to upload AIPs generated with `makeaip.rb` to Backblaze B2. Generates a new JSON file incorporating `makeaip.rb` log and Backblaze upload PREMIS event.
+  - [uploadaip.rb](Resources/uploadaip.md): A script that works to upload AIPs generated with `makeaip.rb` to Backblaze B2. Generates a new JSON file incorporating `makeaip.rb` log and Backblaze upload PREMIS event.
 
 * Caption Workflow Scripts
   - [caption-crunch.sh](caption-crunch.sh): A quick and dirty loop script to take an input file containing a list of video links and harness Gnu Parallel to run them through the caption process.
