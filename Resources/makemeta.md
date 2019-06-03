@@ -13,11 +13,18 @@ Generated metadata includes:
 * `_PREMIS.log` file that contains a list of [PREMIS](http://id.loc.gov/vocabulary/preservation/eventType.html) actions that have been performed on target directory to date. Events are stored in JSON.
 
 ## Sample Structure
-/home/weaver/Desktop/metadata-test
-├── metadata
-│   ├── metadata-test.json
-│   ├── metadata-test.md5
-│   ├── metadata-test_mediainfo.json
-│   └── metadata-test_PREMIS.log
-├── sample-audio.mp3
-└── sample-text.txt
+> /home/weaver/Desktop/metadata-test
+
+> ├── metadata
+
+> │   ├── metadata-test.json
+
+> │   ├── metadata-test.md5
+
+> │   ├── metadata-test_mediainfo.json
+
+> │   └── metadata-test_PREMIS.log
+
+> ├── sample-audio.mp3
+
+> └── sample-text.txt
