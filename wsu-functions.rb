@@ -94,6 +94,11 @@ def check_cloud_status(target)
   return cloud_status
 end
 
+# Function to check if dependencies are installed
+
+def CheckDependencies(dependencyList)
+  # filler
+end
 
 # function for checking current files agains files contained in .md5 file
 def CompareContents(changedDirectory)
