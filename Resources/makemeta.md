@@ -14,17 +14,17 @@ Generated metadata includes:
 
 ## Sample Structure
 > /home/weaver/Desktop/metadata-test
-
+>
 > ├── metadata
-
+>
 > │   ├── metadata-test.json
-
+>
 > │   ├── metadata-test.md5
-
+>
 > │   ├── metadata-test_mediainfo.json
-
+>
 > │   └── metadata-test_PREMIS.log
-
+>
 > ├── sample-audio.mp3
-
+>
 > └── sample-text.txt
