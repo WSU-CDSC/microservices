@@ -6,7 +6,7 @@ This is a repository of scripts/microservices that are being used at WSU Librari
 
 * Metadata Creation & Monitoring
   - [checkmeta.rb](Resources/archive-tools.md)
-  - [makemeta.rb](Resources/archive-tools.md)
+  - [makemeta.rb](Resources/makemeta.md)
   - [wsumetaedit.rb](wsumetaedit/): A command line tool for automatic insertion of broadcast WAV metadata into WAV files using the BWF Meta Edit tool.
   
 * Cloud Migration Scripts
