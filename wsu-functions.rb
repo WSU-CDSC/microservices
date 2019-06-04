@@ -99,7 +99,12 @@ end
 def CheckDependencies(dependencyList)
   missingDependencyCount = 0
   dependencyList.each do |dependency|
-    unless system("#{dependency} -h > /dev/null")
+    unless dependency == 'b2'
+      checkCommand = "#{dependency} -h > /dev/null"
+    else
+      checkCommand = "#{dependency} version > /dev/null"
+    end
+    unless system(checkCommand)
       puts "Missing dependency: #{dependency}. Please install and try again!"
       missingDependencyCount = missingDependencyCount + 1
     end
