@@ -12,18 +12,18 @@ Generated metadata includes:
 * `_mediainfo.json` file (when A/V files are detected). This contains results of mediainfo scan on A/V files in target directory.
 * `_PREMIS.log` file that contains a list of [PREMIS](http://id.loc.gov/vocabulary/preservation/eventType.html) actions that have been performed on target directory to date. Events are stored in JSON.
 
-## Sample Structure
+## Sample Structure (with links to example files)
 > /home/weaver/Desktop/metadata-test
 >
 > ├── metadata
 >
-> │   ├── metadata-test.json
+> │   ├── [metadata-test.json](metadata-test.json)
 >
-> │   ├── metadata-test.md5
+> │   ├── [metadata-test.md5](metadata-test.md5)
 >
-> │   ├── metadata-test_mediainfo.json
+> │   ├── [metadata-test_mediainfo.json](metadata-test_mediainfo.json)
 >
-> │   └── metadata-test_PREMIS.log
+> │   └── [metadata-test_PREMIS.log](metadata-test_PREMIS.log)
 >
 > ├── sample-audio.mp3
 >
