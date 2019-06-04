@@ -109,9 +109,7 @@ def CheckDependencies(dependencyList)
       missingDependencyCount = missingDependencyCount + 1
     end
   end
-  if missingDependencyCount > 0
-    exit
-  end
+  exit if missingDependencyCount > 0
 end
 
 # function for checking current files agains files contained in .md5 file
