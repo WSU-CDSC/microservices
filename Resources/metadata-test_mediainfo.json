@@ -1,0 +1,58 @@
+[
+  {
+    "media": {
+      "@ref": "/home/usr/Desktop/metadata-test/sample-audio.mp3",
+      "track": [
+        {
+          "@type": "General",
+          "AudioCount": "1",
+          "FileExtension": "mp3",
+          "Format": "MPEG Audio",
+          "FileSize": "6064599",
+          "Duration": "377.365",
+          "OverallBitRate_Mode": "CBR",
+          "OverallBitRate": "128000",
+          "StreamSize": "26504",
+          "Title": "River",
+          "Album": "Mustang! (1st Full Album)",
+          "Track": "River",
+          "Track_Position": "15",
+          "Performer": "Dragon Ash",
+          "Original_Performer": "Dragon Ash",
+          "Composer": "Dragon Ash",
+          "Genre": "Other",
+          "Recorded_Date": "1997",
+          "File_Modified_Date": "UTC 2019-05-30 00:56:09",
+          "File_Modified_Date_Local": "2019-05-29 17:56:09",
+          "Copyright": "1997 Victor Entertainement.Inc",
+          "Cover": "Yes",
+          "Cover_Mime": "image/jpg",
+          "Comment": "http://www.dragonash.co.jp / 1997 Victor Entertainement.Inc",
+          "extra": {
+            "URL": "http://www.dragonash.co.jp"
+          }
+        },
+        {
+          "@type": "Audio",
+          "Format": "MPEG Audio",
+          "Format_Version": "1",
+          "Format_Profile": "Layer 3",
+          "Format_Settings_Mode": "Joint stereo",
+          "Format_Settings_ModeExtension": "MS Stereo",
+          "Duration": "377.364",
+          "BitRate_Mode": "CBR",
+          "BitRate": "128000",
+          "Channels": "2",
+          "SamplesPerFrame": "1152",
+          "SamplingRate": "44100",
+          "SamplingCount": "16641792",
+          "FrameRate": "38.281",
+          "FrameCount": "14446",
+          "Compression_Mode": "Lossy",
+          "StreamSize": "6037840",
+          "StreamSize_Proportion": "0.99559"
+        }
+      ]
+    }
+  }
+]

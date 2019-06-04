@@ -1,0 +1,8 @@
+%%%% HASHDEEP-1.0
+%%%% size,md5,filename
+## Invoked from: /home/usr/Desktop/metadata-test
+## $ hashdeep -c md5 -r -l ./
+## 
+28,1dfd1908e5266ab2d74efb79d227a78c,./sample-text.txt
+142,a63fab13ee8202eff9623176748a6ca1,./metadata/metadata-test_PREMIS.log
+6064599,eec5382a2446c3d461077b0095785deb,./sample-audio.mp3
