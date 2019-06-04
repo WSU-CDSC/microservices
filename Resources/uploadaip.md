@@ -1,7 +1,7 @@
-# aip2b2 documentation
+# uploadaip.rb documentation
 
 ## usage 
-`upload aip.rb -p [PATH-TO-B2-DESTINATION] [INPUT-AIP]`
+`uploadaip.rb -p [PATH-TO-B2-DESTINATION] [INPUT-AIP]`
 
 __Optonal Flags__
 `-d`: Dry Run mode. This will perform a simulated upload and not generate any logs.
