@@ -8,6 +8,9 @@ require "#{scriptLocation}/wsu-functions.rb"
 $b2_delete = ''
 $dryrun = ''
 
+CheckDependencies(['b2'])
+
+
 ARGV.options do |opts|
   opts.on("-d", "--dry-run")  { $dryrun = ' --dryRun ' }
   opts.on("-x", "--delete")  { $b2_delete = ' --delete ' }

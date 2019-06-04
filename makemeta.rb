@@ -2,6 +2,9 @@
 scriptLocation = File.expand_path(File.dirname(__FILE__))
 require "#{scriptLocation}/wsu-functions.rb"
 
+# Check for dependencies
+CheckDependencies(['mediainfo','exiftool','hashdeep'])
+
 inputDirs = ARGV.select { |dir| File.directory?(dir) }
 inputDirs.each do |targetDir|
   green("Generating metadata and updating log time for #{targetDir}")

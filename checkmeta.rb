@@ -5,6 +5,9 @@ require "#{scriptLocation}/wsu-functions.rb"
 require 'set'
 require 'optparse'
 
+# Check for dependencies
+CheckDependencies(['mediainfo','exiftool','hashdeep'])
+
 scanDirList = Set[]
 ignoreDirList = Set[]
 

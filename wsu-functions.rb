@@ -97,7 +97,16 @@ end
 # Function to check if dependencies are installed
 
 def CheckDependencies(dependencyList)
-  # filler
+  missingDependencyCount = 0
+  dependencyList.each do |dependency|
+    unless system("#{dependency} -h > /dev/null")
+      puts "Missing dependency: #{dependency}. Please install and try again!"
+      missingDependencyCount = missingDependencyCount + 1
+    end
+  end
+  if missingDependencyCount > 0
+    exit
+  end
 end
 
 # function for checking current files agains files contained in .md5 file
