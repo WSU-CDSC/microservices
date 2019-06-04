@@ -1,10 +1,12 @@
 # aip2b2 documentation
 
 ## usage 
-`aip2b2.rb  -p [PATH-TO-B2-Destination] [INPUT-AIP]`
+`upload aip.rb -p [PATH-TO-B2-DESTINATION] [INPUT-AIP]`
 
-__Optonal Flag__
+__Optonal Flags__
 `-d`: Dry Run mode. This will perform a simulated upload and not generate any logs.
+
+`-x`: Delete existing b2 data. Normally B2 will store multiple versions of files if a file is synced more than once. This flag allows storing only the version currently being uploaded by flagging previously uploaded versions for deletion.
 
 ## Dependencies:
 Backblaze B2 CLI
