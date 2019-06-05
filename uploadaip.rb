@@ -61,7 +61,7 @@ ARGV.each do |input_AIP|
   if system($command)
     green("SUCCESS!")
     if $dryrun.empty?
-      log_premis_pass(input_AIP,'aip2b2.rb')
+      log_premis_pass(input_AIP,'uploadaip.rb')
       system($command)
       outcomereport(input_AIP)
     end
@@ -71,13 +71,13 @@ ARGV.each do |input_AIP|
     unless system($command)
       if $dryrun.empty?
         red("FAIL!")
-        log_premis_fail(input_AIP,'aip2b2.rb')
+        log_premis_fail(input_AIP,'uploadaip.rb')
         outcomereport(input_AIP)
       end
     else
       green("SUCCESS!")
       if $dryrun.empty?
-        log_premis_pass(input_AIP,'aip2b2.rb')
+        log_premis_pass(input_AIP,'uploadaip')
         system($command)
         outcomereport(input_AIP)
       end

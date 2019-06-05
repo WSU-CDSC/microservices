@@ -42,7 +42,7 @@ def log_premis_pass(target,method_name)
   tech_meta_creation_methods = ['makeExifMeta','make_av_meta']
   hash_verification_methods = ['check_old_manifest']
   manifest_verification_methods = ['CompareContents']
-  transfer_methods = ['aip2b2.rb']
+  transfer_methods = ['uploadaip.rb']
   if hash_creation_methods.include?(method_name)
     action_type = 'message digest creation'
   elsif tech_meta_creation_methods.include?(method_name)
