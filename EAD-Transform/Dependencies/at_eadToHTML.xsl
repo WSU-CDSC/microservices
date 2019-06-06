@@ -715,7 +715,19 @@
             </xsl:choose>
         </dt>
         <dd>
-            <xsl:apply-templates/>
+            <xsl:choose>
+                <xsl:when test="self::ead:physdesc">
+                    <xsl:for-each select="./ead:extent">
+                        <xsl:value-of select="." />
+                        <xsl:if test="position() != last()">
+                            <xsl:text>,&#160;</xsl:text>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates/>
+                </xsl:otherwise>
+            </xsl:choose>
         </dd>
     </xsl:template>
     <!-- Template calls and formats all other children of archdesc many of 
