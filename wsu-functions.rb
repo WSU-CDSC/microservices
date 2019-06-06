@@ -4,6 +4,7 @@ require 'time'
 require 'json'
 require 'tempfile'
 require 'digest'
+require 'mail'
 
 # functions for PREMIS logging
 def set_up_premis(target)
@@ -309,4 +310,19 @@ def logTimeWrite(target)
   loggedTimes[target] = Time.now
   File.write(logName,loggedTimes.to_json)
 end
+
+#Function for sending email
+
+def sendMail(logfile,destination)
+  destination.each do |address|
+    mail = Mail.new do
+    from     'wsu-meta-script@wsu.edu'
+    to       address
+    subject  'Metadata scan report'
+    body     "Metadata report from #{Time.now} attached."
+    add_file :filename => File.basename(logfile), :content => File.read(logfile)
+  end
+end
+
+mail.deliver!
 
