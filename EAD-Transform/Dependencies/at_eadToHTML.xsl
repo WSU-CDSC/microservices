@@ -437,7 +437,7 @@
             <h3>Table of Contents</h3>
             <dl>
                 <xsl:if test="/ead:ead/ead:archdesc/ead:did">
-                    <dt><a href="#{generate-id(.)}">Summary Information</a></dt>
+                    <dt><a href="#summaryinformation">Summary Information</a></dt>
                 </xsl:if>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:bioghist">
                         <dt>                                
@@ -629,7 +629,7 @@
     <xsl:template match="ead:filedesc/ead:titlestmt/ead:titleproper/ead:num"><br/><xsl:apply-templates/></xsl:template>
     <xsl:template match="ead:archdesc/ead:did">
         <h3>
-            <a name="{generate-id(.)}">
+            <a name="summaryinformation">
                 <xsl:choose>
                     <xsl:when test="ead:head">
                         <xsl:value-of select="ead:head"/>
