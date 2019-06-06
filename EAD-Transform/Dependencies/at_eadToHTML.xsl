@@ -180,10 +180,10 @@
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:odd"/>
                         
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:bibliography"/>
-                        <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:index"/>
                         <xsl:if test="/ead:ead/ead:archdesc/ead:dsc/child::*">
                             <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:dsc"/>    
                         </xsl:if>
+                        <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:index"/>
                     </div>
                     </div>    
                 </div>
@@ -555,17 +555,6 @@
                         </a>
                     </dt>
                 </xsl:for-each>
-                <xsl:for-each select="/ead:ead/ead:archdesc/ead:index">
-                    <dt>                                
-                        <a><xsl:call-template name="tocLinks"/>
-                            <xsl:choose>
-                                <xsl:when test="ead:head">
-                                    <xsl:value-of select="ead:head"/></xsl:when>
-                                <xsl:otherwise>Index</xsl:otherwise>
-                            </xsl:choose>
-                        </a>
-                    </dt>
-                </xsl:for-each> 
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:dsc">
                     <xsl:if test="child::*">
                         <dt>                                
@@ -593,6 +582,17 @@
                         </a></dd>
                     </xsl:for-each>
                 </xsl:for-each>
+                <xsl:for-each select="/ead:ead/ead:archdesc/ead:index">
+                    <dt>                                
+                        <a><xsl:call-template name="tocLinks"/>
+                            <xsl:choose>
+                                <xsl:when test="ead:head">
+                                    <xsl:value-of select="ead:head"/></xsl:when>
+                                <xsl:otherwise>Index</xsl:otherwise>
+                            </xsl:choose>
+                        </a>
+                    </dt>
+                </xsl:for-each> 
             </dl>
         </div>
     </xsl:template>
@@ -1935,11 +1935,11 @@
                 <xsl:text>&#160;(</xsl:text>
                 <xsl:apply-templates select="ead:origination/ead:persname/@role"/>
                 <xsl:text>)</xsl:text>
+            </xsl:if>
             </xsl:apply-templates>
         </xsl:if>
         <xsl:if test="ead:physdesc">
             <xsl:apply-templates select="ead:physdesc"/>
         </xsl:if>
     </xsl:template>
-
 </xsl:stylesheet>
