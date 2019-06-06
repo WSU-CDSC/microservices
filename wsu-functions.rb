@@ -6,6 +6,9 @@ require 'tempfile'
 require 'digest'
 require 'mail'
 
+# Load config
+load 'wsu-microservices.config'
+
 # functions for PREMIS logging
 def set_up_premis(target)
   targetDir = File.expand_path(target)
@@ -316,13 +319,13 @@ end
 def sendMail(logfile,destination)
   destination.each do |address|
     mail = Mail.new do
-    from     'wsu-meta-script@wsu.edu'
-    to       address
-    subject  'Metadata scan report'
-    body     "Metadata report from #{Time.now} attached."
-    add_file :filename => File.basename(logfile), :content => File.read(logfile)
+      from     'wsu-meta-script@wsu.edu'
+      to       address
+      subject  'Metadata scan report'
+      body     "Metadata report from #{Time.now} attached."
+      add_file :filename => File.basename(logfile), :content => File.read(logfile)
+    end
+    mail.deliver!
   end
 end
-
-mail.deliver!
 
