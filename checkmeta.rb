@@ -105,7 +105,7 @@ if ! changedWithMeta.empty?
       else
         cloud_status = ''
       end
-      needExaminationChanged << [target,contents_comparison[1],contents_comparison[2],cloud_status]
+      needExaminationChanged << ["-- Package name:",target, "-- Missing Files:", contents_comparison[1], "-- New Files:", contents_comparison[2], "-- Cloud Status:", cloud_status, "\n"]
     end
   end
 end
