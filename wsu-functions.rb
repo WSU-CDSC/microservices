@@ -7,7 +7,8 @@ require 'digest'
 require 'mail'
 
 # Load config
-load 'wsu-microservices.config'
+scriptLocation = File.expand_path(File.dirname(__FILE__))
+load "#{scriptLocation}/wsu-microservices.config"
 
 # functions for PREMIS logging
 def set_up_premis(target)
