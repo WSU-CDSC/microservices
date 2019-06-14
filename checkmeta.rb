@@ -33,6 +33,7 @@ changedNoMeta = Set[]
 needExaminationHash = []
 needExaminationChanged = []
 newFilesInCloud = []
+addedMeta = []
 
 scanDirList.each do |scanDir|
   metaDir = "#{scanDir}/metadata"
@@ -70,6 +71,7 @@ if ! changedNoMeta.empty?
     green("Generating metadata for: #{needsMeta}")
     CleanUpMeta(needsMeta)
     logTimeWrite(needsMeta)
+    addedMeta << [needsMeta]
   end
 end
 
@@ -87,6 +89,7 @@ if ! changedWithMeta.empty?
         cloud_status = "WARNING IN CLOUD"
         newFilesInCloud << [target]
       else
+        addedMeta << [target]
       end
     elsif contents_comparison[1] == 'fail'
       red("Fixity failure detected!")
@@ -111,16 +114,24 @@ if ! changedWithMeta.empty?
 end
 puts ''
 puts '----'
-output_file_path = File.expand_path("~/Desktop/monitor-archive-warnings.txt")
+if File.exist?(Meta_check_log_path)
+  output_file_path = "#{Meta_check_log_path}/monitor-archive-warnings_#{Time.now.strftime("%Y-%m-%d%H%M%S")}.txt"
+else
+  output_file_path = "#{ENV['HOME']}/monitor-archive-warnings_#{Time.now.strftime("%Y-%m-%d%H%M%S")}.txt"
+end
 output_file = File.open(output_file_path,"w")
   if ! needExaminationHash.empty?
-    output_file.puts "Needs Examination for hash failure!"
+    output_file.puts 'Needs Examination for hash failure!'
     output_file.puts needExaminationHash
-    output_file.puts "---"
+    output_file.puts '---'
   end
   if ! needExaminationChanged.empty?
-    output_file.puts "Needs Examination for file manifest changes!"
+    output_file.puts 'Needs Examination for file manifest changes!'
     output_file.puts needExaminationChanged
+  end
+  if ! addedMeta.empty?
+    output_file.puts 'Metadata added/modified in the following targets!'
+    output_file.puts addedMeta
   end
   if ! newFilesInCloud.empty?
     output_file.puts 'New files detected in collections stored in cloud! Sync needed!'
@@ -131,8 +142,11 @@ File.readlines(output_file_path).each { |line| puts line }
 
 if (changedNoMeta.empty? && changedWithMeta.empty?)
   green("No changed directories found!")
-  File.write(File.expand_path("~/Desktop/monitor-archive-warnings.txt"),"No changed directories found!")
+  File.write(output_file_path,"No changed directories found!")
 end
+
+green("Emailing log file")
+sendMail(output_file_path,Email_targets)
 
 
 # Update log times for unchanged directories
