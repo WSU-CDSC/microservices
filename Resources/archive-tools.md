@@ -9,10 +9,10 @@ The scripts rely on a central file containing methods etc, and will look for thi
 
 There is a conig file (`wsu-microservices.config`) that also must be present in the script directory. This file can be opened using a text editor, and is used to set options such as email reporting and logfile location.
 
-Core scripts include:
+## Core scripts:
 * [makemeta.rb](./makemeta.md)
 * [uploadaip.rb](./uploadaip.md)
-* checkmeta.rb
+* [checkmeta.rb](./checkmeta.md)
 
 Script based workflow is:
 * Generate Metadata for collections using `makemeta.rb`
