@@ -10,3 +10,6 @@ __Optional flags:__
 
 ## About:
 This script is the core of ongoing monitoring of metadata in current workflows. When run on a target directory, it will treat all folders in the top level of that directory as archival packages and scan their metadata (unless the `-t` flag has been used on the input).
+
+## How Script Works:
+This script will take a top level collection directory (such as 
