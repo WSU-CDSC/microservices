@@ -80,7 +80,7 @@
 					 and displays the WSU icon in the browser
 				-->
 				<link href="http://wsu.edu/cougar.ico" rel="shortcut icon" title="Washington State University" />
-				<link rel="stylesheet" href="wsu-ead.css" />
+				<link rel="stylesheet" href="http://www.libraries.wsu.edu/masc/css/wsu-ead-style-2019.css" />
 
             </head>
             <body>
