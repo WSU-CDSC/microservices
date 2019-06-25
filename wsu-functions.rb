@@ -256,7 +256,7 @@ def make_av_meta(fileInput)
     Dir.mkdir(metadata_dir)
   end
   av_extensions = [ '.mp4', '.mkv', '.mpg', '.vob', '.mpeg', '.mp2', '.m2v', '.mp3', '.avi', '.wav' ]
-  av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}" }
+  av_files = av_extensions.flat_map { |ext| Dir.glob "#{targetDir}/**/*#{ext}", File::FNM_CASEFOLD }
   unless av_files.empty?
     mediainfo_out = []
     av_files.each do |mediainfo_target|
