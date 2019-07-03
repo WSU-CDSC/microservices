@@ -15,7 +15,7 @@ This script is the core of ongoing monitoring of metadata in current workflows. 
 ## How Script Works:
 This script will take a top level collection directory (such as 'CT - Cassette Tape') and spider through its subdirectories to compare their modification times against a central log file. If it finds a directory that has been modified more recently than either the last stored scan date for that directory, or in the case of no previous scan date, the baseline date set in the script, it will take actions to either confirm or generate metadata.
 
-In its normal mode, the script will treat __ALL__ directories in the first level of the target directory as AIPs that are expected to have metadata, so be careful about target directories it if that is not the desired outcome. For more targeted approaches, either use the `-x` flag to specify which sub directories to ignore, or the `-t` flag to run it on particular target directories.
+In its normal mode, the script will treat __ALL__ directories in the first level of the target directory as AIPs that are expected to have metadata, so be careful about target directories if that is not the desired outcome. For more targeted approaches, either use the `-x` flag to specify which sub directories to ignore, or the `-t` flag to run it on particular target directories.
 
 This will consist of the following actions:
 
