@@ -9,6 +9,9 @@ __Optional flags:__
 ## Dependencies:
 [hashdeep](http://md5deep.sourceforge.net/start-hashdeep.html), [mediainfo](https://mediaarea.net/en/MediaInfo), [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/)
 
+#### Ruby Gems
+`mail`
+
 ## About:
 This script is the core of ongoing monitoring of metadata in current workflows. When run on a target directory, it will treat all folders in the top level of that directory as archival packages and scan their metadata (unless the `-t` flag has been used on the input).
 
