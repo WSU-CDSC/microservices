@@ -319,14 +319,18 @@ end
 
 def sendMail(logfile,destination)
   destination.each do |address|
-    mail = Mail.new do
-      from     'wsu-meta-script@wsu.edu'
-      to       address
-      subject  'Metadata scan report'
-      body     "Metadata report from #{Time.now} attached."
-      add_file :filename => File.basename(logfile), :content => File.read(logfile)
+    if address.include?('@')
+      mail = Mail.new do
+        from     'wsu-meta-script@wsu.edu'
+        to       address
+        subject  'Metadata scan report'
+        body     "Metadata report from #{Time.now} attached."
+        add_file :filename => File.basename(logfile), :content => File.read(logfile)
+      end
+      mail.deliver!
+    else
+      puts 'Not valid email address - skipping'
     end
-    mail.deliver!
   end
 end
 
