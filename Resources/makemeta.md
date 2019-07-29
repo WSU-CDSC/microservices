@@ -1,9 +1,12 @@
 # makemeta.rb
 
-## Usage: `makemeta.rb [target-directory]`
+### Usage: `makemeta.rb [target-directory]`
 
-## Dependencies: hashdeep, mediainfo, exiftool
+__Dependencies:__ hashdeep, mediainfo, exiftool
 
+For detailed set up instructions and configuration see the workflow documentation at https://github.com/WSU-CDSC/Documentation/blob/master/Cloud-AIP-Workflow.md#workflow-dependencies
+
+### About: 
 This script will either create, or regenerate the metadata used in WSU preservation workflows.
 
 Generated metadata includes:
