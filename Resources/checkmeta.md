@@ -7,9 +7,13 @@ __Optional flags:__
 * `-x`: Allows a directory to be tagged for ignoring by `checkmeta.rb`. This directory will be removed from the list of discovered packages to be scanned.
 
 ## Dependencies:
-[hashdeep](http://md5deep.sourceforge.net/start-hashdeep.html), [mediainfo](https://mediaarea.net/en/MediaInfo), [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/)
 
-#### Ruby Gems
+For detailed install instructions see workflow dependencies and configuration information at https://github.com/WSU-CDSC/Documentation/blob/master/Cloud-AIP-Workflow.md#workflow-dependencies
+
+[hashdeep](http://md5deep.sourceforge.net/start-hashdeep.html), [mediainfo](https://mediaarea.net/en/MediaInfo), [exiftool](https://www.sno.phy.queensu.ca/~phil/exiftool/), `sendmail`
+
+Required Ruby Gems:
+
 `mail`
 
 ## About:
