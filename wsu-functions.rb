@@ -334,3 +334,19 @@ def sendMail(logfile,destination)
   end
 end
 
+def sendMailError(destination)
+  destination.each do |address|
+    if address.include?('@')
+      mail = Mail.new do
+        from     'wsu-meta-script@wsu.edu'
+        to       address
+        subject  'Error in metadata scan'
+        body     "An error occured with the metadata scan from #{Time.now}."
+      end
+      mail.deliver!
+    else
+      puts 'Not valid email address - skipping'
+    end
+  end
+end
+

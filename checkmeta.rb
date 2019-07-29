@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+begin
 scriptLocation = File.expand_path(File.dirname(__FILE__))
 
 require "#{scriptLocation}/wsu-functions.rb"
@@ -140,7 +141,7 @@ output_file = File.open(output_file_path,"w")
 output_file.close
 File.readlines(output_file_path).each { |line| puts line }
 
-if (changedNoMeta.empty? && changedWithMeta.empty?)
+if (changedNoMeta.empty? && changedWithMeta.empty?) || 
   green("No changed directories found!")
   File.write(output_file_path,"No changed directories found!")
 end
@@ -152,3 +153,8 @@ sendMail(output_file_path,Email_targets)
 # Update log times for unchanged directories
 unchangedDirList = (scanDirList - changedNoMeta - changedWithMeta)
 unchangedDirList.each { |target| logTimeWrite(target) }
+
+rescue
+  puts "Error detected - sending warning to #{Email_targets}"
+  sendMailError(Email_targets)
+end
