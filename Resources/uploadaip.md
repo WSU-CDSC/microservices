@@ -9,7 +9,9 @@ __Optonal Flags__
 `-x`: Delete existing b2 data. Normally B2 will store multiple versions of files if a file is synced more than once. This flag allows storing only the version currently being uploaded by flagging previously uploaded versions for deletion.
 
 ## Dependencies:
-Backblaze B2 CLI
+For detailed setup and configuration instructions, see workflow documentation at https://github.com/WSU-CDSC/Documentation/blob/master/Cloud-AIP-Workflow.md
+
+Depends on Backblaze B2 CLI (available with `sudo  pip install b2`)
 
 The B2 CLI app must be installed and configured with the correct account ID and key. These can be found in the B2 Web interface and then configured with the command `b2 authorize-account [<accountIdOrKeyId>] [<applicationKey>]`
 
