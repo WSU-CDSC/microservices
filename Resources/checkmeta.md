@@ -2,6 +2,8 @@
 
 __Usage__: `checkmeta.rb [target-directory]`
 
+Known bug note: Currently absolute paths must be used for targets
+
 __Optional flags:__
 * `-t`: Allows the explicit targeting of a directory to be scanned for metadata. This directory will be treated as an archival package, rather than a directory of archival packages to be scanned.
 * `-x`: Allows a directory to be tagged for ignoring by `checkmeta.rb`. This directory will be removed from the list of discovered packages to be scanned.
