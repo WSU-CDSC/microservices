@@ -2,7 +2,8 @@
 require 'json'
 require 'fileutils'
 #load config file
-load 'wsu-microservices.config'
+scriptLocation = File.expand_path(File.dirname(__FILE__))
+require "#{scriptLocation}/wsu-functions.rb"
 
 ARGV.each do |inputFile|
   target = File.expand_path(inputFile)
