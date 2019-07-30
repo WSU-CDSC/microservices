@@ -141,7 +141,7 @@ output_file = File.open(output_file_path,"w")
 output_file.close
 File.readlines(output_file_path).each { |line| puts line }
 
-if (changedNoMeta.empty? && changedWithMeta.empty?) || 
+if (changedNoMeta.empty? && changedWithMeta.empty?) || File.readlines(output_file_path).empty?
   green("No changed directories found!")
   File.write(output_file_path,"No changed directories found!")
 end
