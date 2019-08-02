@@ -295,7 +295,7 @@ def logTimeRead(target)
   end
   loggedTimes = JSON.parse(File.read(logName))
   if loggedTimes[target].nil?
-    @priorRunTime = Time.parse('2019-04-11 09:30:16 -0700')
+    @priorRunTime = Time.parse('2019-08-02 09:30:16 -0700')
   else
     @priorRunTime = Time.parse(loggedTimes[target])
   end
