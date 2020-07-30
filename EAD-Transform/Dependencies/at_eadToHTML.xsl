@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" 
+<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
     xmlns:ead="urn:isbn:1-931666-22-9"
     xmlns:ns2="http://www.w3.org/1999/xlink">
@@ -24,13 +24,13 @@
         *                  Fixed bug with multiple instance display       *
         * UPDATED          June 3, 2009                                   *
         *                  Added additional table cell to component       *
-        *                  display to address bug ART-1833, also addressed* 
-        *                  problematic container heading displays         *          
+        *                  display to address bug ART-1833, also addressed*
+        *                  problematic container heading displays         *
         *                                                                 *
         * UPDATED          September 24, 2009                             *
         *                  Added address to publication statement         *
         *                  March 23, 2009                                 *
-        *                  Added revision description and date,           * 
+        *                  Added revision description and date,           *
         *                  and publication information                    *
         *                  March 12, 2009                                 *
         *                  Fixed character encoding issues                *
@@ -39,10 +39,10 @@
         *                  March 1, 2009                                  *
         *                  Changed bulk date display for unitdates        *
         *                  Feb. 6, 2009                                   *
-        *                  Added roles to creator display in summary      * 
+        *                  Added roles to creator display in summary      *
         *******************************************************************
     -->
-    
+
     <xsl:strip-space elements="*"/>
     <xsl:output indent="yes" method="xml" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" encoding="utf-8"/>
     <xsl:include href="lookupLists.xsl"/>
@@ -53,7 +53,7 @@
             <head>
                 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
                 <title>
-                    <xsl:value-of select="concat(/ead:ead/ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper,' ',/ead:ead/ead:eadheader/ead:filedesc/ead:titlestmt/ead:subtitle)"/>                
+                    <xsl:value-of select="concat(/ead:ead/ead:eadheader/ead:filedesc/ead:titlestmt/ead:titleproper,' ',/ead:ead/ead:eadheader/ead:filedesc/ead:titlestmt/ead:subtitle)"/>
                 </title>
                 <xsl:call-template name="metadata"/>
 
@@ -62,8 +62,8 @@
 
 				<!--	MASC CHANGES -->
 
-				<!-- 
-					comment the following line out in the AT xsl doc 
+				<!--
+					comment the following line out in the AT xsl doc
 
 					this disables the built-in stylesheet that
 					occurs later in this document and forces
@@ -73,45 +73,45 @@
 				<!-- <xsl:call-template name="css"/> -->
 
 
-				<!-- 
+				<!--
 					 add these two lines BEFORE the </head> tag
-					 these reference the external stylesheet 
+					 these reference the external stylesheet
 					 which is stored on the MASC web server
 					 and displays the WSU icon in the browser
 				-->
 				<link href="http://wsu.edu/cougar.ico" rel="shortcut icon" title="Washington State University" />
-				<link rel="stylesheet" href="http://www.libraries.wsu.edu/masc/css/wsu-ead-style-2019.css" />
+				<link rel="stylesheet" href="https://libraries.wsu.edu/masc-files/finders/css/wsu-ead-style-2019.css" />
 
             </head>
             <body>
 
-				<!-- 
+				<!--
 					add this <div> block right below the <body> tag
 
 					everything must be properly opened and closed
-					or else Archivist's Toolkit will not be able 
+					or else Archivist's Toolkit will not be able
 					to convert this to HTML
 				-->
-			
+
 				<div id="masc_nav">
-					
+
 					<ul>
-						<li><a href="http://www.libraries.wsu.edu/masc/">MASC Home</a></li>
-						<li><a href="http://www.libraries.wsu.edu/masc/manuscripts">Manuscripts</a></li>
-						<li><a href="http://www.libraries.wsu.edu/masc/univeristy-archives">Archives </a></li>
-					    <li><a href="http://content.libraries.wsu.edu/">Digital Collections</a></li>
-						<li><a href="http://www.libraries.wsu.edu/masc/photographs">Photographs</a></li>
-						<li><a href="http://www.libraries.wsu.edu/masc/rare-books">Rare Books</a></li>
-						<li><a href="http://www.libraries.wsu.edu/masc/ask">Contact MASC</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/">MASC Home</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/manuscripts">Manuscripts</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/univeristy-archives">Archives </a></li>
+					    <li><a href="https://content.libraries.wsu.edu/">Digital Collections</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/photographs">Photographs</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/rare-books">Rare Books</a></li>
+						<li><a href="https://www.libraries.wsu.edu/masc/ask">Contact MASC</a></li>
 					</ul>
 
-					
+
 
 				</div>
 
 
 
-				<!--	
+				<!--
 					finally, go down to the </body> tag and add the
 					Google Analytics stuff - two blocks of javascript
 				-->
@@ -126,20 +126,20 @@
                     <xsl:call-template name="header"/>
                     <div id="title">
                     <xsl:apply-templates select="/ead:ead/ead:eadheader"/>
-                    </div>    
+                    </div>
                     <div id="contents">
                     <xsl:call-template name="toc"/>
                     <div id="content-right">
-                        <!-- Arranges archdesc into predefined sections, to change order 
+                        <!-- Arranges archdesc into predefined sections, to change order
                         or groupings, rearrange templates  -->
-                        
+
                         <!-- Summary Information, summary information includes citation -->
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:did"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:bioghist"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:scopecontent"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:arrangement"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:fileplan"/>
-                        
+
                         <!-- Administrative Information  -->
                         <xsl:if test="/ead:ead/ead:archdesc/ead:accessrestrict or
                             /ead:ead/ead:archdesc/ead:userestrict or
@@ -164,7 +164,7 @@
                             <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:originalsloc"/>
                             <xsl:call-template name="returnTOC"/>
                         </xsl:if>
-                        
+
                         <!-- Related Materials -->
                         <xsl:if test="/ead:ead/ead:archdesc/ead:relatedmaterial or /ead:ead/ead:archdesc/ead:separatedmaterial">
                             <h3 id="relMat">Related Materials</h3>
@@ -178,19 +178,19 @@
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:otherfindaid"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:phystech"/>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:odd"/>
-                        
+
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:bibliography"/>
                         <xsl:if test="/ead:ead/ead:archdesc/ead:dsc/child::*">
-                            <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:dsc"/>    
+                            <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:dsc"/>
                         </xsl:if>
                         <xsl:apply-templates select="/ead:ead/ead:archdesc/ead:index"/>
                     </div>
-                    </div>    
+                    </div>
                 </div>
 
-				<!-- 
-					GOOGLE ANALYTICS 
-					
+				<!--
+					GOOGLE ANALYTICS
+
 					add this to any updated AT xsl files
 				-->
 
@@ -210,7 +210,7 @@
 				</script>
 
 				<script type="text/javascript">
-					var pageTracker = _gat._getTracker("UA-354069-3");
+					var pageTracker = _gat._getTracker("UA-34309208-1");
 					pageTracker._initData();
 					pageTracker._trackPageview();
 				</script>
@@ -226,23 +226,23 @@
                 margin: 0;
                 padding: 0;
                 }
-                
+
             body {
                 color: #333;
-                font-family: Verdana, Arial, Helvetica, sans-serif; 
+                font-family: Verdana, Arial, Helvetica, sans-serif;
                 font-size: 93%;
                 margin: 0px;
                 padding: 0px;
                 text-align: center;
                 }
-            
+
             /*--- Main Div styles ---*/
             div#main{
-                margin: 0 auto; 
-                width: 95%; 
+                margin: 0 auto;
+                width: 95%;
                 text-align:left;
                 }
-            
+
             #header {
                 margin:10px 0px;
                 padding:0;
@@ -257,34 +257,34 @@
                 }
             #header h3 {
                 display:inline;
-                font-size: 138.5%; 
-                margin: 20px 20px 0px 25px; 
-                padding-top:20px; color:#000; 
-                font-weight: lighter; 
+                font-size: 138.5%;
+                margin: 20px 20px 0px 25px;
+                padding-top:20px; color:#000;
+                font-weight: lighter;
                 text-align:right;
                 }
             #header img{display:inline; vertical-align: bottom; padding-top: 2px;}
             #title {
-                display: block; 
-                margin:0; 
-                height: 125px; 
-                padding: 16px 8px; 
-                background-color:#000; 
-                text-align: center; 
+                display: block;
+                margin:0;
+                height: 125px;
+                padding: 16px 8px;
+                background-color:#000;
+                text-align: center;
                 color: #fff;
                 }
-            
+
             #title h1 {margin:0; padding:0; font-size: 197%; font-weight: lighter;}
             #title h2 {margin:0; padding:0; font-size:161.6%; font-weight: lighter;}
-            
+
             /*--- Main Content Div ---*/
             #contents {
-                display:block; 
-                margin: 10px 0px; 
-                border-top: 1px solid #000; 
+                display:block;
+                margin: 10px 0px;
+                border-top: 1px solid #000;
                 border-bottom: 1px solid #000;
                 }
-                
+
             /*--- Table of Contents styles ---*/
             #toc {
                 display:block;
@@ -296,33 +296,33 @@
                 padding-left: 8px;
                 border-right: 1px solid #000;
                 }
-                
+
             #toc h3 {margin: 16px 8px 16px 0px;}
-            #toc dt {margin: 3px; padding: 4px 0px; font-weight: normal;} 
+            #toc dt {margin: 3px; padding: 4px 0px; font-weight: normal;}
             #toc dd {margin-top: 3px; margin-left: 16px; padding: 4px 0px;}
-            #toc dt a:link, #toc dd a:link {color: #333; text-decoration: none;} 
-            #toc dt a:visited, #toc dd a:visited {color: #333; text-decoration: none;} 
-            #toc dt a:active, #toc dd a:active {color: #FF5721;} 
-            #toc dt  a:hover, #toc dd  a:hover {color: #FF5721;} 
-            
+            #toc dt a:link, #toc dd a:link {color: #333; text-decoration: none;}
+            #toc dt a:visited, #toc dd a:visited {color: #333; text-decoration: none;}
+            #toc dt a:active, #toc dd a:active {color: #FF5721;}
+            #toc dt  a:hover, #toc dd  a:hover {color: #FF5721;}
+
             /*--- EAD body ---*/
             #content-right {display:block; margin-left:275px; margin-right: 10px;}
-            
+
             /*--- Typography ---*/
-            h1, h2, h3, h4 {font-family: Verdana, Arial, Helvetica, sans-serif; } 
+            h1, h2, h3, h4 {font-family: Verdana, Arial, Helvetica, sans-serif; }
             #contents h3 {
                 margin: 16px 8px 16px -8px;
-                font-size: 116%; 
-                font-variant: small-caps; 
+                font-size: 116%;
+                font-variant: small-caps;
                 border-bottom: 1px dashed #999;
                 }
-                
+
             h4 {
-                font-size: 93%; 
-                margin: 24px 8px 4px -4px; 
+                font-size: 93%;
+                margin: 24px 8px 4px -4px;
                 padding:0; color: #555;
                 }
-                
+
             p {margin: 8px;}
             dt {margin: 2px 8px; font-weight:bold; }
             dd {margin: 2px 16px;}
@@ -331,30 +331,30 @@
             .summary dt {margin:16px 8px 0px 8px; color: #555;}
             .summary dd {margin: 2px 24px 2px 24px;}
             .returnTOC {font-size: 85%; margin-top: 24px;}
-            .returnTOC  a:link {color: #FF5721; text-decoration: none;} 
-            .returnTOC a:visited	{color: #FF5721; text-decoration: none;} 
-            .returnTOC  a:active	{color: #EE0000;}             
-            .returnTOC  a:hover		{color: #EE0000;} 
-            
+            .returnTOC  a:link {color: #FF5721; text-decoration: none;}
+            .returnTOC a:visited	{color: #FF5721; text-decoration: none;}
+            .returnTOC  a:active	{color: #EE0000;}
+            .returnTOC  a:hover		{color: #EE0000;}
+
             /*--- Emph styles -------*/
             .smcaps {font-variant: small-caps;}
             .underline {text-decoration: underline;}
-            
+
             /*--- Styles Index entry elements ---*/
             .indexEntry {display:block}
-            
+
             /*---- Table Styles ---*/
-            table { 
-                border-top: 1px solid #000; 
-                border-bottom: 1px solid #000; 
-                margin: 16px; width: 60%; 
+            table {
+                border-top: 1px solid #000;
+                border-bottom: 1px solid #000;
+                margin: 16px; width: 60%;
                 font-size: 93%;
                 }
-                
+
             th {background-color:#000; color: #fff;}
             td {vertical-align: top; padding: 2px 8px;}
-            
-            /*---Container List Styles  --*/           
+
+            /*---Container List Styles  --*/
             table.containerList {border:none; margin: 8px; width: auto;}
             table.containerList h4 {margin: 2px 8px;}
             tr.series{background-color: #bbbbbb;}
@@ -365,32 +365,32 @@
             .clear{clear:both;}
             table.parentContainers {margin-top:2px;
             border:none; float:right; clear:both; width: 400px;
-            border-top: 1px solid #666; 
-            border-bottom: 1px solid #666; 
+            border-top: 1px solid #666;
+            border-bottom: 1px solid #666;
             }
-            
+
             /*--- Clevel Margins ---*/
             table td.c{padding-left: 0;}
             table td.c01{padding-left: 0;}
-            table td.c02{padding-left:  8px;}                
+            table td.c02{padding-left:  8px;}
             table td.c03{padding-left: 16px;}
             table td.c04{padding-left: 24px;}
             table td.c05{padding-left: 32px;}
             table td.c06{padding-left: 40px;}
             table td.c07{padding-left: 48px;}
             table td.c08{padding-left: 56px;}
-            
-            
+
+
             .address {display:block; margin: 8px;}
             .odd{background-color:#eee;}
             .citation{
-                border: 1px dashed #999; 
-                background-color: #eee; 
-                margin: 24px 8px; 
+                border: 1px dashed #999;
+                background-color: #eee;
+                margin: 24px 8px;
                 padding: 8px 8px 8px 24px;
                 }
             .citation h4 {margin-top: 8px;}
-            
+
             /*---List Styles---*/
             .simple{list-style-type: none;}
             .arabic {list-style-type: decimal}
@@ -413,7 +413,7 @@
                  <img src="{/ead:ead/ead:eadheader/ead:filedesc/ead:publicationstmt/ead:p/ead:extref/@ns2:href}" />
              </xsl:if>
             </div>
-        </div>    
+        </div>
     </xsl:template>
 
     <!-- HTML meta tags for use by web search engines for indexing. -->
@@ -430,8 +430,8 @@
         <meta http-equiv="Content-Type" name="dc.format" content="finding aids"/>
     </xsl:template>
 
-    <!-- Creates an ordered table of contents that matches the order of the archdesc 
-        elements. To change the order rearrange the if/for-each statements. -->  
+    <!-- Creates an ordered table of contents that matches the order of the archdesc
+        elements. To change the order rearrange the if/for-each statements. -->
     <xsl:template name="toc">
         <div id="toc" class="toc-top">
             <h3>Table of Contents</h3>
@@ -440,7 +440,7 @@
                     <dt><a href="#summaryinformation">Summary Information</a></dt>
                 </xsl:if>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:bioghist">
-                        <dt>                                
+                        <dt>
                             <a><xsl:call-template name="tocLinks"/>
                                 <xsl:choose>
                                     <xsl:when test="ead:head">
@@ -448,10 +448,10 @@
                                     <xsl:otherwise>Biography/History</xsl:otherwise>
                                 </xsl:choose>
                             </a>
-                        </dt>   
+                        </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:scopecontent">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -459,10 +459,10 @@
                                 <xsl:otherwise>Scope and Content</xsl:otherwise>
                             </xsl:choose>
                         </a>
-                    </dt>   
+                    </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:arrangement">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -470,10 +470,10 @@
                                 <xsl:otherwise>Arrangement</xsl:otherwise>
                             </xsl:choose>
                         </a>
-                    </dt>   
+                    </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:fileplan">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -481,9 +481,9 @@
                                 <xsl:otherwise>File Plan</xsl:otherwise>
                             </xsl:choose>
                         </a>
-                    </dt>   
+                    </dt>
                </xsl:for-each>
-                
+
                 <!-- Administrative Information  -->
                 <xsl:if test="/ead:ead/ead:archdesc/ead:accessrestrict or
                     /ead:ead/ead:archdesc/ead:userestrict or
@@ -496,13 +496,13 @@
                     /ead:ead/ead:archdesc/ead:originalsloc or /ead:ead/ead:eadheader/ead:filedesc/ead:publicationstmt or /ead:ead/ead:eadheader/ead:revisiondesc">
                     <dt><a href="#adminInfo">Administrative Information</a></dt>
                 </xsl:if>
-                
+
                 <!-- Related Materials -->
                 <xsl:if test="/ead:ead/ead:archdesc/ead:relatedmaterial or /ead:ead/ead:archdesc/ead:separatedmaterial">
                     <dt><a href="#relMat">Related Materials</a></dt>
                 </xsl:if>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:controlaccess">
-                    <dt>                                
+                    <dt>
                         <a href="#contlAcc">
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -510,10 +510,10 @@
                                 <xsl:otherwise>Names and Subjects</xsl:otherwise>
                             </xsl:choose>
                         </a>
-                    </dt>   
+                    </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:otherfindaid">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -521,10 +521,10 @@
                                 <xsl:otherwise>Other Finding Aids</xsl:otherwise>
                             </xsl:choose>
                         </a>
-                    </dt>   
+                    </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:phystech">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head"><xsl:value-of select="ead:head"/></xsl:when>
@@ -534,7 +534,7 @@
                     </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:odd">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -545,7 +545,7 @@
                     </dt>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:bibliography">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -557,7 +557,7 @@
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:dsc">
                     <xsl:if test="child::*">
-                        <dt>                                
+                        <dt>
                             <a><xsl:call-template name="tocLinks"/>
                                 <xsl:choose>
                                     <xsl:when test="ead:head">
@@ -565,15 +565,15 @@
                                     <xsl:otherwise>Detailed Description of Collection</xsl:otherwise>
                                 </xsl:choose>
                             </a>
-                        </dt>                
+                        </dt>
                     </xsl:if>
                     <!--Creates a submenu for collections, record groups and series and fonds-->
-                    <xsl:for-each select="child::*[@level = 'collection'] 
+                    <xsl:for-each select="child::*[@level = 'collection']
                         | child::*[@level = 'recordgrp']  | child::*[@level = 'series'] | child::*[@level = 'fonds']">
                         <dd><a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
-                                    <xsl:apply-templates select="child::*/ead:head"/>        
+                                    <xsl:apply-templates select="child::*/ead:head"/>
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <xsl:apply-templates select="child::*/ead:unittitle"/>
@@ -583,7 +583,7 @@
                     </xsl:for-each>
                 </xsl:for-each>
                 <xsl:for-each select="/ead:ead/ead:archdesc/ead:index">
-                    <dt>                                
+                    <dt>
                         <a><xsl:call-template name="tocLinks"/>
                             <xsl:choose>
                                 <xsl:when test="ead:head">
@@ -592,13 +592,13 @@
                             </xsl:choose>
                         </a>
                     </dt>
-                </xsl:for-each> 
+                </xsl:for-each>
             </dl>
         </div>
     </xsl:template>
- 
+
      <!-- Named template for a generic p element with a link back to the top of page  -->
-    <xsl:template name="returnTOC">                
+    <xsl:template name="returnTOC">
         <p class="returnTOC"><a href="#top">Return to Top »</a></p>
         <hr/>
     </xsl:template>
@@ -610,7 +610,7 @@
         <xsl:if test="ead:filedesc/ead:titlestmt/ead:subtitle">
             <h2>
                 <xsl:value-of select="ead:filedesc/ead:titlestmt/ead:subtitle"/>
-            </h2>                
+            </h2>
         </xsl:if>
     </xsl:template>
     <xsl:template match="ead:filedesc/ead:titlestmt/ead:titleproper">
@@ -619,7 +619,7 @@
                 <xsl:choose>
                     <xsl:when test="count(parent::*/ead:titleproper) &gt; 1"/>
                     <xsl:otherwise>
-                        <xsl:value-of select="/ead:ead/ead:archdesc/ead:did/ead:unittitle"/>        
+                        <xsl:value-of select="/ead:ead/ead:archdesc/ead:did/ead:unittitle"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
@@ -640,21 +640,21 @@
                 </xsl:choose>
             </a>
         </h3>
-        <!-- Determines the order in wich elements from the archdesc did appear, 
+        <!-- Determines the order in wich elements from the archdesc did appear,
             to change the order of appearance for the children of did
             by changing the order of the following statements.-->
         <dl class="summary">
             <xsl:apply-templates select="ead:repository"/>
             <xsl:apply-templates select="ead:origination"/>
-            <xsl:apply-templates select="ead:unittitle"/>    
+            <xsl:apply-templates select="ead:unittitle"/>
             <xsl:apply-templates select="ead:unitid"/>
             <xsl:apply-templates select="ead:unitdate"/>
-            <xsl:apply-templates select="ead:physdesc"/>        
-            <xsl:apply-templates select="ead:physloc"/>        
+            <xsl:apply-templates select="ead:physdesc"/>
+            <xsl:apply-templates select="ead:physloc"/>
             <xsl:apply-templates select="ead:langmaterial"/>
             <xsl:apply-templates select="ead:materialspec"/>
             <xsl:apply-templates select="ead:container"/>
-            <xsl:apply-templates select="ead:abstract"/> 
+            <xsl:apply-templates select="ead:abstract"/>
             <xsl:apply-templates select="ead:note"/>
         </dl>
             <xsl:apply-templates select="../ead:prefercite"/>
@@ -662,14 +662,14 @@
     </xsl:template>
 
     <!-- Template calls and formats the children of archdesc/did -->
-    <xsl:template match="ead:archdesc/ead:did/ead:repository | ead:archdesc/ead:did/ead:unittitle | ead:archdesc/ead:did/ead:unitid | ead:archdesc/ead:did/ead:origination 
-        | ead:archdesc/ead:did/ead:unitdate | ead:archdesc/ead:did/ead:physdesc | ead:archdesc/ead:did/ead:physloc 
+    <xsl:template match="ead:archdesc/ead:did/ead:repository | ead:archdesc/ead:did/ead:unittitle | ead:archdesc/ead:did/ead:unitid | ead:archdesc/ead:did/ead:origination
+        | ead:archdesc/ead:did/ead:unitdate | ead:archdesc/ead:did/ead:physdesc | ead:archdesc/ead:did/ead:physloc
         | ead:archdesc/ead:did/ead:abstract | ead:archdesc/ead:did/ead:langmaterial | ead:archdesc/ead:did/ead:materialspec | ead:archdesc/ead:did/ead:container">
         <dt>
             <xsl:choose>
                 <xsl:when test="@label">
                     <xsl:value-of select="concat(translate( substring(@label, 1, 1 ),
-                        'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' ), 
+                        'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' ),
                         substring(@label, 2, string-length(@label )))" />
                     <xsl:if test="@type"> [<xsl:value-of select="@type"/>]</xsl:if>
                     <xsl:if test="self::ead:origination">
@@ -678,7 +678,7 @@
                                 - <xsl:value-of select="substring-before(ead:persname/@role,' (')"/>
                             </xsl:when>
                             <xsl:when test="ead:persname[@role != '']">
-                                - <xsl:value-of select="ead:persname/@role"/>  
+                                - <xsl:value-of select="ead:persname/@role"/>
                             </xsl:when>
                             <xsl:otherwise/>
                         </xsl:choose>
@@ -693,13 +693,13 @@
                         <xsl:when test="self::ead:origination">
                             <xsl:choose>
                                 <xsl:when test="ead:persname[@role != ''] and contains(ead:persname/@role,' (')">
-                                    Creator 
+                                    Creator
                                 </xsl:when>
                                 <xsl:when test="ead:persname[@role != '']">
-                                    Creator   
+                                    Creator
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    Creator        
+                                    Creator
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:when>
@@ -730,12 +730,12 @@
             </xsl:choose>
         </dd>
     </xsl:template>
-    <!-- Template calls and formats all other children of archdesc many of 
+    <!-- Template calls and formats all other children of archdesc many of
         these elements are repeatable within the ead:dsc section as well.-->
-    <xsl:template match="ead:bibliography | ead:odd | ead:accruals | ead:arrangement  | ead:bioghist 
-        | ead:accessrestrict | ead:userestrict  | ead:custodhist | ead:altformavail | ead:originalsloc 
+    <xsl:template match="ead:bibliography | ead:odd | ead:accruals | ead:arrangement  | ead:bioghist
+        | ead:accessrestrict | ead:userestrict  | ead:custodhist | ead:altformavail | ead:originalsloc
         | ead:fileplan | ead:acqinfo | ead:otherfindaid | ead:phystech | ead:processinfo | ead:relatedmaterial
-        | ead:scopecontent  | ead:separatedmaterial | ead:appraisal">        
+        | ead:scopecontent  | ead:separatedmaterial | ead:appraisal">
         <xsl:choose>
             <xsl:when test="ead:head"><xsl:apply-templates/></xsl:when>
             <xsl:otherwise>
@@ -760,7 +760,7 @@
                                 <xsl:when test="self::ead:relatedmaterial"><h4><xsl:call-template name="anchor"/>Related Material</h4></xsl:when>
                                 <xsl:when test="self::ead:scopecontent"><h3><xsl:call-template name="anchor"/>Scope and Content</h3></xsl:when>
                                 <xsl:when test="self::ead:separatedmaterial"><h4><xsl:call-template name="anchor"/>Separated Material</h4></xsl:when>
-                                <xsl:when test="self::ead:appraisal"><h4><xsl:call-template name="anchor"/>Appraisal</h4></xsl:when>                        
+                                <xsl:when test="self::ead:appraisal"><h4><xsl:call-template name="anchor"/>Appraisal</h4></xsl:when>
                             </xsl:choose>
                     </xsl:when>
                 </xsl:choose>
@@ -774,12 +774,12 @@
                     self::ead:custodhist or self::ead:accruals or
                     self::ead:altformavail or self::ead:acqinfo or
                     self::ead:processinfo or self::ead:appraisal or
-                    self::ead:originalsloc or  
+                    self::ead:originalsloc or
                     self::ead:relatedmaterial or self::ead:separatedmaterial or self::ead:prefercite"/>
                     <xsl:otherwise>
                         <xsl:call-template name="returnTOC"/>
                     </xsl:otherwise>
-            </xsl:choose>    
+            </xsl:choose>
         </xsl:if>
     </xsl:template>
 
@@ -801,9 +801,9 @@
     <!-- Templates for revision description  -->
     <xsl:template match="/ead:ead/ead:eadheader/ead:revisiondesc">
         <h4>Revision Description</h4>
-        <p><xsl:if test="ead:change/ead:item"><xsl:apply-templates select="ead:change/ead:item"/></xsl:if><xsl:if test="ead:change/ead:date">&#160;<xsl:apply-templates select="ead:change/ead:date"/></xsl:if></p>        
+        <p><xsl:if test="ead:change/ead:item"><xsl:apply-templates select="ead:change/ead:item"/></xsl:if><xsl:if test="ead:change/ead:date">&#160;<xsl:apply-templates select="ead:change/ead:date"/></xsl:if></p>
     </xsl:template>
-    
+
     <!-- Formats controlled access terms -->
     <xsl:key name="names-and-roles" match="ead:controlaccess/ead:persname" use="@role" />
     <xsl:key name="corp-names-and-roles" match="ead:controlaccess/ead:corpname" use="@role" />
@@ -834,7 +834,7 @@
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:famname">
                     <li><xsl:apply-templates/> </li>
-                </xsl:for-each>                        
+                </xsl:for-each>
             </ul>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:function">
@@ -842,7 +842,7 @@
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:function">
                     <li><xsl:apply-templates/> </li>
-                </xsl:for-each>                        
+                </xsl:for-each>
             </ul>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:genreform">
@@ -851,14 +851,14 @@
                 <xsl:for-each select="ead:controlaccess/ead:genreform">
                     <li><xsl:apply-templates/> </li>
                 </xsl:for-each>
-           </ul>     
+           </ul>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:geogname">
             <h4>Geographic Name(s)</h4>
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:geogname">
                     <li><xsl:apply-templates/> </li>
-                </xsl:for-each>                        
+                </xsl:for-each>
             </ul>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:occupation">
@@ -866,7 +866,7 @@
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:occupation">
                     <li><xsl:apply-templates/> </li>
-                </xsl:for-each>                        
+                </xsl:for-each>
             </ul>
         </xsl:if>
         <xsl:if test="ead:controlaccess/ead:persname">
@@ -885,7 +885,7 @@
             <ul>
                 <xsl:for-each select="ead:controlaccess/ead:subject">
                     <li><xsl:apply-templates/> </li>
-                </xsl:for-each>                        
+                </xsl:for-each>
             </ul>
         </xsl:if>
         <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
@@ -903,7 +903,7 @@
                    <xsl:otherwise>
                        <h4><xsl:call-template name="anchor"/>Index</h4>
                    </xsl:otherwise>
-               </xsl:choose>    
+               </xsl:choose>
            </xsl:otherwise>
        </xsl:choose>
        <xsl:apply-templates select="child::*[not(self::ead:indexentry)]"/>
@@ -914,7 +914,7 @@
                             <xsl:sort/>
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
                         </xsl:for-each>
-                     </ul>   
+                     </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:famname">
                     <h4>Family Name(s)</h4>
@@ -923,8 +923,8 @@
                             <xsl:sort/>
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
                         </xsl:for-each>
-                    </ul>    
-                </xsl:if>      
+                    </ul>
+                </xsl:if>
                 <xsl:if test="ead:indexentry/ead:function">
                     <h4>Function(s)</h4>
                     <ul>
@@ -935,12 +935,12 @@
                     </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:genreform">
-                    <h4>Genre(s)</h4> 
+                    <h4>Genre(s)</h4>
                     <ul>
                         <xsl:for-each select="ead:indexentry/ead:genreform">
                             <xsl:sort/>
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
-                        </xsl:for-each>           
+                        </xsl:for-each>
                     </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:geogname">
@@ -950,7 +950,7 @@
                             <xsl:sort/>
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
                         </xsl:for-each>
-                    </ul>                    
+                    </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:name">
                     <h4>Name(s)</h4>
@@ -959,10 +959,10 @@
                             <xsl:sort/>
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
                         </xsl:for-each>
-                    </ul>    
+                    </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:occupation">
-                    <h4>Occupation(s)</h4> 
+                    <h4>Occupation(s)</h4>
                     <ul>
                         <xsl:for-each select="ead:indexentry/ead:occupation">
                             <xsl:sort/>
@@ -980,7 +980,7 @@
                     </ul>
                 </xsl:if>
                 <xsl:if test="ead:indexentry/ead:subject">
-                    <h4>Subject(s)</h4> 
+                    <h4>Subject(s)</h4>
                     <ul>
                         <xsl:for-each select="ead:indexentry/ead:subject">
                             <xsl:sort/>
@@ -996,19 +996,19 @@
                             <li><xsl:apply-templates select="."/>: &#160;<xsl:apply-templates select="following-sibling::*"/></li>
                         </xsl:for-each>
                     </ul>
-                </xsl:if>         
+                </xsl:if>
        <xsl:if test="parent::ead:archdesc"><xsl:call-template name="returnTOC"/></xsl:if>
    </xsl:template>
     <xsl:template match="ead:indexentry">
         <dl class="indexEntry">
             <dt><xsl:apply-templates select="child::*[1]"/></dt>
-            <dd><xsl:apply-templates select="child::*[2]"/></dd>    
+            <dd><xsl:apply-templates select="child::*[2]"/></dd>
         </dl>
     </xsl:template>
     <xsl:template match="ead:ptrgrp">
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <!-- Linking elements. -->
     <xsl:template match="ead:ptr">
         <xsl:choose>
@@ -1039,7 +1039,7 @@
                 <xsl:apply-templates/>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>    
+    </xsl:template>
     <xsl:template match="ead:extptr">
         <xsl:choose>
             <xsl:when test="@href">
@@ -1047,7 +1047,7 @@
             </xsl:when>
             <xsl:when test="@ns2:href"><a href="{@ns2:href}"><xsl:value-of select="@title"/></a></xsl:when>
             <xsl:otherwise><xsl:value-of select="@title"/></xsl:otherwise>
-        </xsl:choose> 
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="ead:extref">
         <xsl:choose>
@@ -1056,11 +1056,11 @@
             </xsl:when>
             <xsl:when test="@ns2:href"><a href="{@ns2:href}"><xsl:value-of select="."/></a></xsl:when>
             <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-        </xsl:choose> 
+        </xsl:choose>
     </xsl:template>
-    
-    <!--Creates a hidden anchor tag that allows navigation within the finding aid. 
-    In this stylesheet only children of the archdesc and c0* itmes call this template. 
+
+    <!--Creates a hidden anchor tag that allows navigation within the finding aid.
+    In this stylesheet only children of the archdesc and c0* itmes call this template.
     It can be applied anywhere in the stylesheet as the id attribute is universal. -->
     <xsl:template match="@id">
         <xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
@@ -1085,7 +1085,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
- 
+
     <!--Bibref, choose statement decides if the citation is inline, if there is a parent element
     or if it is its own line, typically when it is a child of the bibliography element.-->
     <xsl:template match="ead:bibref">
@@ -1114,7 +1114,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-   
+
     <!-- Formats prefered citiation -->
     <xsl:template match="ead:prefercite">
         <div class="citation">
@@ -1125,7 +1125,7 @@
         </div>
     </xsl:template>
 
-    <!-- Applies a span style to address elements, currently addresses are displayed 
+    <!-- Applies a span style to address elements, currently addresses are displayed
         as a block item, display can be changed to inline, by changing the CSS -->
     <xsl:template match="ead:address">
         <span class="address">
@@ -1135,10 +1135,10 @@
                     <xsl:when test="ead:lb"/>
                     <xsl:otherwise><br/></xsl:otherwise>
                 </xsl:choose>
-            </xsl:for-each>            
-        </span>    
+            </xsl:for-each>
+        </span>
     </xsl:template>
-    
+
     <!-- Formats headings throughout the finding aid -->
     <xsl:template match="ead:head[parent::*/parent::ead:archdesc]">
         <xsl:choose>
@@ -1146,7 +1146,7 @@
                 parent::ead:custodhist or parent::ead:accruals or
                 parent::ead:altformavail or parent::ead:acqinfo or
                 parent::ead:processinfo or parent::ead:appraisal or
-                parent::ead:originalsloc or  
+                parent::ead:originalsloc or
                 parent::ead:relatedmaterial or parent::ead:separatedmaterial or parent::ead:prefercite">
                 <h4>
                     <xsl:choose>
@@ -1171,14 +1171,14 @@
                         </xsl:otherwise>
                     </xsl:choose>
                     <xsl:apply-templates/>
-                </h3>                
+                </h3>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
     <xsl:template match="ead:head">
         <h4><xsl:apply-templates/></h4>
     </xsl:template>
-    
+
     <!-- Digital Archival Object -->
     <xsl:template match="ead:daogrp">
         <xsl:choose>
@@ -1206,7 +1206,7 @@
                 </xsl:choose>
                 </h4>
             </xsl:otherwise>
-        </xsl:choose>   
+        </xsl:choose>
         <xsl:apply-templates/>
     </xsl:template>
     <xsl:template match="ead:dao">
@@ -1226,7 +1226,7 @@
             <xsl:value-of select="@ns2:title"/>
         </a>
     </xsl:template>
-    
+
     <!--Formats a simple table. The width of each column is defined by the colwidth attribute in a colspec element.-->
     <xsl:template match="ead:table">
         <xsl:for-each select="tgroup">
@@ -1267,7 +1267,7 @@
         <xsl:if test="preceding-sibling::*">&#160;</xsl:if>
         <xsl:choose>
             <xsl:when test="@type = 'bulk'">
-                (<xsl:apply-templates/>)                            
+                (<xsl:apply-templates/>)
             </xsl:when>
             <xsl:otherwise><xsl:apply-templates/></xsl:otherwise>
         </xsl:choose>
@@ -1330,7 +1330,7 @@
                 <xsl:apply-templates/>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
 
     <!-- Output for a variety of list types -->
@@ -1369,7 +1369,7 @@
                     <xsl:otherwise>
                         <ul>
                             <xsl:apply-templates/>
-                        </ul>        
+                        </ul>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:otherwise>
@@ -1383,8 +1383,8 @@
         <dt><xsl:apply-templates select="ead:label"/></dt>
         <dd><xsl:apply-templates select="ead:item"/></dd>
     </xsl:template>
- 
-    <!-- Formats list as tabel if list has listhead element  -->         
+
+    <!-- Formats list as tabel if list has listhead element  -->
     <xsl:template match="ead:list[child::ead:listhead]">
         <table>
             <tr>
@@ -1418,7 +1418,7 @@
              </xsl:otherwise>
          </xsl:choose>
      </xsl:template>
-    
+
     <!-- Child elements that should display as paragraphs-->
     <xsl:template match="ead:legalstatus">
         <p><xsl:apply-templates/></p>
@@ -1437,7 +1437,7 @@
         <blockquote><xsl:apply-templates/></blockquote>
     </xsl:template>
     <xsl:template match="ead:emph"><em><xsl:apply-templates/></em></xsl:template>
-    
+
     <!--Render elements -->
     <xsl:template match="*[@render = 'bold'] | *[@altrender = 'bold'] ">
         <xsl:if test="preceding-sibling::*"> &#160;</xsl:if><strong><xsl:apply-templates/></strong>
@@ -1478,8 +1478,8 @@
     <xsl:template match="*[@render = 'underline'] | *[@altrender = 'underline']">
         <xsl:if test="preceding-sibling::*"> &#160;</xsl:if><span class="underline"><xsl:apply-templates/></span>
     </xsl:template>
-    <!-- 
-        <value>nonproport</value>        
+    <!--
+        <value>nonproport</value>
     -->
 
     <!-- *** Begin templates for Container List *** -->
@@ -1505,9 +1505,9 @@
             </tr>
         </table>
     </xsl:template>
-    
-    <!--This section of the stylesheet creates a div for each c01 or c 
-        It then recursively processes each child component of the c01 by 
+
+    <!--This section of the stylesheet creates a div for each c01 or c
+        It then recursively processes each child component of the c01 by
         calling the clevel template.
         Edited 5/31/12: Added parameter to indicate clevel margin, parameter is called by clevelMargin variable
     -->
@@ -1522,7 +1522,7 @@
             <xsl:for-each select="ead:c">
                 <xsl:call-template name="clevel">
                     <xsl:with-param name="level">03</xsl:with-param>
-                </xsl:call-template>    
+                </xsl:call-template>
                 <xsl:for-each select="ead:c">
                     <xsl:call-template name="clevel">
                         <xsl:with-param name="level">04</xsl:with-param>
@@ -1534,7 +1534,7 @@
                         <xsl:for-each select="ead:c">
                             <xsl:call-template name="clevel">
                                 <xsl:with-param name="level">06</xsl:with-param>
-                            </xsl:call-template> 
+                            </xsl:call-template>
                             <xsl:for-each select="ead:c">
                                 <xsl:call-template name="clevel">
                                     <xsl:with-param name="level">07</xsl:with-param>
@@ -1546,7 +1546,7 @@
                                     <xsl:for-each select="ead:c">
                                         <xsl:call-template name="clevel">
                                             <xsl:with-param name="level">09</xsl:with-param>
-                                        </xsl:call-template>    
+                                        </xsl:call-template>
                                     </xsl:for-each>
                                 </xsl:for-each>
                             </xsl:for-each>
@@ -1561,7 +1561,7 @@
                 <td colspan="5">
                     <xsl:call-template name="returnTOC"/>
                 </td>
-            </tr>    
+            </tr>
         </xsl:if>
     </xsl:template>
     <xsl:template match="ead:c01">
@@ -1605,14 +1605,14 @@
                 <td colspan="5">
                     <xsl:call-template name="returnTOC"/>
                 </td>
-            </tr>    
+            </tr>
         </xsl:if>
-        
+
     </xsl:template>
-    
+
     <!--This is a named template that processes all c0* elements  -->
     <xsl:template name="clevel">
-    <!-- Establishes which level is being processed in order to provided indented displays. 
+    <!-- Establishes which level is being processed in order to provided indented displays.
         Indents handled by CSS margins-->
         <xsl:param name="level" />
         <xsl:variable name="clevelMargin">
@@ -1644,7 +1644,7 @@
                 <xsl:when test="../ead:c08">c12</xsl:when>
             </xsl:choose>
         </xsl:variable>
-    <!-- Establishes a class for even and odd rows in the table for color coding. 
+    <!-- Establishes a class for even and odd rows in the table for color coding.
         Colors are Declared in the CSS. -->
         <xsl:variable name="colorClass">
             <xsl:choose>
@@ -1660,20 +1660,20 @@
         <xsl:for-each select=".">
             <xsl:choose>
                 <!--Formats Series and Groups  -->
-                <xsl:when test="@level='subcollection' or @level='subgrp' or @level='series' 
-                    or @level='subseries' or @level='collection'or @level='fonds' or 
+                <xsl:when test="@level='subcollection' or @level='subgrp' or @level='series'
+                    or @level='subseries' or @level='collection'or @level='fonds' or
                     @level='recordgrp' or @level='subfonds' or @level='class' or (@level='otherlevel' and not(child::ead:did/ead:container))">
-                    <tr> 
+                    <tr>
                         <xsl:attribute name="class">
                             <xsl:choose>
                                 <xsl:when test="@level='subcollection' or @level='subgrp' or @level='subseries' or @level='subfonds'">subseries</xsl:when>
                                 <xsl:otherwise>series</xsl:otherwise>
-                            </xsl:choose>    
+                            </xsl:choose>
                         </xsl:attribute>
                         <xsl:choose>
                             <xsl:when test="ead:did/ead:container">
                             <td class="{$clevelMargin}">
-                            <xsl:choose>                                
+                            <xsl:choose>
                                 <xsl:when test="count(ead:did/ead:container) &lt; 1">
                                     <xsl:attribute name="colspan">
                                         <xsl:text>5</xsl:text>
@@ -1695,15 +1695,15 @@
                                     </xsl:attribute>
                                 </xsl:when>
                                 <xsl:otherwise/>
-                            </xsl:choose>    
+                            </xsl:choose>
                                 <xsl:call-template name="anchor"/>
                                 <xsl:apply-templates select="ead:did" mode="dsc"/>
                                 <xsl:apply-templates select="child::*[not(ead:did) and not(self::ead:did)]"/>
                             </td>
-                            <xsl:for-each select="descendant::ead:did[ead:container][1]/ead:container">    
-                                <td class="containerHeader">    
-                                    <xsl:value-of select="@type"/><br/><xsl:value-of select="."/>       
-                                </td>    
+                            <xsl:for-each select="descendant::ead:did[ead:container][1]/ead:container">
+                                <td class="containerHeader">
+                                    <xsl:value-of select="@type"/><br/><xsl:value-of select="."/>
+                                </td>
                             </xsl:for-each>
                             </xsl:when>
                             <xsl:otherwise>
@@ -1716,12 +1716,12 @@
                         </xsl:choose>
                     </tr>
                 </xsl:when>
-                
+
                 <!--Items/Files with multiple formats linked using parent and id attributes -->
                 <xsl:when test="count(child::*/ead:container/@id) &gt; 1">
                     <tr class="{$colorClass}">
                         <td colspan="5">
-                            <xsl:apply-templates select="ead:did" mode="dsc"/> 
+                            <xsl:apply-templates select="ead:did" mode="dsc"/>
                             <br class="clear"/>
                             <table class="parentContainers">
                                 <xsl:for-each select="child::*/ead:container[@label]">
@@ -1784,8 +1784,8 @@
                         </td>
                     </tr>
                 </xsl:when>
-                    
-                <!-- Items/Files--> 
+
+                <!-- Items/Files-->
                 <xsl:when test="@level='file' or @level='item' or (@level='otherlevel'and child::ead:did/ead:container)">
                   <!-- Variables to  for Conainer headings, used only if headings are different from preceding heading -->
                     <xsl:variable name="container" select="string(ead:did/ead:container[1]/@type)"/>
@@ -1805,7 +1805,7 @@
                         <xsl:if test="ead:did/ead:container">
                             <tr>
                                 <td class="title">
-                                    <xsl:choose>                                
+                                    <xsl:choose>
                                         <xsl:when test="count(ead:did[ead:container][1]/ead:container) &lt; 1">
                                             <xsl:attribute name="colspan">
                                                 <xsl:text>5</xsl:text>
@@ -1827,18 +1827,18 @@
                                             </xsl:attribute>
                                         </xsl:when>
                                         <xsl:otherwise/>
-                                    </xsl:choose>    
+                                    </xsl:choose>
                                     <xsl:text/>
                                 </td>
-                                <xsl:for-each select="ead:did/ead:container">    
-                                    <td class="containerHeader">    
+                                <xsl:for-each select="ead:did/ead:container">
+                                    <td class="containerHeader">
                                         <xsl:value-of select="@type"/>
-                                    </td>    
+                                    </td>
                                 </xsl:for-each>
                             </tr>
-                        </xsl:if> 
+                        </xsl:if>
                   </xsl:if>
-                    <tr class="{$colorClass}"> 
+                    <tr class="{$colorClass}">
                         <td class="{$clevelMargin}">
                             <xsl:choose>
                                 <xsl:when test="count(ead:did/ead:container) &lt; 1">
@@ -1862,41 +1862,41 @@
                                     </xsl:attribute>
                                 </xsl:when>
                                 <xsl:otherwise/>
-                            </xsl:choose>                            
-                            <xsl:apply-templates select="ead:did" mode="dsc"/>  
-                            <xsl:apply-templates select="*[not(self::ead:did) and 
+                            </xsl:choose>
+                            <xsl:apply-templates select="ead:did" mode="dsc"/>
+                            <xsl:apply-templates select="*[not(self::ead:did) and
                                 not(self::ead:c) and not(self::ead:c02) and not(self::ead:c03) and
                                 not(self::ead:c04) and not(self::ead:c05) and not(self::ead:c06) and not(self::ead:c07)
-                                and not(self::ead:c08) and not(self::ead:c09) and not(self::ead:c10) and not(self::ead:c11) and not(self::ead:c12)]"/>  
+                                and not(self::ead:c08) and not(self::ead:c09) and not(self::ead:c10) and not(self::ead:c11) and not(self::ead:c12)]"/>
                         </td>
-                        <!-- Containers -->    
-                        <xsl:for-each select="ead:did/ead:container">    
-                            <td class="container">    
-                                <xsl:value-of select="."/>        
-                            </td>    
+                        <!-- Containers -->
+                        <xsl:for-each select="ead:did/ead:container">
+                            <td class="container">
+                                <xsl:value-of select="."/>
+                            </td>
                         </xsl:for-each>
-                    </tr>  
+                    </tr>
                 </xsl:when>
                 <xsl:otherwise>
-                    <tr class="{$colorClass}"> 
+                    <tr class="{$colorClass}">
                         <td class="{$clevelMargin}" colspan="5">
                             <xsl:apply-templates select="ead:did" mode="dsc"/>
-                            <xsl:apply-templates select="*[not(self::ead:did) and 
+                            <xsl:apply-templates select="*[not(self::ead:did) and
                                 not(self::ead:c) and not(self::ead:c02) and not(self::ead:c03) and
                                 not(self::ead:c04) and not(self::ead:c05) and not(self::ead:c06) and not(self::ead:c07)
-                                and not(self::ead:c08) and not(self::ead:c09) and not(self::ead:c10) and not(self::ead:c11) and not(self::ead:c12)]"/>  
+                                and not(self::ead:c08) and not(self::ead:c09) and not(self::ead:c10) and not(self::ead:c11) and not(self::ead:c12)]"/>
                         </td>
                     </tr>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:for-each>
     </xsl:template>
-    
+
     <xsl:template match="ead:did" mode="dsc">
         <xsl:choose>
-            <xsl:when test="../@level='subcollection' or ../@level='subgrp' or ../@level='series' 
-                or ../@level='subseries'or ../@level='collection'or ../@level='fonds' or 
-                ../@level='recordgrp' or ../@level='subfonds'">    
+            <xsl:when test="../@level='subcollection' or ../@level='subgrp' or ../@level='series'
+                or ../@level='subseries'or ../@level='collection'or ../@level='fonds' or
+                ../@level='recordgrp' or ../@level='subfonds'">
                 <h4>
                     <xsl:call-template name="component-did-core"/>
                 </h4>
