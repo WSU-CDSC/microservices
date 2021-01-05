@@ -96,13 +96,13 @@
 				<div id="masc_nav">
 
 					<ul>
-						<li><a href="https://www.libraries.wsu.edu/masc/">MASC Home</a></li>
-						<li><a href="https://www.libraries.wsu.edu/masc/manuscripts">Manuscripts</a></li>
-						<li><a href="https://www.libraries.wsu.edu/masc/univeristy-archives">Archives </a></li>
+						<li><a href="https://libraries.wsu.edu/masc/">MASC Home</a></li>
+						<li><a href="https://libraries.wsu.edu/masc/manuscripts">Manuscripts</a></li>
+						<li><a href="https://libraries.wsu.edu/masc/university-archives">Archives </a></li>
 					    <li><a href="https://content.libraries.wsu.edu/">Digital Collections</a></li>
-						<li><a href="https://www.libraries.wsu.edu/masc/photographs">Photographs</a></li>
-						<li><a href="https://www.libraries.wsu.edu/masc/rare-books">Rare Books</a></li>
-						<li><a href="https://www.libraries.wsu.edu/masc/ask">Contact MASC</a></li>
+						<li><a href="https://libraries.wsu.edu/masc/photographs">Photographs</a></li>
+						<li><a href="https://libraries.wsu.edu/masc/rare-books">Rare Books</a></li>
+						<li><a href="https://libraries.wsu.edu/masc/ask">Contact MASC</a></li>
 					</ul>
 
 
