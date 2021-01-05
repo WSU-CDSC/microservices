@@ -79,7 +79,7 @@
 					 which is stored on the MASC web server
 					 and displays the WSU icon in the browser
 				-->
-				<link href="http://wsu.edu/cougar.ico" rel="shortcut icon" title="Washington State University" />
+				<link href="https://repo.wsu.edu/spine/1/favicon.ico" rel="shortcut icon" title="Washington State University" />
 				<link rel="stylesheet" href="https://libraries.wsu.edu/masc-files/finders/css/wsu-ead-style-2019.css" />
 
             </head>
@@ -790,7 +790,7 @@
             <xsl:if test="ead:date">&#160;<xsl:apply-templates select="ead:date"/></xsl:if>
         </p>
         <p>
-            <p>http://www.libraries.wsu.edu/masc/</p>
+            <p>http://libraries.wsu.edu/masc/</p>
             <p>Terrell Library</p>
             <p>P.O. Box 645610</p>
             <p>Pullman, WA, 99164-5610 USA</p>
