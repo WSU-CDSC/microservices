@@ -1,3 +1,6 @@
 *.log
 *.config
 *.htm
+.venv/
+__pycache__/
+captions/

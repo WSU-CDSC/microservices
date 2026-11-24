@@ -1,0 +1,4 @@
+faster-whisper>=1.2,<2
+# faster-whisper 1.2.1 passes av.open(metadata_errors=...), which PyAV 18+ removed.
+av<18
+yt-dlp
